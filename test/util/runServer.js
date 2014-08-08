@@ -2,10 +2,12 @@ var config = require('../../config');
 var Server = require('../../server');
 var server = new Server(config);
 
-before(function () {
-  server.listen();
-});
+module.exports = function() {
+  before(function () {
+    server.listen();
+  });
 
-after(function () {
-  server.destroy();
-});
+  after(function () {
+    server.destroy();
+  });
+};
