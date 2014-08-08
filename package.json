@@ -4,7 +4,7 @@
   "description": "Backend API for Versapp",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "mocha test/ --recursive -R spec"
   },
   "repository": {
     "type": "git",

@@ -5,7 +5,7 @@ var config = {
     url: {
       port: 3000,
       protocol: 'http',
-      host: 'localhost'
+      hostname: 'localhost'
     }
   },
   development: {},
@@ -16,4 +16,4 @@ var config = {
 var settings = new Settings(config);
 var env = process.NODE_ENV || 'development';
 
-module.exports = settings.getConfig({ env: env });
+module.exports = settings.getSettings({ env: env });

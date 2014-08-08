@@ -12,6 +12,14 @@ function Server(config) {
   // Save the config
   this.config = config;
 
+  // Logging middleware
+  //this.app.all('*', function(req, res, next) {
+  //  console.log('-------- RECIEVED REQUEST --------');
+  //  console.log('-------- req.path --------');
+  //  console.log(req.path);
+  //  return next();
+  //});
+
   // Set up routes
   setRoutes(this.app);
 
@@ -49,12 +57,10 @@ Server.prototype.listen = function() {
   console.info('Server listening on port: ' + urlConfig.port);
 };
 
-// Tears down the server and statsd connection
+// Tears down the server
 Server.prototype.destroy = function(cb) {
   cb = cb || function() {};
 
-  // Clean up redis and statsd connections
-  this.config.statsd.close();
   // Close the server
   this._app.close(cb);
 };
