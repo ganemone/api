@@ -3,7 +3,9 @@ var Settings = require('shallow-settings');
 var config = {
   common: {
     url: {
-      port: 3000
+      port: 3000,
+      protocol: 'http',
+      host: 'localhost'
     }
   },
   development: {},
