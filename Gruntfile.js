@@ -7,7 +7,6 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   // Aliases
-  grunt.registerTask('download-translations', ['aws_s3:genghis']);
   grunt.registerTask('build', ['sass']);
   grunt.registerTask('server', ['nodemon:dev']);
 };
