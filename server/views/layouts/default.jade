@@ -1,0 +1,17 @@
+doctype html
+html(lang="en")
+  head
+  meta(charset="utf-8")
+  meta(name="viewport", content="width=device-width, initial-scale=1.0")
+  title=title
+  link(rel="icon", type="image/x-icon", href="/images/favicon.ico")
+  link(rel="stylesheet", href="/stylesheets/main.css")
+  include ../ga
+  body
+  .global-container
+    include ../header
+    .site-wrapper
+      block body-content
+
+    include ../footer
+  script(src="/javascripts/main.js")
