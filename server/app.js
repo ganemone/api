@@ -30,6 +30,7 @@ function Server(config) {
 // Shared error handler.
 // TODO - log unexpected errors to Kafka
 function errorHandler(config) {
+  var env = process.env.NODE_ENV || 'development';
   return function errorHandlerFunc(err, req, res, next) {
     if(err) {
       console.error('Shared error handler received error: ', { error: err, req: req });

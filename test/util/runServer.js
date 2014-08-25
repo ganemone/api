@@ -1,5 +1,5 @@
 var config = require('../../config');
-var Server = require('../../server');
+var Server = require('../../server/app');
 
 module.exports = function() {
   before(function () {
