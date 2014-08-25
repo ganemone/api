@@ -8,9 +8,25 @@ var config = {
       hostname: 'localhost'
     }
   },
-  development: {},
+  development: {
+    db: {
+      connectionLimit: 10,
+      host: 'localhost',
+      user: 'root',
+      password: 'root',
+      database: 'ejabberd_dev'
+    }
+  },
   production: {},
-  test: {}
+  test: {
+    db: {
+      connectionLimit: 10,
+      host: 'localhost',
+      user: 'root',
+      password: 'root',
+      database: 'ejabberd_dev'
+    }
+  }
 };
 
 var settings = new Settings(config);
