@@ -2,6 +2,7 @@
 var express = require('express');
 // Internal Modules
 var setRoutes = require('./routes');
+var setMiddlewares = require('./middlewares');
 // Shared variables
 // Constructor for Server
 function Server(config) {
@@ -12,13 +13,8 @@ function Server(config) {
   // Save the config
   this.config = config;
 
-  // Logging middleware
-  //this.app.all('*', function(req, res, next) {
-  //  console.log('-------- RECIEVED REQUEST --------');
-  //  console.log('-------- req.path --------');
-  //  console.log(req.path);
-  //  return next();
-  //});
+  // Set up middlewares
+  setMiddlewares(this.app);
 
   // Set up routes
   setRoutes(this.app);
