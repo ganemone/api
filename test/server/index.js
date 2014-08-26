@@ -5,7 +5,7 @@ var url = require('url');
 
 // Internal Modules
 var config = require('../../config');
-var runServer = require('../util/runServer.js');
+var runServer = require('../util/runServer');
 
 // Shared variables
 var baseURL = url.format(config.url);
