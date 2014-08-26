@@ -15,9 +15,15 @@ var config = {
       user: 'root',
       password: 'root',
       database: 'ejabberd_dev'
-    }
+    },
+   logRequests: true
   },
-  production: {},
+  production: {
+    db: {
+      // TODO: set up production db
+    },
+    logRequests: false
+  },
   test: {
     db: {
       connectionLimit: 10,
@@ -25,11 +31,12 @@ var config = {
       user: 'root',
       password: 'root',
       database: 'ejabberd_dev'
-    }
+    },
+    logRequests: false
   }
 };
 
 var settings = new Settings(config);
-var env = process.NODE_ENV || 'development';
+var env = process.env.NODE_ENV || 'development';
 
 module.exports = settings.getSettings({ env: env });
