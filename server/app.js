@@ -1,5 +1,6 @@
 // External Modules
 var express = require('express');
+var jade = require('jade');
 // Internal Modules
 var setRoutes = require('./routes');
 var setMiddlewares = require('./middlewares');
@@ -19,6 +20,11 @@ function Server(config) {
   // Set up routes
   setRoutes(this.app);
 
+  // Set up views
+  this.app.engine('jade', jade.__express);
+  this.app.set('view engine', 'jade');
+  this.app.set('views', './server/views');
+
   // Set up error handler
   app.use(errorHandler(this.config));
 }
@@ -29,9 +35,10 @@ function errorHandler(config) {
   var env = process.env.NODE_ENV || 'development';
   return function errorHandlerFunc(err, req, res, next) {
     if(err) {
-      console.error('Shared error handler received error: ', { error: err, req: req });
-      var statusCode = err.statusCode;
-      if(statusCode) {
+      if(err.statusCode) {
+        if (err.statusCode >= 500) {
+          console.error('Internal Server Error: ', { error: err, req: req });
+        }
         res.status(err.statusCode);
         return res.end(err.message);
       } else {
@@ -40,8 +47,6 @@ function errorHandler(config) {
           throw err;
         }
       }
-    } else {
-      return next();
     }
   };
 }

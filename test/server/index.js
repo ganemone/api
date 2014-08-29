@@ -10,7 +10,6 @@ var runServer = require('../util/runServer');
 // Shared variables
 var baseURL = url.format(config.url);
 
-
 describe('A server', function () {
 
   runServer();
