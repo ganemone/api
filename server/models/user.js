@@ -27,13 +27,23 @@ var tableSession = {
   }
 };
 
-function User(data) {
-  assert.ok(data.username, 'Expected username to be set');
+var tableUsernamePhoneEmail = {
+  table: 'username_phone_email',
+  columns: {
+    username: 'username',
+    ccode: 'ccode',
+    phone: 'phone',
+    email: 'email'
+  }
+}
 
+function User(data) {
+  data = data || {};
   this.username = data.username;
   this.password = data.password;
   this.sessionID = data.sessionID;
   this.passwordKey = data.passwordKey;
+  this.email = data.email;
 }
 
 User.prototype.insert = function(cb) {
@@ -46,6 +56,28 @@ User.prototype.insert = function(cb) {
     [this.username, this.password]
   ];
   db.queryWithData(query, data, cb);
+};
+
+User.prototype.insertInfo = function(cb) {
+  assert.ok(this.username, 'Expected username to be set');
+  assert.ok(this.email, 'Expected email to be set');
+  var query = 'INSERT INTO username_phone_email (username, email) VALUES (?)';
+  var data = [[this.username, this.email]];
+  db.queryWithData(query, data);
+};
+
+User.prototype.loadFromEmail = function(cb) {
+  assert.ok(this.email, 'Expected email to be set');
+  var query = 'SELECT username FROM username_phone_email WHERE email = ?';
+  var data = [this.email];
+  db.queryWithData(query, function(err, rows, fields) {
+    if (err) {
+      return cb(err);
+    }
+    if (rows.length === 0) {
+      return cb(new HttpError('User not found', 406));
+    };
+  })
 };
 
 User.prototype.insertSession = function(cb) {
@@ -134,6 +166,29 @@ User.prototype.deletePasswordKey = function(cb) {
   db.queryWithData(query, data, cb);
 };
 
+User.prototype.loadPasswordKey = function() {
+  assert.ok(this.email, 'Expected email to be set');
+  var query = '
+  SELECT key FROM password_reset 
+  WHERE username = (
+    SELECT username 
+    FROM username_phone_email 
+    WHERE email = ?
+  )';
+  var data = [
+    this.email
+  ];
+  db.queryWithData(query, data, function(err, rows, fields) {
+    if (err) {
+      return cb(err);
+    }
+    if (rows.length === 0) {
+      return cb(new HttpError('No Valid Key Found'), 406);
+    }
+    cb(null, rows[0]);
+  });
+};
+
 User.prototype.hasValidResetPasswordKey = function(cb) {
   assert.ok(this.username, 'Expected username to be set');
   assert.ok(this.passwordKey, 'Expected password key to be set');
@@ -148,10 +203,9 @@ User.prototype.hasValidResetPasswordKey = function(cb) {
 
   db.queryWithData(query, data, function(err, rows, fields) {
     if (err) {
-      cb(err);
-    } else {
-      cb(null, rows.length > 0);
+      return cb(err);
     }
+    cb(null, rows.length > 0);
   });
 };
 
@@ -166,10 +220,9 @@ User.prototype.hasValidSessionID = function(cb) {
   ];
   db.queryWithData(query, data, function(err, rows, fields) {
     if (err) {
-      cb(err);
-    } else {
-      cb(null, rows.length > 0);
+      return cb(err);
     }
+    cb(null, rows.length > 0);
   });
 };
 

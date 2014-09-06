@@ -3,7 +3,6 @@ var db = require('../../../server/util/db');
 var setUpUser = require('../../util/setup-user.js');
 var User = require('../../../server/models/user');
 
-
 describe('A user model', function () {
 
   var userData = {

@@ -4,6 +4,7 @@ var jade = require('jade');
 // Internal Modules
 var setRoutes = require('./routes');
 var setMiddlewares = require('./middlewares');
+
 // Shared variables
 // Constructor for Server
 function Server(config) {

@@ -14,7 +14,11 @@ module.exports = function(data) {
         user.insertSession(cb);
       },
       function(cb) {
-        user.insertPasswordKey(cb);
+        if (user.passwordKey) {
+          user.insertPasswordKey(cb);
+        } else {
+          cb(null, true);
+        }
       },
     ],
     function(err, results) {

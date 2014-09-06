@@ -1,3 +1,4 @@
+var uuid = require('node-uuid');
 var HttpError = require('../util/http-error');
 var User = require('../models/user');
 
@@ -23,6 +24,27 @@ exports.reset = function(req, res, next) {
   }
 };
 
+exports.trigger = function(req, res, next) {
+  var validateResult = validateTriggerRequest(req);
+  if (validateResult === true) {
+    var user = new User({ 
+      username: params.username,
+      passwordKey: uuid.v4()
+    });
+    async.parallel([
+      user.insertPasswordKey,
+      user.sendPasswordKeyEmail
+    ], function(err, result) {
+      if (err) {
+        return next(new HttpError('Failed to trigger password reset', 500));
+      }
+      res.end();
+    });
+  } else {
+    next(validateResult);
+  }
+}
+
 function validateParameters(params) {
   if (!params.username) {
     return new HttpError('Missing or invalid parameters', 403);
@@ -31,6 +53,13 @@ function validateParameters(params) {
     return new HttpError('Missing or invalid parameters', 403);
   }
   return true;
+}
+
+function validateTriggerRequest(req) {
+  if (req.params.username) {
+    return true;
+  }
+  return new HttpError('Missing or invalid parameters', 403);
 }
 
 function validatePasswordRequest(req) {
