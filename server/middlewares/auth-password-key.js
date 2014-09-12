@@ -3,10 +3,10 @@ var HttpError = require('../util/http-error.js');
 
 module.exports = function(req, res, next) {
   if (!req.query.username) {
-    return new HttpError('Missing username parameter', 406);
+    return next(new HttpError('Missing username parameter', 406));
   }
   if (!req.query.key) {
-    return new HttpError('Missing password key parameter', 406);
+    return next(new HttpError('Missing password key parameter', 406));
   }
 
   var user = new User({
