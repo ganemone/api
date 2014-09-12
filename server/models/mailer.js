@@ -1,19 +1,15 @@
 var nodemailer = require('nodemailer');
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'support@versapp.co',
-    pass: 'kalamazoo2014'
-  }
-});
+var config = require('../../config/index.js');
+var transporter = config.transporter;
 
 function Mailer(from) {
   this.from = from;
 }
 
 Mailer.prototype.send = function(to, subject, text, cb) {
+  var from = this.from;
   transporter.sendMail({
-    from: this.from,
+    from: from,
     to: to,
     subject: subject,
     text: text
