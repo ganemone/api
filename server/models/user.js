@@ -80,11 +80,9 @@ User.prototype.loadFromEmail = function(cb) {
   var self = this;
   db.queryWithData(query, data, function(err, rows, fields) {
     if (err) {
-      console.log('Returning Error');
       return cb(err);
     }
     if (rows.length === 0) {
-      console.log('Returning HTTP Error');
       return cb(new HttpError('User not found', 406));
     }
     self.username = rows[0].username;
@@ -105,7 +103,6 @@ User.prototype.insertSession = function(cb) {
 };
 
 User.prototype.insertPasswordKey = function(cb) {
-  console.log('Inserting Password Key');
   assert.ok(this.username, 'Expected username to be set');
   assert.ok(this.passwordKey, 'Expected password key to be set');
   var query = 'INSERT INTO ?? (??) VALUES (?)';
@@ -115,7 +112,6 @@ User.prototype.insertPasswordKey = function(cb) {
     [this.username, this.passwordKey]
   ];
   db.queryWithData(query, data, function(err, rows, fields) {
-    console.log('Calling back');
     cb(err, rows);
   });
 };
@@ -184,11 +180,12 @@ User.prototype.deletePasswordKey = function(cb) {
 
 User.prototype.loadPasswordKey = function(cb) {
   assert.ok(this.email, 'Expected email to be set');
-  var query = 'SELECT key FROM password_reset WHERE username = ' +
-  '(SELECT username  FROM username_phone_email  WHERE email = ?)';
+  var query = 'SELECT password_key FROM password_reset WHERE username = ' +
+  '(SELECT username FROM username_phone_email WHERE email = ?)';
   var data = [
     this.email
   ];
+  var self = this;
   db.queryWithData(query, data, function(err, rows, fields) {
     if (err) {
       return cb(err);
@@ -196,6 +193,7 @@ User.prototype.loadPasswordKey = function(cb) {
     if (rows.length === 0) {
       return cb(new HttpError('No Valid Key Found'), 406);
     }
+    self.passwordKey = rows[0]['password_key'];
     cb(null, rows[0]);
   });
 };
@@ -259,7 +257,6 @@ User.prototype._cleanUpAll = function(callback) {
 };
 
 User.prototype.sendPasswordKeyEmail = function(cb) {
-  console.log('Sending password key email');
   var mailer = new Mailer();
   mailer.sendPasswordKeyEmail(this, cb);
 };
