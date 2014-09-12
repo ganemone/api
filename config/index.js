@@ -26,12 +26,14 @@ var config = {
       password: 'root',
       database: 'ejabberd_dev'
     },
+    ip: 'harmon.dev.versapp.co',
    logRequests: true
   },
   production: {
     db: {
       // TODO: set up production db
     },
+    ip: 'versapp.co',
     logRequests: false
   },
   test: {
@@ -42,6 +44,7 @@ var config = {
       password: 'root',
       database: 'ejabberd_test'
     },
+    ip: 'harmon.dev.versapp.co',
     logRequests: false
   }
 };
