@@ -9,6 +9,7 @@
     "build": "grunt sass",
     "watch": "grunt sass && grunt watch",
     "test": "NODE_ENV='test' mocha test/ --recursive -R spec",
+    "testd": "NODE_ENV='test' mocha debug test/ --recursive -R spec",
     "cover": "NODE_ENV=test istanbul cover --report cobertura --print detail _mocha -- -R spec test/ --recursive --timeout=20000",
     "view-cover": "istanbul report html && open ./coverage/index.html"
   },
