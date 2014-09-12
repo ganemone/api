@@ -1,4 +1,5 @@
 var Settings = require('shallow-settings');
+var nodemailer = require('nodemailer');
 var url = require('url');
 
 var config = {
@@ -27,14 +28,28 @@ var config = {
       database: 'ejabberd_dev'
     },
     ip: 'harmon.dev.versapp.co',
-   logRequests: true
+   logRequests: true,
+   transporter: nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'support@versapp.co',
+        pass: 'kalamazoo2014'
+      }
+    })
   },
   production: {
     db: {
       // TODO: set up production db
     },
     ip: 'versapp.co',
-    logRequests: false
+    logRequests: false,
+    transporter: nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'support@versapp.co',
+        pass: 'kalamazoo2014'
+      }
+    })
   },
   test: {
     db: {
@@ -45,7 +60,12 @@ var config = {
       database: 'ejabberd_test'
     },
     ip: 'harmon.dev.versapp.co',
-    logRequests: false
+    logRequests: false,
+    transporter: {
+      sendMail: function(data, cb) {
+        cb(null);
+      }
+    }
   }
 };
 
