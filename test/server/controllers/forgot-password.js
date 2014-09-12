@@ -20,7 +20,7 @@ describe('A forgot password controller', function () {
   it('should reject unauthenticated requests to /password/forgot', function (done) {
     request.get(forgotURL, function(err, res) {
       expect(err).to.be.null;
-      expect(res.statusCode).to.equal(403);
+      expect(res.statusCode).to.equal(406);
       done();
     });
   });
@@ -28,7 +28,7 @@ describe('A forgot password controller', function () {
   it('should reject unauthenticated requests to /password/reset', function (done) {
     request.get(resetURL, function(err, res) {
       expect(err).to.be.null;
-      expect(res.statusCode).to.equal(403);
+      expect(res.statusCode).to.equal(406);
       done();
     });
   });
@@ -61,12 +61,21 @@ describe('A forgot password controller', function () {
       });
     });
 
-    it('should render /password/forgot', function (done) {       var user =
-new User(userData);       user.loadPasswordKey(function(err, result) {
-var validEndpoint = config.getEndpoint('/password/forgot', {
-username: user.username,           key: user.passwordKey         });
-request.get(validEndpoint, function(err, response, body) {
-expect(err).to.not.be.ok;           expect(response.statusCode).to.equal(200);
-expect(body).to.contain(userData.username);
-expect(body).to.contain(userData.passwordKey);           done();         });
-});     });   }); });
+    it('should render /password/forgot', function (done) {       
+      var user = new User(userData);
+      user.loadPasswordKey(function(err, result) {
+        var validEndpoint = config.getEndpoint('/password/forgot', {
+          username: user.username,
+          key: user.passwordKey         
+        });
+        request.get(validEndpoint, function(err, response, body) {
+          expect(err).to.not.be.ok;
+          expect(response.statusCode).to.equal(200);
+          expect(body).to.contain(user.username);
+          expect(body).to.contain(user.passwordKey);
+          done();
+        });
+      });
+    });   
+  }); 
+});

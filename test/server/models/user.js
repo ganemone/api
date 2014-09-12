@@ -116,6 +116,18 @@ describe('A user model', function () {
       });
     });
 
+    it('should load a password key correctly', function (done) {
+      var user = new User({
+        email: userData.email
+      });
+      user.loadPasswordKey(function(err, result) {
+        expect(err).to.not.be.ok;
+        expect(result['password_key']).to.be.ok;
+        expect(user.passwordKey).to.be.ok;
+        done();
+      });
+    });
+
     it('should invalidate a password key correctly', function (done) {
       var user = new User({ username: 'anotherUser', passwordKey: 'invalid' });
       user.hasValidPasswordKey(function(err, result) {
