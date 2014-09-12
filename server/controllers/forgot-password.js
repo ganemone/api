@@ -78,8 +78,6 @@ function asyncResultHandler(res, next, index) {
 // Genereates and saves a password key for a given user object.
 function setUpUserWithPasswordKey(user) {
   return function(cb) {  
-    console.log('Setting up User with password');
-    console.log('cb', cb);
     user.passwordKey = uuid.v4();
     user.insertPasswordKey(cb);
   };
