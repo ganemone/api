@@ -109,7 +109,7 @@ describe('A user model', function () {
 
     it('should validate a password key correctly', function (done) {
       var user = new User(userData);
-      user.hasValidResetPasswordKey(function(err, result) {
+      user.hasValidPasswordKey(function(err, result) {
         expect(err).to.not.be.ok;
         expect(result).to.equal(true);
         done();
@@ -118,7 +118,7 @@ describe('A user model', function () {
 
     it('should invalidate a password key correctly', function (done) {
       var user = new User({ username: 'anotherUser', passwordKey: 'invalid' });
-      user.hasValidResetPasswordKey(function(err, result) {
+      user.hasValidPasswordKey(function(err, result) {
         expect(err).to.not.be.ok;
         expect(result).to.equal(false);
         done();

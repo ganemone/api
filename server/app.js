@@ -1,6 +1,7 @@
 // External Modules
 var express = require('express');
 var jade = require('jade');
+var url = require('url');
 // Internal Modules
 var setRoutes = require('./routes');
 var setMiddlewares = require('./middlewares');
@@ -27,29 +28,38 @@ function Server(config) {
   this.app.set('views', './server/views');
 
   // Set up error handler
-  app.use(errorHandler(this.config));
+  app.use(errorHandler);
 }
 
 // Shared error handler.
 // TODO - log unexpected errors to Kafka
-function errorHandler(config) {
-  var env = process.env.NODE_ENV || 'development';
-  return function errorHandlerFunc(err, req, res, next) {
-    if(err) {
-      if(err.statusCode) {
-        if (err.statusCode >= 500) {
-          console.error('Internal Server Error: ', { error: err, req: req });
-        }
-        res.status(err.statusCode);
-        return res.end(err.message);
-      } else {
-        // Throw unexpected errors
-        if(env === 'development' || env === 'local') {
-          throw err;
-        }
+function errorHandler(err, req, res, next) {
+var env = process.env.NODE_ENV || 'development';
+  if(err) {
+    if(err.statusCode) {
+      // Log 500 errors
+      if (err.statusCode >= 500) {
+        console.error('Internal Server Error: ', { error: err, req: req });
+      }
+      // Redirect if err contains redirect path
+      if (err.redirect) {
+        req.query.message = err.message; 
+        var redirectURL = url.format({
+          pathname: err.redirect,
+          query: req.query
+        });
+        return res.redirect(redirectURL);
+      }
+      // Handle all other errors
+      res.status(err.statusCode);
+      return res.end(err.message);
+    } else {
+      // Throw unexpected errors
+      if(env === 'development' || env === 'local') {
+        throw err;
       }
     }
-  };
+  }
 }
 
 // Sets up the server to listen on the port

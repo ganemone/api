@@ -5,6 +5,7 @@ var url = require('url');
 
 // Internal Modules
 var db = require('../util/db');
+var config = require('../../config/index.js');
 var HttpError = require('../util/http-error.js');
 var Mailer = require('./mailer.js');
 
@@ -73,15 +74,11 @@ User.prototype.insertInfo = function(cb) {
 };
 
 User.prototype.loadFromEmail = function(cb) {
-  console.log('Loading from email');
   assert.ok(this.email, 'Expected email to be set');
   var query = 'SELECT username FROM username_phone_email WHERE email = ?';
   var data = [this.email];
   var self = this;
   db.queryWithData(query, data, function(err, rows, fields) {
-    console.log('err', err);
-    console.log('rows', rows);
-    console.log('fields', fields);
     if (err) {
       console.log('Returning Error');
       return cb(err);
@@ -91,7 +88,6 @@ User.prototype.loadFromEmail = function(cb) {
       return cb(new HttpError('User not found', 406));
     }
     self.username = rows[0].username;
-    console.log('Calling Back');
     cb(null, self.username);
   });
 };
@@ -204,7 +200,7 @@ User.prototype.loadPasswordKey = function(cb) {
   });
 };
 
-User.prototype.hasValidResetPasswordKey = function(cb) {
+User.prototype.hasValidPasswordKey = function(cb) {
   assert.ok(this.username, 'Expected username to be set');
   assert.ok(this.passwordKey, 'Expected password key to be set');
   var query = 'SELECT * FROM ?? WHERE created_at > (NOW() - INTERVAL 1 DAY) && ?? = ? AND ?? = ?';
@@ -269,8 +265,52 @@ User.prototype.sendPasswordKeyEmail = function(cb) {
 };
 
 User.prototype.getPasswordResetLink = function() {
+  assert.ok(this.username, 'Expected username to be set');
   assert.ok(this.passwordKey, 'Expected password key to be set');
-  return 'https://versapp.co/password/forgot?key=' + this.passwordKey;
+  return url.format({
+    protocol: 'https:',
+    host: 'versapp.co',
+    pathname: '/password/forgot',
+    query: {
+      key: this.passwordKey,
+      username: this.username
+    }
+  });
+};
+
+User.prototype.loadFriends = function(cb) {
+  assert.ok(this.username, 'Expected username to be set');
+  var query = "SELECT username FROM rosterusers WHERE jid = ?";
+  var data = [this.username + '@' + config.ip];
+  var self = this;
+  db.queryWithData(query, data, function(err, rows, fields) {
+    if (err) {
+      return cb(err);
+    }
+    self.friends = rows;
+    cb(null, rows);
+  }); 
+};
+
+User.prototype.loadSecondDegreeFriends = function(cb) {
+  assert.ok(this.username, 'Expected username to be set');
+  assert.ok(this.friends, 'Expected friends to be set');
+    
+  var query = 'SELECT DISTINCT username, \'2\' AS connection' + 
+  'FROM rosteruser' +
+  'WHERE jid IN (?)' +
+    'AND username NOT IN (?)' +
+    'AND username != ?';
+
+  var data = [this.friends, this.friends, this.username];
+  var self = this;
+  db.queryWithData(query, data, function(err, rows, fields) {
+    if (err) {
+      return cb(err);
+    }
+    self.secondDegreeFriends = rows;
+    cb(null, rows);
+  });
 };
 
 module.exports = User;
