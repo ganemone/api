@@ -1,12 +1,18 @@
+// External Modules
 var async = require('async');
 var assert = require('assert');
+var url = require('url');
+
+// Internal Modules
 var db = require('../util/db');
+var HttpError = require('../util/http-error.js');
+var Mailer = require('./mailer.js');
 
 var tablePasswordReset = {
   table: 'password_reset',
   columns: {
     username: 'username',
-    key: 'key'
+    passwordKey: 'password_key' // jshint: ignore line
   }
 };
 
@@ -27,7 +33,7 @@ var tableSession = {
   }
 };
 
-var tableUsernamePhoneEmail = {
+/*var tableUsernamePhoneEmail = {
   table: 'username_phone_email',
   columns: {
     username: 'username',
@@ -35,7 +41,7 @@ var tableUsernamePhoneEmail = {
     phone: 'phone',
     email: 'email'
   }
-}
+};*/
 
 function User(data) {
   data = data || {};
@@ -63,21 +69,31 @@ User.prototype.insertInfo = function(cb) {
   assert.ok(this.email, 'Expected email to be set');
   var query = 'INSERT INTO username_phone_email (username, email) VALUES (?)';
   var data = [[this.username, this.email]];
-  db.queryWithData(query, data);
+  db.queryWithData(query, data, cb);
 };
 
 User.prototype.loadFromEmail = function(cb) {
+  console.log('Loading from email');
   assert.ok(this.email, 'Expected email to be set');
   var query = 'SELECT username FROM username_phone_email WHERE email = ?';
   var data = [this.email];
-  db.queryWithData(query, function(err, rows, fields) {
+  var self = this;
+  db.queryWithData(query, data, function(err, rows, fields) {
+    console.log('err', err);
+    console.log('rows', rows);
+    console.log('fields', fields);
     if (err) {
+      console.log('Returning Error');
       return cb(err);
     }
     if (rows.length === 0) {
+      console.log('Returning HTTP Error');
       return cb(new HttpError('User not found', 406));
-    };
-  })
+    }
+    self.username = rows[0].username;
+    console.log('Calling Back');
+    cb(null, self.username);
+  });
 };
 
 User.prototype.insertSession = function(cb) {
@@ -93,15 +109,19 @@ User.prototype.insertSession = function(cb) {
 };
 
 User.prototype.insertPasswordKey = function(cb) {
+  console.log('Inserting Password Key');
   assert.ok(this.username, 'Expected username to be set');
   assert.ok(this.passwordKey, 'Expected password key to be set');
   var query = 'INSERT INTO ?? (??) VALUES (?)';
   var data = [
     tablePasswordReset.table,
-    [tablePasswordReset.columns.username, tablePasswordReset.columns.key],
+    [tablePasswordReset.columns.username, tablePasswordReset.columns.passwordKey],
     [this.username, this.passwordKey]
   ];
-  db.queryWithData(query, data, cb);
+  db.queryWithData(query, data, function(err, rows, fields) {
+    console.log('Calling back');
+    cb(err, rows);
+  });
 };
 
 User.prototype.update = function(cb) {
@@ -166,15 +186,10 @@ User.prototype.deletePasswordKey = function(cb) {
   db.queryWithData(query, data, cb);
 };
 
-User.prototype.loadPasswordKey = function() {
+User.prototype.loadPasswordKey = function(cb) {
   assert.ok(this.email, 'Expected email to be set');
-  var query = '
-  SELECT key FROM password_reset 
-  WHERE username = (
-    SELECT username 
-    FROM username_phone_email 
-    WHERE email = ?
-  )';
+  var query = 'SELECT key FROM password_reset WHERE username = ' +
+  '(SELECT username  FROM username_phone_email  WHERE email = ?)';
   var data = [
     this.email
   ];
@@ -192,12 +207,12 @@ User.prototype.loadPasswordKey = function() {
 User.prototype.hasValidResetPasswordKey = function(cb) {
   assert.ok(this.username, 'Expected username to be set');
   assert.ok(this.passwordKey, 'Expected password key to be set');
-  var query = 'SELECT * FROM ?? WHERE timestamp > (NOW() - INTERVAL 1 DAY) && ?? = ? AND ?? = ?';
+  var query = 'SELECT * FROM ?? WHERE created_at > (NOW() - INTERVAL 1 DAY) && ?? = ? AND ?? = ?';
   var data = [
     tablePasswordReset.table,
     tablePasswordReset.columns.username,
     this.username,
-    tablePasswordReset.columns.key,
+    tablePasswordReset.columns.passwordKey,
     this.passwordKey
   ];
 
@@ -240,7 +255,22 @@ User.prototype._cleanUpAll = function(callback) {
       var query = 'DELETE FROM users';
       db.directQuery(query, cb);
     },
+    function(cb) {
+      var query = 'DELETE FROM username_phone_email';
+      db.directQuery(query, cb);
+    }
   ], callback);
+};
+
+User.prototype.sendPasswordKeyEmail = function(cb) {
+  console.log('Sending password key email');
+  var mailer = new Mailer();
+  mailer.sendPasswordKeyEmail(this, cb);
+};
+
+User.prototype.getPasswordResetLink = function() {
+  assert.ok(this.passwordKey, 'Expected password key to be set');
+  return 'https://versapp.co/password/forgot?key=' + this.passwordKey;
 };
 
 module.exports = User;

@@ -45,13 +45,15 @@ describe('A forgot password controller', function () {
     var userData = {
       username: 'username',
       password: 'password',
-      sessionID: 'session'
+      sessionID: 'session',
+      email: 'ganemone@gmail.com'
     };
 
     setUpUser(userData);
 
     it('should return an empty body /password/forgot/trigger/email', function (done) {
-      request.get(triggerURL + '/username', function(err, response, body) {
+      this.timeout(100000);
+      request.get(triggerURL + '/ganemone@gmail.com', function(err, response, body) {
         expect(err).to.not.be.ok;
         expect(response.statusCode).to.equal(200);
         expect(body).to.equal('');

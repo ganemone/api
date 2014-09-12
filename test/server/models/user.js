@@ -7,6 +7,7 @@ describe('A user model', function () {
 
   var userData = {
     username: 'username',
+    email: 'ganemone@gmail.com',
     password: 'password',
     sessionID: 'sessionID',
     passwordKey: 'passwordKey'
@@ -41,6 +42,15 @@ describe('A user model', function () {
         done();
       });
     });
+    it('should insert email info correctly', function (done) {
+      user.insertInfo(function(err, result) {
+        expect(err).to.not.be.ok;
+        expect(result).to.be.ok;
+        expect(result.affectedRows).to.equal(1);
+        expect(result.fieldCount).to.equal(0);
+        done();
+      });
+    });
     it('should delete users data correctly', function (done) {
       user.delete(function(err, result) {
         expect(err).to.not.be.ok;
@@ -65,6 +75,20 @@ describe('A user model', function () {
         expect(result).to.be.ok;
         expect(result.affectedRows).to.equal(1);
         expect(result.fieldCount).to.equal(0);
+        done();
+      });
+    });
+  });
+  
+  describe('when loading by email', function () {
+    setUpUser(userData);
+
+    it('should load the username correctly', function (done) {
+      var user = new User({ email: 'ganemone@gmail.com'})
+      user.loadFromEmail(function(err, result) {
+        expect(err).to.not.be.ok;
+        expect(result).to.be.ok;
+        expect(result).to.equal('username');
         done();
       });
     });

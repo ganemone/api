@@ -7,19 +7,20 @@ module.exports = function(data) {
 
   before(function (done) {
     async.parallel([
-      function(cb) {
-        user.insert(cb);
-      },
-      function(cb) {
-        user.insertSession(cb);
-      },
+      user.insert.bind(user),
+      user.insertSession.bind(user),
       function(cb) {
         if (user.passwordKey) {
-          user.insertPasswordKey(cb);
-        } else {
-          cb(null, true);
+          return user.insertPasswordKey(cb);
         }
+        cb(null, true);
       },
+      function(cb) {
+        if (user.email) {
+          return user.insertInfo(cb);
+        }
+        cb(null, true);
+      }
     ],
     function(err, results) {
       done();
