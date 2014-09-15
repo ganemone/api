@@ -2,12 +2,14 @@
 var async = require('async');
 var assert = require('assert');
 var url = require('url');
+var _ = require('underscore');
 
 // Internal Modules
-var db = require('../util/db');
 var config = require('../../config/index.js');
+var db = require('../util/db');
 var HttpError = require('../util/http-error.js');
 var Mailer = require('./mailer.js');
+var usernameToJID = require('../util/usernameToJID.js');
 
 var tablePasswordReset = {
   table: 'password_reset',
@@ -278,35 +280,44 @@ User.prototype.getPasswordResetLink = function() {
 User.prototype.loadFriends = function(cb) {
   assert.ok(this.username, 'Expected username to be set');
   var query = "SELECT username FROM rosterusers WHERE jid = ?";
-  var data = [this.username + '@' + config.ip];
+  var data = [usernameToJID(this.username)];
   var self = this;
   db.queryWithData(query, data, function(err, rows, fields) {
     if (err) {
       return cb(err);
     }
-    self.friends = rows;
-    cb(null, rows);
+    self.friends = _.pluck(rows, 'username');
+    cb(null, self.friends);
   }); 
 };
 
 User.prototype.loadSecondDegreeFriends = function(cb) {
   assert.ok(this.username, 'Expected username to be set');
   assert.ok(this.friends, 'Expected friends to be set');
-    
-  var query = 'SELECT DISTINCT username, \'2\' AS connection' + 
-  'FROM rosteruser' +
-  'WHERE jid IN (?)' +
-    'AND username NOT IN (?)' +
+  
+  if (this.friends.length === 0) {
+    this.secondDegreeFriends = [];
+    return cb(null, []);
+  }
+
+  var friendJIDS = _.map(this.friends, function(username) {
+    return usernameToJID(username);
+  });
+
+  var query = 'SELECT DISTINCT username, \'2\' AS connection ' + 
+  'FROM rosterusers ' +
+  'WHERE jid IN (?) ' +
+    'AND username NOT IN (?) ' +
     'AND username != ?';
 
-  var data = [this.friends, this.friends, this.username];
+  var data = [friendJIDS, this.friends, this.username];
   var self = this;
   db.queryWithData(query, data, function(err, rows, fields) {
     if (err) {
       return cb(err);
     }
-    self.secondDegreeFriends = rows;
-    cb(null, rows);
+    self.secondDegreeFriends = _.pluck(rows, 'username');
+    cb(null, self.secondDegreeFriends);
   });
 };
 
