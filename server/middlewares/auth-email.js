@@ -11,9 +11,12 @@ module.exports = function(req, res, next) {
 
 	user.loadFromEmail(function(err, result) {
 		if (err) {
-			return next(err)
+			return next(err);
 		}
-		res.locals.user = user;
-		return next();
+		if (result) {
+			res.locals.user = user;
+			return next();
+		}
+		res.end();
 	});
-}
+};
