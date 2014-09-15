@@ -1,28 +1,32 @@
-var db = require('../../server/util/db');
 var config = require('../../config/index.js');
+var db = require('../../server/util/db');
+var usernameToJID = require('../../server/util/usernameToJID.js');
 
 module.exports = function(username, friends) {
 
   before(function (done) {
     var query = "INSERT INTO rosterusers (username, jid) VALUES ";
     var data = [];
-    var jid = username + "@" + config.ip;
+    var jid = usernameToJID(username); 
     for(var i = 0; i < friends.length - 1; i++) {
       var friend = friends[i];
-      var friendJID = friend + "@" + config.ip;
+      var friendJID = usernameToJID(friend); 
       query += "(?, ?), (?, ?), ";
       data.push(username);
       data.push(friendJID);
-      data.push(jid);
+      
       data.push(friend);
+      data.push(jid);
     }
     var lastFriend = friends[friends.length - 1];
-    var lastFriendJID = lastFriend + '@' + config.ip;
+    var lastFriendJID = usernameToJID(lastFriend);
     query += "(?, ?), (?, ?)";
     data.push(username);
     data.push(lastFriendJID);
-    data.push(jid);
+
     data.push(lastFriend);
+    data.push(jid);
+
     db.queryWithData(query, data, function(err, rows, fields) {
       done();
     });
