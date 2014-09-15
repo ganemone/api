@@ -83,7 +83,7 @@ User.prototype.loadFromEmail = function(cb) {
       return cb(err);
     }
     if (rows.length === 0) {
-      return cb(new HttpError('User not found', 406));
+      return cb(null, null); 
     }
     self.username = rows[0].username;
     cb(null, self.username);
@@ -193,7 +193,7 @@ User.prototype.loadPasswordKey = function(cb) {
     if (rows.length === 0) {
       return cb(new HttpError('No Valid Key Found'), 406);
     }
-    self.passwordKey = rows[0]['password_key'];
+    self.passwordKey = rows[0]['password_key']; // jshint ignore:line
     cb(null, rows[0]);
   });
 };

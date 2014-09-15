@@ -38,7 +38,7 @@ describe('A forgot password controller', function () {
       expect(err).to.be.null;
       expect(res.statusCode).to.equal(404);
       done();
-    })
+    });
   });
 
   describe('when receiving valid requests', function () {

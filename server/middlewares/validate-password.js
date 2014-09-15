@@ -10,7 +10,7 @@ module.exports = function(req, res, next) {
     message = 'The confirm password field is required';
   } else if (password.length < 7) {
     message = 'Your password must be at least 7 characters long';
-  } else if (password != confirm) {
+  } else if (password !== confirm) {
     message = 'Passwords do not match';
   }
   if (message) {
@@ -18,4 +18,4 @@ module.exports = function(req, res, next) {
   }
   res.locals.user.password = password;
   return next();
-}
+};

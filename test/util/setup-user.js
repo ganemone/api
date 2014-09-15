@@ -1,5 +1,4 @@
 var async = require('async');
-var db = require('../../server/util/db');
 var User = require('../../server/models/user');
 
 module.exports = function(data) {

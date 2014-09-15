@@ -23,7 +23,7 @@ module.exports = function(username, friends) {
     data.push(lastFriendJID);
     data.push(jid);
     data.push(lastFriend);
-    db.executeQueryWithData(query, data, function(err, rows, fields) {
+    db.queryWithData(query, data, function(err, rows, fields) {
       done();
     });
   });

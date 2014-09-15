@@ -4,11 +4,15 @@ var pool  = mysql.createPool(config.db);
 
 exports.queryWithData = function(query, data, cb) {
   var sql = mysql.format(query, data);
-  pool.query(sql, cb);
+  pool.query(sql, function(err, rows, fields) {
+    cb(err, rows);
+  });
 };
 
 exports.directQuery = function(query, cb) {
-  pool.query(query, cb);
+  pool.query(query, function(err, rows, fields) {
+    cb(err, rows);
+  });
 };
 
 /*

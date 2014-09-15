@@ -1,4 +1,3 @@
-var nodemailer = require('nodemailer');
 var config = require('../../config/index.js');
 var transporter = config.transporter;
 

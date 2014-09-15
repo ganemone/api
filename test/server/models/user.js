@@ -1,5 +1,4 @@
 var expect = require('chai').expect;
-var db = require('../../../server/util/db');
 var setUpUser = require('../../util/setup-user.js');
 var User = require('../../../server/models/user');
 
@@ -84,7 +83,7 @@ describe('A user model', function () {
     setUpUser(userData);
 
     it('should load the username correctly', function (done) {
-      var user = new User({ email: 'ganemone@gmail.com'})
+      var user = new User({ email: 'ganemone@gmail.com'});
       user.loadFromEmail(function(err, result) {
         expect(err).to.not.be.ok;
         expect(result).to.be.ok;
@@ -122,7 +121,7 @@ describe('A user model', function () {
       });
       user.loadPasswordKey(function(err, result) {
         expect(err).to.not.be.ok;
-        expect(result['password_key']).to.be.ok;
+        expect(result['password_key']).to.be.ok; // jshint ignore:line
         expect(user.passwordKey).to.be.ok;
         done();
       });
