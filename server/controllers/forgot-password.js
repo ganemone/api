@@ -10,10 +10,6 @@ var HttpError = require('../util/http-error');
 //    - auth-password-key
 // Action: Renders a page with a form allowing the user to reset their password. 
 exports.index = function(req, res, next) {
-  var data = {
-    username: req.query.username,
-    key: req.query.key
-  };
   res.locals.username = req.query.username;
   res.locals.key = req.query.key;
   res.render('forgot-password');

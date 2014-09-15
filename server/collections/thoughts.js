@@ -1,5 +1,6 @@
 var async = require('async');
 var assert = require('assert');
+var _ = require('underscore');
 var format = require('mysql').format;
 var db = require('../util/db.js');
 
@@ -21,6 +22,9 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
     var secondDegreeFeed = results[1];
     var globalFeed = results[2];
     var all = globalFeed.concat(firstDegreeFeed, secondDegreeFeed);
+    
+    var shuffled = _.shuffle(all);
+
     cb(null, all);
   });
 };
@@ -112,7 +116,8 @@ ThoughtsCollection.prototype.getSelectQuery = function() {
       'ELSE \'NO\' ' + 
       'END ' + 
     'AS has_favorited, ' + 
-    'count(confession_favorites.jid) AS num_favorites ' + 
+    'count(confession_favorites.jid) AS num_favorites, ' + 
+    'count(confession_favorites.jid) * 20000 + UNIX_TIMESTAMP(confessions.created_timestamp) AS score ' + 
   'FROM confessions ' + 
   'LEFT JOIN confession_favorites ' +
   'ON confessions.confession_id = confession_favorites.confession_id', [this.username]); 
@@ -121,7 +126,7 @@ ThoughtsCollection.prototype.getSelectQuery = function() {
 ThoughtsCollection.prototype.getEndQuery = function() {
   return '' + 
   'GROUP BY confessions.confession_id ' + 
-  'ORDER BY confessions.created_timestamp DESC ' + 
+  'ORDER BY score DESC ' + 
   'LIMIT 30';
 };
 

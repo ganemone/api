@@ -33,7 +33,7 @@ describe('An auth email middleware', function () {
     var mockNext = function(err) {
       assert.ifError(err, 'An error occurred');
       assert.fail('Mock Next Called', 'Mock next not to be called');
-    }
+    };
     AuthEmail(mockReq, mockRes, mockNext);
   });
 
@@ -57,7 +57,7 @@ describe('An auth email middleware', function () {
         assert.ifError(err, ' Should execute without error');
         assert.ok(mockRes.locals.user, 'User should be set on locals');
         done();  
-      }
+      };
       AuthEmail(mockReq, mockRes, mockNext);
     });
   });
