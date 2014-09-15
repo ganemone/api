@@ -19,7 +19,7 @@ var config = {
       });
     }
   },
-  development: {
+  local: {
     db: {
       connectionLimit: 10,
       host: 'localhost',
@@ -37,9 +37,31 @@ var config = {
       }
     })
   },
+  development: {
+    db: {
+      connectionLimit: 10,
+      host: 'gcloudsql.dev.versapp.co',
+      user: 'root',
+      password: 'gtcgGTCG123',
+      database: 'ejabberd_dev'
+    },
+    ip: 'harmon.dev.versapp.co',
+    logRequests: true,
+    transporter: nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'support@versapp.co',
+        pass: 'kalamazoo2014'
+      }
+    })
+  },
   production: {
     db: {
-      // TODO: set up production db
+      connectionLimit: 10,
+      host: 'gcloudsql.dev.versapp.co',
+      user: 'root',
+      password: 'gtcgGTCG123',
+      database: 'ejabberd_dev'
     },
     ip: 'versapp.co',
     logRequests: false,
