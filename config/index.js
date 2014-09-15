@@ -5,21 +5,12 @@ var url = require('url');
 var config = {
   common: {
     url: {
-      port: 3000,
       protocol: 'http',
       hostname: 'localhost'
     },
-    getEndpoint: function(pathname, query) {
-      return url.format({
-        port: this.url.port,
-        protocol: this.url.protocol,
-        hostname: this.url.hostname,
-        pathname: pathname,
-        query: query
-      });
-    }
   },
   local: {
+    port: 3000,
     db: {
       connectionLimit: 10,
       host: 'localhost',
@@ -27,7 +18,7 @@ var config = {
       password: 'root',
       database: 'ejabberd_dev'
     },
-    ip: 'harmon.dev.versapp.co',
+   ip: 'harmon.dev.versapp.co',
    logRequests: true,
    transporter: nodemailer.createTransport({
       service: 'gmail',
@@ -38,6 +29,7 @@ var config = {
     })
   },
   development: {
+    port: 8052,
     db: {
       connectionLimit: 10,
       host: 'gcloudsql.dev.versapp.co',
@@ -56,6 +48,7 @@ var config = {
     })
   },
   production: {
+    port: 8052,
     db: {
       connectionLimit: 10,
       host: 'gcloudsql.dev.versapp.co',
@@ -74,6 +67,7 @@ var config = {
     })
   },
   test: {
+    port: 3000,
     db: {
       connectionLimit: 10,
       host: 'localhost',
@@ -94,4 +88,18 @@ var config = {
 var settings = new Settings(config);
 var env = process.env.NODE_ENV || 'development';
 
-module.exports = settings.getSettings({ env: env });
+var config = settings.getSettings({ env: env });
+
+config.url.port = config.port;
+
+config.getEndpoint = function(pathname, query) {
+  return url.format({
+    port: config.port,
+    protocol: config.url.protocol,
+    hostname: config.url.hostname,
+    pathname: pathname,
+    query: query
+  });
+};
+
+module.exports = config;

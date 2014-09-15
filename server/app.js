@@ -65,9 +65,8 @@ var env = process.env.NODE_ENV || 'development';
 // Sets up the server to listen on the port
 // given in the config.
 Server.prototype.listen = function() {
-  var urlConfig = this.config.url;
-  this._app = this.app.listen(urlConfig.port);
-  console.info('Server listening on port: ' + urlConfig.port);
+  this._app = this.app.listen(this.config.port);
+  console.info('Server listening on port: ' + this.config.port);
 };
 
 // Tears down the server
