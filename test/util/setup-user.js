@@ -7,7 +7,12 @@ module.exports = function(data) {
   before(function (done) {
     async.parallel([
       user.insert.bind(user),
-      user.insertSession.bind(user),
+      function(cb) {
+        if (user.sessionID) {
+          return user.insertSession(cb);
+        }
+        cb(null, true);
+      },
       function(cb) {
         if (user.passwordKey) {
           return user.insertPasswordKey(cb);
