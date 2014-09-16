@@ -7,6 +7,7 @@ module.exports = function(req, res, next) {
     user.loadFriends.bind(user),
     user.loadSecondDegreeFriends.bind(user)
   ], function(err, result) {
+    console.error(err);
     if (err) {
       return next(new HttpError('Internal Server Error - Failed to load user friends', 500));
     }
