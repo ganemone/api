@@ -41,11 +41,11 @@ module.exports = function setRoutes(app) {
     controllers.thoughts.index
   );
 
-  app.get(
-    '/mock/thoughts',
-    MockAuthUser,
-    LoadFriends,
-    controllers.thoughts.index
-  );
+  // app.get(
+  //   '/mock/thoughts',
+  //   MockAuthUser,
+  //   LoadFriends,
+  //   controllers.thoughts.index
+  // );
   
 };
