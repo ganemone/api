@@ -10,8 +10,14 @@ function ThoughtsCollection(user, since) {
 }
 
 ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
+  var self = this;
   async.parallel([
-    this.getFirstDegreeFeed.bind(this),
+    function(cb) {
+      if (self.user.friends.length > 2) {
+        return self.getFirstDegreeFeed(cb);
+      }
+      self.getMyFeed(cb);
+    },
     this.getSecondDegreeFeed.bind(this),
     this.getGlobalFeed.bind(this)
   ], function(err, results) {
@@ -29,43 +35,80 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
   });
 };
 
+ThoughtsCollection.prototype.getMyFeed = function(cb) {
+  assert.ok(this.user.username, 'Expected user.username to be set');
+  var query = this.getMyFeedQuery();
+  db.directQuery(query, cb);
+};
+
 ThoughtsCollection.prototype.getFirstDegreeFeed = function(cb) {
+  assert.ok(this.user, 'Expected user object to be set');
+  assert.ok(this.user.friends, 'Expected user.friends to be set');
+  
+  if (this.user.friends.length === 0) {
+    return this.getMyFeed(cb);
+  }
+
   var query = this.getFirstDegreeQuery();
   db.directQuery(query, cb);
 };
 
 ThoughtsCollection.prototype.getSecondDegreeFeed = function(cb) {
+  assert.ok(this.user, 'Expected user object to be set');
+  assert.ok(this.user.friends, 'Expected user.friends to be set');
+  assert.ok(this.user.secondDegreeFriends, 'Expected user.secondDegreeFriends to be set');
+
+  if (this.user.friends.length === 0) {
+    return cb(null, []);
+  }
+
+  if (this.user.secondDegreeFriends.length === 0) {
+    return cb(null, []);
+  }
+
   var query = this.getSecondDegreeQuery();
   db.directQuery(query, cb);
 };
 
 ThoughtsCollection.prototype.getGlobalFeed = function(cb) {
+  assert.ok(this.user, 'Expected user object to be set');
+  assert.ok(this.user.friends, 'Expected user.friends to be set');
+  assert.ok(this.user.secondDegreeFriends, 'Expected user.secondDegreeFriends to be set');
+
   var query = this.getGlobalQuery();
   db.directQuery(query, cb);
 };
 
+ThoughtsCollection.prototype.getMyFeedQuery = function() {
+  var query = this.getSelectQuery() + 
+  ' WHERE ' +
+    'confessions.jid = ?' + 
+    this.sinceStr + 
+  this.getEndQuery();
+
+  var data = [this.user.username];
+
+  return format(query, data);
+};
+
 ThoughtsCollection.prototype.getFirstDegreeQuery = function() {
-  assert.ok(this.user, 'Expected user object to be set');
-  assert.ok(this.user.friends, 'Expected user.friends to be set');
   var query = this.getSelectQuery() + 
   ' WHERE ' + 
+    'confessions.jid = ? OR (' + 
     'confessions.jid IN (?)' + 
     this.sinceStr +
-    'OR confessions.jid = ?' + 
+    ') ' + 
   this.getEndQuery();
 
   var data = [
-    this.user.friends,
-    this.user.username
+    this.user.username,
+    this.user.friends
   ];
 
   return format(query, data);
 };
 
 ThoughtsCollection.prototype.getSecondDegreeQuery = function() {
-  assert.ok(this.user, 'Expected user object to be set');
-  assert.ok(this.user.friends, 'Expected user.friends to be set');
-  assert.ok(this.user.secondDegreeFriends, 'Expected user.secondDegreeFriends to be set');
   var query = this.getSelectQuery() + 
   ' WHERE ' + 
     'confessions.jid IN (?) AND ' +  
@@ -85,28 +128,27 @@ ThoughtsCollection.prototype.getSecondDegreeQuery = function() {
 };
 
 ThoughtsCollection.prototype.getGlobalQuery = function() {
-  assert.ok(this.user, 'Expected user object to be set');
-  assert.ok(this.user.friends, 'Expected user.friends to be set');
-  assert.ok(this.user.secondDegreeFriends, 'Expected user.secondDegreeFriends to be set');
-  var query = this.getSelectQuery() + 
-  ' WHERE ' + 
-    'confessions.jid NOT IN (?) AND ' + 
-    'confessions.jid NOT IN (?) AND ' + 
-    'confessions.jid != ? ' +
-    this.sinceStr + 
-  ' ' + 
-  this.getEndQuery();
+  var query = this.getSelectQuery() + ' WHERE ';
+  var data = [];
+  if (this.user.friends.length > 0) {
+    query = query + 'confessions.jid NOT IN (?) AND ';
+    data.push(this.user.friends);
+    if (this.user.secondDegreeFriends.length > 0) {
+      query = query + 'confessions.jid NOT IN (?) AND ';
+      data.push(this.user.secondDegreeFriends);
+    }
+  }
+  query = query + 'confessions.jid != ? ';
+  query = query + this.sinceStr + ' ';
+  query = query + this.getEndQuery();
 
-  var data = [
-    this.user.friends,
-    this.user.secondDegreeFriends,
-    this.user.username
-  ];
+  data.push(this.user.username);
 
   return format(query, data);
 };
 
 ThoughtsCollection.prototype.getSelectQuery = function() {
+  assert.ok(this.user.username, 'Expected username to be set');
   return format('' +
     'SELECT confessions.*, ' + 
     '\'1\' AS connection, ' + 
@@ -120,7 +162,7 @@ ThoughtsCollection.prototype.getSelectQuery = function() {
     'count(confession_favorites.jid) * 20000 + UNIX_TIMESTAMP(confessions.created_timestamp) AS score ' + 
   'FROM confessions ' + 
   'LEFT JOIN confession_favorites ' +
-  'ON confessions.confession_id = confession_favorites.confession_id', [this.username]); 
+  'ON confessions.confession_id = confession_favorites.confession_id', [this.user.username]); 
 };
 
 ThoughtsCollection.prototype.getEndQuery = function() {

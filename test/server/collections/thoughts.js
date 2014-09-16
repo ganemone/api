@@ -8,12 +8,13 @@ describe('A thoughts collection', function () {
   var mockUser = {
     username: 'username',
     friends: [
-      'friend1',
-      'friend2'
+      'firstdegree1',
+      'firstdegree2',
+      'firstdegree3'
     ],
     secondDegreeFriends: [
-      'friend3',
-      'friend4'
+      'seconddegree1',
+      'seconddegree2'
     ]
   };
 
@@ -77,7 +78,7 @@ describe('A thoughts collection', function () {
 
   describe('when a user/friends have no posts', function () {
     
-    setUpThoughts('friend3');
+    setUpThoughts('seconddegree1');
     setUpThoughts('someguy');
 
     it('should not load second degree or global thoughts', function (done) {
@@ -92,30 +93,34 @@ describe('A thoughts collection', function () {
   describe('when a user/friends do have posts', function () {
 
     setUpThoughts('username');
-    setUpThoughts('friend1');
-    setUpThoughts('friend2');
+    setUpThoughts('firstdegree1');
+    setUpThoughts('firstdegree2');
+    setUpThoughts('seconddegree1');
+    setUpThoughts('someguy');
+    setUpThoughts('firstdegree3');
+
 
     it('should get correct data for friends feeds', function (done) {
-      thoughtsCollection.getFirstDegreeFeed(testFeed(3, done));
+      thoughtsCollection.getFirstDegreeFeed(testFeed(4, done));
     });
 
     it('should get the correct data for second degree friends feeds', function (done) {
-      thoughtsCollection.getSecondDegreeFeed(testFeed(0, done));
+      thoughtsCollection.getSecondDegreeFeed(testFeed(1, done));
     });
 
     it('should get the correct data for global feed', function (done) {
-      thoughtsCollection.getGlobalFeed(testFeed(0, done));
+      thoughtsCollection.getGlobalFeed(testFeed(1, done));
     });
 
     it('should load ALL thoughts correctly', function (done) {
-      thoughtsCollection.getThoughtsFeed(testFeed(3, done));
+      thoughtsCollection.getThoughtsFeed(testFeed(6, done));
     });
   });
 
   describe('when a users second degree friends have posts', function () {
 
-    setUpThoughts('friend3');
-    setUpThoughts('friend4');
+    setUpThoughts('seconddegree1');
+    setUpThoughts('seconddegree2');
     setUpThoughts('someguy');
 
     it('should load friends feed correctly', function (done) {
@@ -156,6 +161,33 @@ describe('A thoughts collection', function () {
       thoughtsCollection.getThoughtsFeed(testFeed(2, done));
     });
   });
+
+  describe('when a user has < 3 friends', function() {
+    var mockLonelyUser = {
+      username: 'username',
+      friends: [
+        'firstdegree1',
+        'firstdegree2'
+      ],
+      secondDegreeFriends: [
+        'seconddegree1',
+        'seconddegree2'
+      ]
+    };
+
+    var lonelyCollection = new ThoughtsCollection(mockLonelyUser); 
+    
+    setUpThoughts('username');
+    setUpThoughts('firstdegree1');
+    setUpThoughts('firstdegree2');
+    setUpThoughts('seconddegree1');
+    setUpThoughts('seconddegree2');
+    setUpThoughts('thisdude');
+
+    it('should load ALL thoughts correctly', function (done) {
+      lonelyCollection.getThoughtsFeed(testFeed(4, done));
+    });
+  });
 });
 
 
@@ -171,7 +203,7 @@ function testFeed(length, done) {
   return function(err, result) {
     assert.ifError(err, ' Should execute without error');
     assert.ok(result, "result should be ok");
-    assert.equal(result.length, length, 'should load ' + length + ' thoughts');
+    assert.equal(result.length, length);
     if (length > 0) {
         assert.ok(result[0].body, 'should have body attributes');
         assert.ok(result[0].jid, 'should have jid attributes');

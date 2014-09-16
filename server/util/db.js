@@ -4,13 +4,20 @@ var pool  = mysql.createPool(config.db);
 
 exports.queryWithData = function(query, data, cb) {
   var sql = mysql.format(query, data);
+  
   pool.query(sql, function(err, rows, fields) {
+    if (err) {
+      console.log('SQL:', sql);    
+    }
     cb(err, rows);
   });
 };
 
 exports.directQuery = function(query, cb) {
   pool.query(query, function(err, rows, fields) {
+    if (err) {
+      console.log('Query:', query);
+    }
     cb(err, rows);
   });
 };
