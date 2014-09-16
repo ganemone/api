@@ -151,7 +151,7 @@ ThoughtsCollection.prototype.getSelectQuery = function(degree) {
   assert.ok(this.user.username, 'Expected username to be set');
   return format('' +
     'SELECT confessions.*, ' + 
-    '\'1\' AS ' + degree + ', ' + 
+    '\''+ degree + '\' AS degree, ' + 
     'CASE ' + 
       'WHEN FIND_IN_SET(?, GROUP_CONCAT(confession_favorites.jid SEPARATOR \',\')) > 0 ' + 
       'THEN \'YES\' ' + 
