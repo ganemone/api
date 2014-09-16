@@ -36,24 +36,26 @@ function Server(config) {
 // TODO - log unexpected errors to Kafka
 function errorHandler(err, req, res, next) {
 var env = process.env.NODE_ENV || 'development';
-  logger.error(err);
-  if(err.statusCode) {
-    // Redirect if err contains redirect path
-    if (err.redirect) {
-      req.query.message = err.message; 
-      var redirectURL = url.format({
-        pathname: err.redirect,
-        query: req.query
-      });
-      return res.redirect(redirectURL);
-    }
-    // Handle all other errors
-    res.status(err.statusCode);
-    return res.end(err.message);
-  } else {
-    // Throw unexpected errors
-    if(env === 'development' || env === 'local') {
-      throw err;
+  if(err) {
+    logger.error(err);
+    if(err.statusCode) {
+      // Redirect if err contains redirect path
+      if (err.redirect) {
+        req.query.message = err.message; 
+        var redirectURL = url.format({
+          pathname: err.redirect,
+          query: req.query
+        });
+        return res.redirect(redirectURL);
+      }
+      // Handle all other errors
+      res.status(err.statusCode);
+      return res.end(err.message);
+    } else {
+      // Throw unexpected errors
+      if(env === 'development' || env === 'local') {
+        throw err;
+      }
     }
   }
 }
