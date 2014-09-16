@@ -1,7 +1,11 @@
 var controllers = require('../controllers');
 var AuthPasswordKey = require('../middlewares/auth-password-key.js');
 var AuthEmail = require('../middlewares/auth-email.js');
+var AuthUser = require('../middlewares/auth-user.js');
+var MockAuthUser = require('../middlewares/mock-auth-user.js');
 var ValidatePassword = require('../middlewares/validate-password.js');
+var LoadFriends = require('../middlewares/load-friends.js');
+
 
 module.exports = function setRoutes(app) {
   app.get('/health', controllers.health.index);
@@ -30,5 +34,18 @@ module.exports = function setRoutes(app) {
   );
 
   // Thoughts
+  app.post(
+    '/thoughts',
+    AuthUser,
+    LoadFriends,
+    controllers.thoughts.index
+  );
+
+  app.get(
+    '/mock/thoughts',
+    MockAuthUser,
+    LoadFriends,
+    controllers.thoughts.index
+  );
   
 };
