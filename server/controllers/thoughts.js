@@ -1,4 +1,4 @@
-var ThoughtsCollection = require('../../test/server/collections/thoughts.js');
+var ThoughtsCollection = require('../collections/thoughts.js');
 // Endpoint: /thoughts
 // Method: GET
 // Parameters:
