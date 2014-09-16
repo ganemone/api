@@ -1,5 +1,4 @@
 var async = require('async');
-var HttpError = require('../util/http-error.js');
 
 module.exports = function(req, res, next) {
   var user = res.locals.user;

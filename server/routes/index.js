@@ -2,7 +2,7 @@ var controllers = require('../controllers');
 var AuthPasswordKey = require('../middlewares/auth-password-key.js');
 var AuthEmail = require('../middlewares/auth-email.js');
 var AuthUser = require('../middlewares/auth-user.js');
-var MockAuthUser = require('../middlewares/mock-auth-user.js');
+//var MockAuthUser = require('../middlewares/mock-auth-user.js');
 var ValidatePassword = require('../middlewares/validate-password.js');
 var LoadFriends = require('../middlewares/load-friends.js');
 

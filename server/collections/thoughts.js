@@ -31,7 +31,7 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
     
     var shuffled = _.shuffle(all);
 
-    cb(null, all);
+    cb(null, shuffled);
   });
 };
 

@@ -5,7 +5,6 @@ var url = require('url');
 var _ = require('underscore');
 
 // Internal Modules
-var config = require('../../config/index.js');
 var db = require('../util/db');
 var HttpError = require('../util/http-error.js');
 var Mailer = require('./mailer.js');

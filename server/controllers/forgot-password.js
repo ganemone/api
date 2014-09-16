@@ -1,6 +1,5 @@
 var async = require('async');
 var uuid = require('node-uuid');
-var HttpError = require('../util/http-error');
 
 // Endpoint: /password/forgot
 // GET Parameters: 

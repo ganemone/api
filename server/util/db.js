@@ -1,7 +1,6 @@
 var mysql = require('mysql');
 var config = require('../../config');
 var pool  = mysql.createPool(config.db);
-var logger = require('./logger.js');
 var HttpError = require('./http-error.js');
 
 exports.queryWithData = function(query, data, cb) {
@@ -19,7 +18,7 @@ function getQueryCB(cb, sql) {
       return cb(new HttpError('Internal Server Error - Failed to execute query', 500, {error: err, sql: sql}));
     }
     cb(null, rows);
-  }
+  };
 }
 
 /*
