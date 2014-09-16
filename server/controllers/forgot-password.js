@@ -29,7 +29,7 @@ exports.reset = function(req, res, next) {
   var user = res.locals.user;
   user.update(function(err, result) {
     if (err) {
-      return next(new HttpError('Internal Server Error - Failed to update password', 500));
+      return next(err);
     }
     res.redirect('/password/forgot/confirmation');
   });

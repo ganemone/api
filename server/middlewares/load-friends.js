@@ -9,7 +9,7 @@ module.exports = function(req, res, next) {
   ], function(err, result) {
     console.error(err);
     if (err) {
-      return next(new HttpError('Internal Server Error - Failed to load user friends', 500));
+      return next(err);
     }
     return next();
   });

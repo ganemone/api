@@ -16,7 +16,7 @@ module.exports = function(req, res, next) {
 
   user.hasValidSessionID(function(err, result) {
     if (err) {
-      return next(new HttpError('Failed to authenticate user', 403));
+      return next(err);
     }
     res.locals.user = user;
     return next();

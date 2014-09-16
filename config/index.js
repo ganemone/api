@@ -1,3 +1,4 @@
+var winston = require('winston');
 var Settings = require('shallow-settings');
 var nodemailer = require('nodemailer');
 var url = require('url');
@@ -7,7 +8,7 @@ var config = {
     url: {
       protocol: 'http',
       hostname: 'localhost'
-    },
+    }
   },
   local: {
     port: 3000,
@@ -26,7 +27,7 @@ var config = {
         user: 'support@versapp.co',
         pass: 'kalamazoo2014'
       }
-    })
+    }),
   },
   development: {
     port: 8052,

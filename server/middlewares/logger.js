@@ -1,6 +1,7 @@
+var logger = require('../util/logger.js');
+
 module.exports = function(req, res, next) {
-  console.log('-------- RECIEVED REQUEST --------');
-  console.log('-------- req.path --------');
-  console.log(req.path);
+  logger.log('Received request at: ', req.path);
+  logger.log('Request method: ', req.method);
   return next();
 };

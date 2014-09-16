@@ -16,8 +16,7 @@ module.exports = function(req, res, next) {
 
   user.hasValidPasswordKey(function(err, result) {
   	if (err) {
-  		console.error(err);
-  		return next(new HttpError('Internal Server Error - Failed Database transaction', 500));
+  		return next(err);
   	}
   	if (!result) {
   		return next(new HttpError('Invalid username/password key combination', 406));

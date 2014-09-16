@@ -1,26 +1,26 @@
 var mysql = require('mysql');
 var config = require('../../config');
 var pool  = mysql.createPool(config.db);
+var logger = require('./logger.js');
+var HttpError = require('./http-error.js');
 
 exports.queryWithData = function(query, data, cb) {
   var sql = mysql.format(query, data);
-  
-  pool.query(sql, function(err, rows, fields) {
-    if (err) {
-      console.log('SQL:', sql);    
-    }
-    cb(err, rows);
-  });
+  pool.query(sql, getQueryCB(cb, sql));
 };
 
 exports.directQuery = function(query, cb) {
-  pool.query(query, function(err, rows, fields) {
-    if (err) {
-      console.log('Query:', query);
-    }
-    cb(err, rows);
-  });
+  pool.query(query, getQueryCB(cb, query));
 };
+
+function getQueryCB(cb, sql) {
+  return function(err, rows, fields) {
+    if (err) {
+      return cb(new HttpError('Internal Server Error - Failed to execute query', 500, {error: err, sql: sql}));
+    }
+    cb(null, rows);
+  }
+}
 
 /*
 
