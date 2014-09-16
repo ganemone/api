@@ -12,7 +12,6 @@ exports.index = function(req, res, next) {
   var thoughtsCollection = new ThoughtsCollection(user);
   thoughtsCollection.getThoughtsFeed(function(err, result) {
     if (err) {
-      console.error(err);
       return next(err);
     }
     res.json(result);

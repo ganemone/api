@@ -7,7 +7,6 @@ module.exports = function(req, res, next) {
     user.loadFriends.bind(user),
     user.loadSecondDegreeFriends.bind(user)
   ], function(err, result) {
-    console.error(err);
     if (err) {
       return next(err);
     }
