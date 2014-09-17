@@ -79,7 +79,7 @@ User.prototype.loadFromEmail = function(cb) {
   var query = 'SELECT username FROM username_phone_email WHERE email = ?';
   var data = [this.email];
   var self = this;
-  db.queryWithData(query, data, function(err, rows, fields) {
+  db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(err);
     }
@@ -112,7 +112,7 @@ User.prototype.insertPasswordKey = function(cb) {
     [tablePasswordReset.columns.username, tablePasswordReset.columns.passwordKey],
     [this.username, this.passwordKey]
   ];
-  db.queryWithData(query, data, function(err, rows, fields) {
+  db.queryWithData(query, data, function(err, rows) {
     cb(err, rows);
   });
 };
@@ -187,7 +187,7 @@ User.prototype.loadPasswordKey = function(cb) {
     this.email
   ];
   var self = this;
-  db.queryWithData(query, data, function(err, rows, fields) {
+  db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(err);
     }
@@ -211,7 +211,7 @@ User.prototype.hasValidPasswordKey = function(cb) {
     this.passwordKey
   ];
 
-  db.queryWithData(query, data, function(err, rows, fields) {
+  db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(err);
     }
@@ -228,7 +228,7 @@ User.prototype.hasValidSessionID = function(cb) {
     tableSession.columns.username,
     this.username
   ];
-  db.queryWithData(query, data, function(err, rows, fields) {
+  db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(err);
     }
@@ -281,7 +281,7 @@ User.prototype.loadFriends = function(cb) {
   var query = "SELECT username FROM rosterusers WHERE jid = ?";
   var data = [usernameToJID(this.username)];
   var self = this;
-  db.queryWithData(query, data, function(err, rows, fields) {
+  db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(err);
     }
@@ -311,7 +311,7 @@ User.prototype.loadSecondDegreeFriends = function(cb) {
 
   var data = [friendJIDS, this.friends, this.username];
   var self = this;
-  db.queryWithData(query, data, function(err, rows, fields) {
+  db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(err);
     }

@@ -1,3 +1,4 @@
+var bodyParser = require('body-parser');
 var controllers = require('../controllers');
 var AuthPasswordKey = require('../middlewares/auth-password-key.js');
 var AuthEmail = require('../middlewares/auth-email.js');
@@ -34,11 +35,18 @@ module.exports = function setRoutes(app) {
   );
 
   // Thoughts
-  app.post(
+  app.get(
     '/thoughts',
     AuthUser,
     LoadFriends,
     controllers.thoughts.index
+  );
+
+  app.post(
+   '/blacklist',
+   bodyParser.json(),
+   AuthUser,
+   controllers.blacklist.index
   );
 
   // app.get(

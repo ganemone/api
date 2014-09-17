@@ -4,7 +4,11 @@ var User = require('../../../server/models/user.js');
 var thoughts = require('../../../server/controllers/thoughts.js');
 
 function testThoughtsController(username, friends, secondDegreeFriends, expectedLength, done) {
-  var mockReq = {};
+  var mockReq = {
+    query: {
+      since: 0
+    }
+  };
   var mockNext = function(err) {
     assert.ifError(err);
   };
