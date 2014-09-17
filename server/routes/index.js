@@ -1,4 +1,4 @@
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 var controllers = require('../controllers');
 var AuthPasswordKey = require('../middlewares/auth-password-key.js');
 var AuthEmail = require('../middlewares/auth-email.js');
@@ -46,9 +46,22 @@ module.exports = function setRoutes(app) {
   app.post(
    '/blacklist',
    AuthUser,
-   bodyParser.json(),
+   //bodyParser.json(),
    ValidateBlacklist,
    controllers.blacklist.index
+  );
+
+  app.post(
+    '/chat/create'
+    AuthUser,
+    // bodyparser.json(),
+    controllers.chat.create
+  );
+
+  app.post(
+    '/chat/leave',
+    AuthUser,
+    controllers.chat.leave
   );
 
   // app.get(

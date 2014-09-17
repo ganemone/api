@@ -14,10 +14,7 @@ exports.directQuery = function(query, cb) {
 
 function getQueryCB(cb, sql) {
   return function(err, rows, fields) {
-    if (err) {
-      return cb(new HttpError('Internal Server Error - Failed to execute query', 500, {error: err, sql: sql}));
-    }
-    cb(null, rows);
+    cb(err, rows);
   };
 }
 
