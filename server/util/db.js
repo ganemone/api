@@ -14,6 +14,10 @@ exports.directQuery = function(query, cb) {
 
 function getQueryCB(cb, sql) {
   return function(err, rows, fields) {
+    if (err) {
+      console.error('SQL GENERATING ERROR: ', sql);
+      console.error(err);
+    }
     cb(err, rows);
   };
 }
