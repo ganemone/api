@@ -84,7 +84,7 @@ User.prototype.loadFromEmail = function(cb) {
       return cb(err);
     }
     if (rows.length === 0) {
-      return cb(null, null); 
+      return cb(null, null);
     }
     self.username = rows[0].username;
     cb(null, self.username);
@@ -287,13 +287,13 @@ User.prototype.loadFriends = function(cb) {
     }
     self.friends = _.pluck(rows, 'username');
     cb(null, self.friends);
-  }); 
+  });
 };
 
 User.prototype.loadSecondDegreeFriends = function(cb) {
   assert.ok(this.username, 'Expected username to be set');
   assert.ok(this.friends, 'Expected friends to be set');
-  
+
   if (this.friends.length === 0) {
     this.secondDegreeFriends = [];
     return cb(null, []);
@@ -303,7 +303,7 @@ User.prototype.loadSecondDegreeFriends = function(cb) {
     return usernameToJID(username);
   });
 
-  var query = 'SELECT DISTINCT username, \'2\' AS connection ' + 
+  var query = 'SELECT DISTINCT username, \'2\' AS connection ' +
   'FROM rosterusers ' +
   'WHERE jid IN (?) ' +
     'AND username NOT IN (?) ' +

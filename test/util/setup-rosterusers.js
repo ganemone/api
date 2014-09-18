@@ -1,4 +1,3 @@
-var config = require('../../config/index.js');
 var db = require('../../server/util/db');
 var usernameToJID = require('../../server/util/usernameToJID.js');
 
@@ -7,14 +6,14 @@ module.exports = function(username, friends) {
   before(function (done) {
     var query = "INSERT INTO rosterusers (username, jid) VALUES ";
     var data = [];
-    var jid = usernameToJID(username); 
+    var jid = usernameToJID(username);
     for(var i = 0; i < friends.length - 1; i++) {
       var friend = friends[i];
-      var friendJID = usernameToJID(friend); 
+      var friendJID = usernameToJID(friend);
       query += "(?, ?), (?, ?), ";
       data.push(username);
       data.push(friendJID);
-      
+
       data.push(friend);
       data.push(jid);
     }

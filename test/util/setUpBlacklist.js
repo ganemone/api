@@ -6,7 +6,7 @@ module.exports = function(username) {
     var data = [username];
     db.queryWithData(query, data, function(err, rows) {
       done();
-    });    
+    });
   });
 
   after(function (done) {
@@ -15,4 +15,4 @@ module.exports = function(username) {
       done();
     });
   });
-}
+};

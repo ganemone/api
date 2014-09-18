@@ -24,14 +24,14 @@ function testThoughtsController(username, friends, secondDegreeFriends, expected
     json: function(data) {
       assert.ok(data);
       assert.equal(data.length, expectedLength);
-      done()
+      done();
     }
-  }
+  };
   thoughts.index(mockReq, mockRes, mockNext);
 }
 
-describe('A thoughts controller', function () {  
-  
+describe('A thoughts controller', function () {
+
   describe('when no thoughts are posted', function () {
     it('should return [] for a user with friends', function (done) {
       testThoughtsController('g', ['friend1', 'friend2', 'friend3'], ['friend4', 'friend5'], 0, done);
@@ -43,7 +43,7 @@ describe('A thoughts controller', function () {
       testThoughtsController('g', [], [], 0, done);
     });
   });
-  
+
   describe('when thoughts are posted', function () {
     setUpThoughts('g');
     setUpThoughts('friend1');
@@ -60,6 +60,6 @@ describe('A thoughts controller', function () {
     });
     it('should work for a user with no friends', function (done) {
       testThoughtsController('g', [], [], 7, done);
-    }); 
+    });
   });
 });

@@ -1,7 +1,6 @@
 var mysql = require('mysql');
 var config = require('../../config');
 var pool  = mysql.createPool(config.db);
-var HttpError = require('./http-error.js');
 
 exports.queryWithData = function(query, data, cb) {
   var sql = mysql.format(query, data);

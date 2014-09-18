@@ -5,8 +5,8 @@ module.exports = function(table) {
     db.queryWithData('DELETE FROM ??', [table], function(err, rows) {
       if (err) {
         console.error('Failed to clean up table', err);
-      };
+      }
       done();
     });
   });
-}
+};

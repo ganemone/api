@@ -38,7 +38,7 @@ Blacklist.prototype.getFriends = function(cb) {
     }
     if (rows.length === 0) {
       return cb(null, []);
-    };
+    }
     cb(null, _.pluck(rows, 'username'));
   });
 };

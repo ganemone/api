@@ -14,7 +14,7 @@ module.exports = function(req, res, next) {
     return next(new HttpError('Invalid type parameter', 406));
   }
 
-  if (typeof req.body.participants !== 'array') {
+  if (!(req.body.participants instanceof Array)) {
     return next(new HttpError('Invalid participants parameter', 406));
   }
 
@@ -36,7 +36,7 @@ module.exports = function(req, res, next) {
         return next(err);
       }
       if (!exists) {
-        return next(new HttpError('Requested thought does not exist', 406))
+        return next(new HttpError('Requested thought does not exist', 406));
       }
       res.locals.thought = thought;
       return next();

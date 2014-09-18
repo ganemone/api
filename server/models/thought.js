@@ -1,4 +1,5 @@
 var db = require('../util/db.js');
+var HttpError = require('../util/http-error.js');
 
 function Thought(cid) {
   this.id = cid;
@@ -21,6 +22,6 @@ Thought.prototype.load = function(cb) {
     }
     cb(null, false);
   });
-}
+};
 
 module.exports = Thought;

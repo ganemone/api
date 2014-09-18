@@ -1,6 +1,8 @@
+var assert = require('assert');
 var expect = require('chai').expect;
 var setUpUser = require('../../util/setup-user.js');
 var User = require('../../../server/models/user');
+var cleanUpTable = require('../../util/cleanUpTable.js');
 
 describe('A user model', function () {
 
@@ -13,10 +15,13 @@ describe('A user model', function () {
   };
 
   describe('when inserting/deleting data', function () {
+    cleanUpTable('username_phone_email');
+    cleanUpTable('users');
+    cleanUpTable('rosterusers');
     var user = new User(userData);
     it('should insert into the users table correctly', function (done) {
       user.insert(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.be.ok;
         expect(result.affectedRows).to.equal(1);
         expect(result.fieldCount).to.equal(0);
@@ -25,7 +30,7 @@ describe('A user model', function () {
     });
     it('should insert session data correctly', function (done) {
       user.insertSession(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.be.ok;
         expect(result.affectedRows).to.equal(1);
         expect(result.fieldCount).to.equal(0);
@@ -34,7 +39,7 @@ describe('A user model', function () {
     });
     it('should insert password data correctly', function (done) {
       user.insertPasswordKey(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.be.ok;
         expect(result.affectedRows).to.equal(1);
         expect(result.fieldCount).to.equal(0);
@@ -43,7 +48,7 @@ describe('A user model', function () {
     });
     it('should insert email info correctly', function (done) {
       user.insertInfo(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.be.ok;
         expect(result.affectedRows).to.equal(1);
         expect(result.fieldCount).to.equal(0);
@@ -52,7 +57,7 @@ describe('A user model', function () {
     });
     it('should delete users data correctly', function (done) {
       user.delete(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.be.ok;
         expect(result.affectedRows).to.equal(1);
         expect(result.fieldCount).to.equal(0);
@@ -61,7 +66,7 @@ describe('A user model', function () {
     });
     it('should delete session data correctly', function (done) {
       user.deleteSession(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.be.ok;
         expect(result.affectedRows).to.equal(1);
         expect(result.fieldCount).to.equal(0);
@@ -70,7 +75,7 @@ describe('A user model', function () {
     });
     it('should delete password key data correctly', function (done) {
       user.deletePasswordKey(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.be.ok;
         expect(result.affectedRows).to.equal(1);
         expect(result.fieldCount).to.equal(0);
@@ -78,14 +83,14 @@ describe('A user model', function () {
       });
     });
   });
-  
+
   describe('when loading by email', function () {
     setUpUser(userData);
 
     it('should load the username correctly', function (done) {
       var user = new User({ email: 'ganemone@gmail.com'});
       user.loadFromEmail(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.be.ok;
         expect(result).to.equal('username');
         done();
@@ -109,7 +114,7 @@ describe('A user model', function () {
     it('should validate a password key correctly', function (done) {
       var user = new User(userData);
       user.hasValidPasswordKey(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.equal(true);
         done();
       });
@@ -120,7 +125,7 @@ describe('A user model', function () {
         email: userData.email
       });
       user.loadPasswordKey(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result['password_key']).to.be.ok; // jshint ignore:line
         expect(user.passwordKey).to.be.ok;
         done();
@@ -130,7 +135,7 @@ describe('A user model', function () {
     it('should invalidate a password key correctly', function (done) {
       var user = new User({ username: 'anotherUser', passwordKey: 'invalid' });
       user.hasValidPasswordKey(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.equal(false);
         done();
       });
@@ -139,7 +144,7 @@ describe('A user model', function () {
     it('should validate a session id correctly', function (done) {
       var user = new User(userData);
       user.hasValidSessionID(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.equal(true);
         done();
       });
@@ -148,7 +153,7 @@ describe('A user model', function () {
     it('should invalidate a session id correctly', function (done) {
       var user = new User({ username: 'anotherUser', sessionID: 'invalid' });
       user.hasValidSessionID(function(err, result) {
-        expect(err).to.not.be.ok;
+        assert.ifError(err);
         expect(result).to.equal(false);
         done();
       });

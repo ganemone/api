@@ -3,11 +3,11 @@ var setUpUser = require('../../util/setup-user.js');
 var AuthPasswordKey = require('../../../server/middlewares/auth-password-key.js');
 
 describe('An Auth Password Key middleware', function () {
-  
+
   setUpUser({
     username: 'username',
     password: 'password',
-    passwordKey: 'key' 
+    passwordKey: 'key'
   });
 
   it('should reject requests with no parameters', function (done) {
@@ -21,7 +21,7 @@ describe('An Auth Password Key middleware', function () {
       assert.ok(err, 'Should throw an error');
       assert.ifError(mockRes.locals.user, 'Should not set the user object on res.locals');
       done();
-    }
+    };
     AuthPasswordKey(mockReq, mockRes, mockNext);
   });
 
@@ -38,7 +38,7 @@ describe('An Auth Password Key middleware', function () {
       assert.ok(err, 'Should throw an error');
       assert.ifError(mockRes.locals.user, 'Should not set the user object on res.locals');
       done();
-    }
+    };
     AuthPasswordKey(mockReq, mockRes, mockNext);
   });
 
@@ -55,7 +55,7 @@ describe('An Auth Password Key middleware', function () {
       assert.ok(err, 'Should throw an error');
       assert.ifError(mockRes.locals.user, 'Should not set the user object on res.locals');
       done();
-    }
+    };
     AuthPasswordKey(mockReq, mockRes, mockNext);
   });
 
@@ -73,7 +73,7 @@ describe('An Auth Password Key middleware', function () {
       assert.ok(err, 'Should throw an error');
       assert.ifError(mockRes.locals.user, 'Should not set the user object on res.locals');
       done();
-    }
+    };
     AuthPasswordKey(mockReq, mockRes, mockNext);
   });
 
@@ -91,8 +91,8 @@ describe('An Auth Password Key middleware', function () {
       assert.ifError(err, 'Should execute without error');
       assert.ok(mockRes.locals.user, 'Should set the user object on res.locals');
       done();
-    }
+    };
     AuthPasswordKey(mockReq, mockRes, mockNext);
-  }); 
+  });
 });
 
