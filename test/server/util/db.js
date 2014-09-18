@@ -16,6 +16,7 @@ describe('A database util', function () {
     db.directQuery(query, function(err, rows) {
       assert.ifError(err);
       assert.ok(rows);
+      done();
     });
 	});
 });
