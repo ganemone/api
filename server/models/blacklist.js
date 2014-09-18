@@ -23,12 +23,12 @@ Blacklist.prototype.hasMadeRequest = function(cb) {
 };
 
 Blacklist.prototype.getFriends = function(cb) {
-  var query = '' + 
-  'SELECT username ' + 
-  'FROM username_phone_email ' + 
-  'WHERE ' +  
-    'CONCAT(ccode, phone) IN (?) ' + 
-    'OR phone IN (?) ' + 
+  var query = '' +
+  'SELECT username ' +
+  'FROM username_phone_email ' +
+  'WHERE ' +
+    'CONCAT(ccode, phone) IN (?) ' +
+    'OR phone IN (?) ' +
     'OR email IN (?)';
   var data = [this.phones, this.phones, this.emails];
   db.queryWithData(query, data, function(err, rows) {
@@ -37,7 +37,7 @@ Blacklist.prototype.getFriends = function(cb) {
       return cb(new HttpError('Failed to find friends'), 500, err);
     }
     if (rows.length === 0) {
-      return cb(null, []);  
+      return cb(null, []);
     };
     cb(null, _.pluck(rows, 'username'));
   });
@@ -49,7 +49,7 @@ Blacklist.prototype.addFriends = function(usernames, cb) {
     return cb(null, false);
   }
 
-  var query = 'INSERT INTO rosterusers (username, jid) VALUES (?)';
+  var query = 'INSERT INTO rosterusers (username, jid) VALUES ?';
   var data = [];
   var myUsername = this.user.username;
   var myJID = usernameToJID(myUsername);
@@ -58,13 +58,12 @@ Blacklist.prototype.addFriends = function(usernames, cb) {
     data.push([username, myJID]);
     data.push([myUsername, jid]);
   });
-
-  db.queryWithData(query, data, function(err, result) {
+  db.queryWithData(query, [data], function(err, result) {
     if (err) {
       return cb(new HttpError('Failed to add friends though blacklist', 500, err));
     }
     cb(null, true);
-  }); 
+  });
 };
 
 Blacklist.prototype.setHasMadeRequest = function(cb) {
@@ -88,7 +87,7 @@ Blacklist.prototype.makeRequest = function(cb) {
       }
       self.getFriends(cb);
     },
-    this.addFriends.bind(this),    
+    this.addFriends.bind(this),
   ], function(err, results) {
     cb(err, results);
     self.setHasMadeRequest(function(err) {
