@@ -24,17 +24,21 @@ Blacklist.prototype.hasMadeRequest = function(cb) {
 
 Blacklist.prototype.getFriends = function(cb) {
   var query = '' + 
-  'SELECT username' + 
-  'FROM username_phone_email' + 
-  'WHERE CONCAT(ccode, phone) IN ?' + 
-  '  OR phone IN ?' + 
-  '  OR email IN ?';
-
+  'SELECT username ' + 
+  'FROM username_phone_email ' + 
+  'WHERE ' +  
+    'CONCAT(ccode, phone) IN (?) ' + 
+    'OR phone IN (?) ' + 
+    'OR email IN (?)';
   var data = [this.phones, this.phones, this.emails];
   db.queryWithData(query, data, function(err, rows) {
     if (err) {
-      return cb(new HttpError('Failed to update roster users'), 500, err);
+      console.error(err);
+      return cb(new HttpError('Failed to find friends'), 500, err);
     }
+    if (rows.length === 0) {
+      return cb(null, []);  
+    };
     cb(null, _.pluck(rows, 'username'));
   });
 };
