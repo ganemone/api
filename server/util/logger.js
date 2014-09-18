@@ -8,4 +8,8 @@ if (env === 'production') {
   });
 }
 
+if (env === 'test') {
+  winston.remove(winston.transports.Console);
+}
+
 module.exports = winston;
