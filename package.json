@@ -9,8 +9,8 @@
     "production": "NODE_ENV='production' node index.js",
     "build": "grunt sass",
     "watch": "grunt sass && grunt watch",
-    "test": "NODE_ENV='test' mocha test/ --recursive -R spec",
-    "testd": "NODE_ENV='test' mocha debug test/ --recursive -R spec",
+    "test": "NODE_ENV='test' mocha test/ --recursive -R nyan",
+    "testd": "NODE_ENV='test' mocha debug test/ --recursive -R tap",
     "cover": "NODE_ENV=test istanbul cover --report cobertura --print detail _mocha -- -R spec test/ --recursive --timeout=20000",
     "view-cover": "istanbul report html && open ./coverage/index.html"
   },
@@ -33,7 +33,8 @@
     "jshint": "^2.5.5",
     "load-grunt-tasks": "^0.6.0",
     "mocha": "^1.21.4",
-    "nodemon": "^1.2.1"
+    "nodemon": "^1.2.1",
+    "nodeunit": "^0.9.0"
   },
   "dependencies": {
     "async": "^0.9.0",
