@@ -11,7 +11,7 @@ function testAddFriends(usernames, result, done) {
   var mockUser = {
     username: 'username'
   };
-  var blm = new Blacklist(mockUser);
+  var blm = Blacklist(mockUser);
   blm.addFriends(usernames, function(err, result) {
     assert.ifError(err);
     assert.equal(result, result);
@@ -27,7 +27,7 @@ function testMakeRequest(phones, emails, expectedLength, done) {
   var mockUser = {
     username: 'username'
   };
-  var blm = new Blacklist(mockUser, phones, emails);
+  var blm = Blacklist(mockUser, phones, emails);
   async.waterfall([
     blm.makeRequest.bind(blm),
     function(result, cb) {
@@ -48,7 +48,7 @@ describe('blacklist model', function () {
   describe('hasMadeRequest', function () {
     describe('when false', function () {
       it('should return false', function (done) {
-        var blm = new Blacklist('username');
+        var blm = Blacklist('username');
         blm.hasMadeRequest(function(err, hasMadeRequest) {
           assert.ifError(err);
           assert.equal(hasMadeRequest, false);
@@ -62,7 +62,7 @@ describe('blacklist model', function () {
         var mockUser = {
           username: 'username'
         };
-        var blm = new Blacklist(mockUser);
+        var blm = Blacklist(mockUser);
         blm.hasMadeRequest(function(err, hasMadeRequest) {
           assert.ifError(err);
           assert.equal(hasMadeRequest, true);
@@ -83,7 +83,7 @@ describe('blacklist model', function () {
       var mockUser = {
         username: 'username'
       };
-      var blm = new Blacklist(mockUser);
+      var blm = Blacklist(mockUser);
       blm.setHasMadeRequest(function(err) {
         assert.ifError(err);
         blm.hasMadeRequest(function(err, result) {
@@ -102,7 +102,7 @@ describe('blacklist model', function () {
         var mockUser = {
           username: 'username'
         };
-        var blm = new Blacklist(mockUser, ['123', '456'], ['a@email.com', 'b@email.com']);
+        var blm = Blacklist(mockUser, ['123', '456'], ['a@email.com', 'b@email.com']);
         blm.getFriends(function(err, usernames) {
           assert.ifError(err);
           assert.equal(usernames instanceof Array, true);
@@ -122,7 +122,7 @@ describe('blacklist model', function () {
         var mockUser = {
           username: 'username'
         };
-        var blm = new Blacklist(mockUser, ['11', '12', '123123123'], ['a@email.com', 'b@email.com', 'c@email.com']);
+        var blm = Blacklist(mockUser, ['11', '12', '123123123'], ['a@email.com', 'b@email.com', 'c@email.com']);
         blm.getFriends(function(err, usernames) {
           assert.ifError(err);
           assert.equal(usernames instanceof Array, true);

@@ -61,12 +61,12 @@ describe('A forgot password controller', function () {
       });
     });
 
-    it('should render /password/forgot', function (done) {       
-      var user = new User(userData);
+    it('should render /password/forgot', function (done) {
+      var user = User(userData);
       user.loadPasswordKey(function(err, result) {
         var validEndpoint = config.getEndpoint('/password/forgot', {
           username: user.username,
-          key: user.passwordKey         
+          key: user.passwordKey
         });
         request.get(validEndpoint, function(err, response, body) {
           expect(err).to.not.be.ok;
@@ -76,6 +76,6 @@ describe('A forgot password controller', function () {
           done();
         });
       });
-    });   
-  }); 
+    });
+  });
 });

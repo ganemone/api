@@ -2,8 +2,7 @@ var async = require('async');
 var User = require('../../server/models/user');
 
 module.exports = function(data) {
-  var user = new User(data);
-
+  var user = User(data);
   before(function (done) {
     async.parallel([
       user.insert.bind(user),

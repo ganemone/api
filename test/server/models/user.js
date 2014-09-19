@@ -18,7 +18,7 @@ describe('A user model', function () {
     cleanUpTable('username_phone_email');
     cleanUpTable('users');
     cleanUpTable('rosterusers');
-    var user = new User(userData);
+    var user = User(userData);
     it('should insert into the users table correctly', function (done) {
       user.insert(function(err, result) {
         assert.ifError(err);
@@ -88,7 +88,7 @@ describe('A user model', function () {
     setUpUser(userData);
 
     it('should load the username correctly', function (done) {
-      var user = new User({ email: 'ganemone@gmail.com'});
+      var user = User({ email: 'ganemone@gmail.com'});
       user.loadFromEmail(function(err, result) {
         assert.ifError(err);
         expect(result).to.be.ok;
@@ -103,7 +103,7 @@ describe('A user model', function () {
     setUpUser(userData);
 
     it('should be constructed with a username, password, sessionID, and password key', function () {
-      var user = new User(userData);
+      var user = User(userData);
       expect(user).to.be.ok;
       expect(user.username).to.equal(userData.username);
       expect(user.password).to.equal(userData.password);
@@ -112,7 +112,7 @@ describe('A user model', function () {
     });
 
     it('should validate a password key correctly', function (done) {
-      var user = new User(userData);
+      var user = User(userData);
       user.hasValidPasswordKey(function(err, result) {
         assert.ifError(err);
         expect(result).to.equal(true);
@@ -121,7 +121,7 @@ describe('A user model', function () {
     });
 
     it('should load a password key correctly', function (done) {
-      var user = new User({
+      var user = User({
         email: userData.email
       });
       user.loadPasswordKey(function(err, result) {
@@ -133,7 +133,7 @@ describe('A user model', function () {
     });
 
     it('should invalidate a password key correctly', function (done) {
-      var user = new User({ username: 'anotherUser', passwordKey: 'invalid' });
+      var user = User({ username: 'anotherUser', passwordKey: 'invalid' });
       user.hasValidPasswordKey(function(err, result) {
         assert.ifError(err);
         expect(result).to.equal(false);
@@ -142,7 +142,7 @@ describe('A user model', function () {
     });
 
     it('should validate a session id correctly', function (done) {
-      var user = new User(userData);
+      var user = User(userData);
       user.hasValidSessionID(function(err, result) {
         assert.ifError(err);
         expect(result).to.equal(true);
@@ -151,7 +151,7 @@ describe('A user model', function () {
     });
 
     it('should invalidate a session id correctly', function (done) {
-      var user = new User({ username: 'anotherUser', sessionID: 'invalid' });
+      var user = User({ username: 'anotherUser', sessionID: 'invalid' });
       user.hasValidSessionID(function(err, result) {
         assert.ifError(err);
         expect(result).to.equal(false);

@@ -12,7 +12,7 @@ function testThoughtsController(username, friends, secondDegreeFriends, expected
   var mockNext = function(err) {
     assert.ifError(err);
   };
-  var user = new User({
+  var user = User({
     username: username
   });
   user.friends = friends;

@@ -7,7 +7,7 @@ var User = require('../../../server/models/user.js');
 
 var runBefore = function() {
   before(function () {
-    var user = new User({
+    var user = User({
       username: 'username',
       sessionID: 'sessionID'
     });
@@ -28,11 +28,11 @@ function testUserFriends(user, expectedFriends, expectedSecondDegreeFriends) {
 }
 
 describe('The load friends middleware', function () {
-  
+
   setUpUser({
     username: 'username',
     password: 'password',
-    sessionID: 'sessionID'    
+    sessionID: 'sessionID'
   });
 
   describe('when a user has no friends', function() {
@@ -44,7 +44,7 @@ describe('The load friends middleware', function () {
         assert.deepEqual(user.friends, []);
         assert.deepEqual(user.secondDegreeFriends, []);
         done();
-      };  
+      };
       LoadFriends({}, this.mockRes, mockNext);
     });
   });
@@ -58,7 +58,7 @@ describe('The load friends middleware', function () {
         assert.ifError(err);
         testUserFriends(user, ['friend1', 'friend2'], []);
         done();
-      };  
+      };
       LoadFriends({}, this.mockRes, mockNext);
     });
   });
@@ -75,7 +75,7 @@ describe('The load friends middleware', function () {
         assert.ifError(err);
         testUserFriends(user, ['friend1', 'friend2', 'friend3'], ['friend4', 'friend5', 'friend6', 'friend7']);
         done();
-      };  
+      };
       LoadFriends({}, this.mockRes, mockNext);
     });
   });
@@ -97,7 +97,7 @@ describe('The load friends middleware', function () {
         assert.ifError(err);
         testUserFriends(user, ['friend1', 'friend2', 'friend3'], ['friend4', 'friend5', 'friend6', 'friend7']);
         done();
-      };  
+      };
       LoadFriends({}, this.mockRes, mockNext);
     });
   });

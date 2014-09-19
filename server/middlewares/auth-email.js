@@ -5,7 +5,7 @@ module.exports = function(req, res, next) {
 	if (!req.params.email) {
 		return next(new HttpError(null, 'Missing email parameter', 406));
 	}
-	var user = new User({
+	var user = User({
 		email: req.params.email
 	});
 

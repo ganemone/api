@@ -13,23 +13,23 @@ module.exports = function setRoutes(app) {
 
   // Forgot Password
   app.get(
-    '/password/forgot',  
-    AuthPasswordKey, 
+    '/password/forgot',
+    AuthPasswordKey,
     controllers.forgotPassword.index
   );
 
   app.get(
-    '/password/reset', 
-    AuthPasswordKey, ValidatePassword, 
+    '/password/reset',
+    AuthPasswordKey, ValidatePassword,
     controllers.forgotPassword.reset
   );
   app.get(
-    '/password/forgot/trigger/:email', 
-    AuthEmail,   
+    '/password/forgot/trigger/:email',
+    AuthEmail,
     controllers.forgotPassword.trigger
   );
   app.get(
-    '/password/forgot/confirmation', 
+    '/password/forgot/confirmation',
     // No Custom Middleware
     controllers.forgotPassword.confirmation
   );

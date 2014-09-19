@@ -9,7 +9,7 @@ module.exports = function(req, res, next) {
     return next(new HttpError('Missing password key parameter', 406));
   }
 
-  var user = new User({
+  var user = User({
   	username: req.query.username,
   	passwordKey: req.query.key
   });

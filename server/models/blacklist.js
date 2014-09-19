@@ -98,4 +98,6 @@ Blacklist.prototype.makeRequest = function(cb) {
   });
 };
 
-module.exports = Blacklist;
+module.exports = function(user, phones, email) {
+  return new Blacklist(user, phones, email);
+};
