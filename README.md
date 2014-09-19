@@ -79,11 +79,13 @@ Parameters:
 * emails | required | array of emails
 
 ## TODO ##
-### /chat/create ###
-### /chat/leave ###
+
+* /chat/create
+* /chat/leave
 
 ## Maybe TODO ##
-### /chat/block ###
-### /chat/unblock ###
-### /hack/secret ###
-### /crash/whisper ###
+
+* /chat/block
+* /chat/unblock
+* /hack/secret
+* /crash/whisper
