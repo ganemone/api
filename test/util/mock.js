@@ -13,9 +13,9 @@ Mock.prototype.getFn = function() {
     self.args = arguments;
     if (arguments) {
       return self.fn.apply(this, arguments);
-    };
+    }
     return self.fn();
-  }
+  };
 };
 
 Mock.prototype.assertNotCalled = function() {
@@ -36,11 +36,11 @@ Mock.prototype.assertCalledOnceWith = function() {
 };
 
 Mock.prototype.assertArgMatches = function(index, matchFunction) {
-  this._assertArgMatchesFn(index, matchFunction, true)
+  this._assertArgMatchesFn(index, matchFunction, true);
 };
 
 Mock.prototype.assertArgNotMatches = function(index, matchFunction) {
-  this._assertArgMatchesFn(index, matchFunction, false)
+  this._assertArgMatchesFn(index, matchFunction, false);
 };
 
 Mock.prototype._assertArgMatchesFn = function(index, matchFunction, expectedResult) {

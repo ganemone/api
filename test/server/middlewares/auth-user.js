@@ -21,21 +21,21 @@ function testAuthUser(valid, done, error) {
       hasValidSessionID: function(cb) {
         cb(error, valid);
       }
-    }
+    };
   });
   AuthUser.__set__({
     'BasicAuth': function() {
       return {
         name: 'name',
         pass: 'pass'
-      }
+      };
     },
     'User': mockUser.getFn()
   });
 
   var mockRes = {
     locals: {}
-  }
+  };
 
   var mockNext = function(err) {
     if (error) {
@@ -53,6 +53,6 @@ function testAuthUser(valid, done, error) {
       sessionID: 'pass'
     });
     done();
-  }
+  };
   AuthUser({}, mockRes, mockNext);
 }

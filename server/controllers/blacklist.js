@@ -8,7 +8,6 @@ exports.index = function(req, res, next) {
   var emails = req.body.emails;
   var blist = Blacklist(user, phones, emails);
   blist.makeRequest(function(err, foundFriends) {
-    debugger;
     if (err) {
       return next(err);
     }

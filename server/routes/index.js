@@ -11,13 +11,14 @@ var LoadFriends = require('../middlewares/load-friends.js');
 module.exports = function setRoutes(app) {
   app.get('/health', controllers.health.index);
 
+  // ---------------
   // Forgot Password
+  // ---------------
   app.get(
     '/password/forgot',
     AuthPasswordKey,
     controllers.forgotPassword.index
   );
-
   app.get(
     '/password/forgot/reset',
     AuthPasswordKey, ValidatePassword,
@@ -33,16 +34,18 @@ module.exports = function setRoutes(app) {
     // No Custom Middleware
     controllers.forgotPassword.confirmation
   );
-
+  // --------
   // Thoughts
+  // --------
   app.get(
     '/thoughts',
     AuthUser,
     LoadFriends,
     controllers.thoughts.index
   );
-
+  // --------
   // Blacklist
+  // --------
   app.post(
    '/blacklist',
    AuthUser,
@@ -50,17 +53,18 @@ module.exports = function setRoutes(app) {
    ValidateBlacklist,
    controllers.blacklist.index
   );
-
-  // app.post(
-  //   '/chat/create',
-  //   AuthUser,
-  //   bodyparser.json(),
-  //   controllers.chat.create
-  // );
-
-  // app.post(
-  //   '/chat/leave',
-  //   AuthUser,
-  //   controllers.chat.leave
-  // );
+  // ------
+  // Chat
+  // ------
+  app.post(
+    '/chat/create',
+    AuthUser,
+    bodyParser.json(),
+    controllers.chat.create
+  );
+  app.post(
+    '/chat/leave',
+    AuthUser,
+    controllers.chat.leave
+  );
 };

@@ -2,7 +2,7 @@ var assert = require('assert');
 var ValidatePassword = require('../../../server/middlewares/validate-password.js');
 
 describe('Validate Password middleware', function () {
-  
+
   it('should reject requests without parameters', function (done) {
     var mockReq = {
       query: {}
@@ -16,7 +16,7 @@ describe('Validate Password middleware', function () {
       assert.ok(err, 'Return an error');
       assert.ifError(mockRes.locals.user.password, 'Should not set the users password');
       done();
-    }
+    };
     ValidatePassword(mockReq, mockRes, mockNext);
   });
 
@@ -35,7 +35,7 @@ describe('Validate Password middleware', function () {
       assert.ok(err, 'Return an error');
       assert.ifError(mockRes.locals.user.password, 'Should not set the users password');
       done();
-    }
+    };
     ValidatePassword(mockReq, mockRes, mockNext);
   });
 
@@ -54,7 +54,7 @@ describe('Validate Password middleware', function () {
       assert.ok(err, 'Return an error');
       assert.ifError(mockRes.locals.user.password, 'Should not set the users password');
       done();
-    }
+    };
     ValidatePassword(mockReq, mockRes, mockNext);
   });
 
@@ -74,7 +74,7 @@ describe('Validate Password middleware', function () {
       assert.ok(err, 'Return an error');
       assert.ifError(mockRes.locals.user.password, 'Should not set the users password');
       done();
-    }
+    };
     ValidatePassword(mockReq, mockRes, mockNext);
   });
 
@@ -94,7 +94,7 @@ describe('Validate Password middleware', function () {
       assert.ok(err, 'Return an error');
       assert.ifError(mockRes.locals.user.password, 'Should not set the users password');
       done();
-    }
+    };
     ValidatePassword(mockReq, mockRes, mockNext);
   });
 
@@ -114,7 +114,7 @@ describe('Validate Password middleware', function () {
       assert.ifError(err, 'Should execute without error');
       assert.equal(mockRes.locals.user.password, 'validpassword', 'Should set the users password');
       done();
-    }
+    };
     ValidatePassword(mockReq, mockRes, mockNext);
   });
 });

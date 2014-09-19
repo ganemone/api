@@ -1,5 +1,4 @@
 var assert = require('assert');
-var _ = require('underscore');
 var setUpUser = require('../../util/setup-user.js');
 var setUpRosterUsers = require('../../util/setup-rosterusers.js');
 var LoadFriends = require('../../../server/middlewares/load-friends.js');
