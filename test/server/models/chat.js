@@ -66,7 +66,46 @@ describe('Chat Model', function () {
     });
   });
   describe('insertParticipants', function () {
-
+    cleanUpTable('chat');
+    cleanUpTable('participants');
+    describe('when there is no corresponding chat', function () {
+      var chatData = {
+        id: 1,
+        type: 'group',
+        owner: 'owner',
+        name: 'name',
+        participants: ['friend1', 'friend2'],
+        degree: '1'
+      };
+      var chat = Chat(chatData);
+      it('should fail', function (done) {
+        chat.insertParticipants(function(err, result) {
+          assert.ok(err, 'Expected err to be ok');
+          assert.ifError(result, 'Should not execute query');
+          done();
+        });
+      });
+    });
+    describe('when there is a corresponding chat', function () {
+      var chatData = {
+        id: 1,
+        type: 'group',
+        owner: 'owner',
+        name: 'name',
+        participants: ['friend1', 'friend2'],
+        degree: '1'
+      };
+      var chat = Chat(chatData);
+      it('should work', function (done) {
+        chat.insert(function(err, result) {
+          chat.insertParticipants(function(err, result) {
+            assert.ifError(err, 'Should execute without error');
+            assert.equal(result.affectedRows, chatData.participants.length);
+            done();
+          });
+        });
+      });
+    });
   });
 });
 
