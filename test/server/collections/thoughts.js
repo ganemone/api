@@ -30,16 +30,16 @@ describe('A thoughts collection', function () {
 
     it('should generate a valid global query', function (done) {
       var query = thoughtsCollection.getSecondDegreeQuery();
-      testQuery(query, done); 
+      testQuery(query, done);
     });
 
     it('should generate a valid my thoughts query', function (done) {
-      var query = thoughtsCollection.getGlobalQuery(); 
+      var query = thoughtsCollection.getGlobalQuery();
       testQuery(query, done);
-    });   
+    });
   });
 
-  
+
   describe('with a since string', function () {
 
     it('should generate a valid friends query', function (done) {
@@ -49,13 +49,13 @@ describe('A thoughts collection', function () {
 
     it('should generate a valid global query', function (done) {
       var query = thoughtsCollectionSince.getSecondDegreeQuery();
-      testQuery(query, done); 
+      testQuery(query, done);
     });
 
     it('should generate a valid my thoughts query', function (done) {
-      var query = thoughtsCollectionSince.getGlobalQuery(); 
+      var query = thoughtsCollectionSince.getGlobalQuery();
       testQuery(query, done);
-    });   
+    });
   });
 
   describe('when there are no posts', function () {
@@ -77,7 +77,7 @@ describe('A thoughts collection', function () {
   });
 
   describe('when a user/friends have no posts', function () {
-    
+
     setUpThoughts('seconddegree1');
     setUpThoughts('someguy');
 
@@ -175,8 +175,8 @@ describe('A thoughts collection', function () {
       ]
     };
 
-    var lonelyCollection = new ThoughtsCollection(mockLonelyUser); 
-    
+    var lonelyCollection = new ThoughtsCollection(mockLonelyUser);
+
     setUpThoughts('username');
     setUpThoughts('firstdegree1');
     setUpThoughts('firstdegree2');
@@ -193,7 +193,7 @@ describe('A thoughts collection', function () {
 
 function testQuery(query, done) {
   db.directQuery(query, function(err, rows) {
-    assert.ifError(err, ' Should execute without error'); 
+    assert.ifError(err, ' Should execute without error');
     assert.ok(rows, 'Result should be ok');
     done();
   });
@@ -205,12 +205,11 @@ function testFeed(length, done) {
     assert.ok(result, "result should be ok");
     assert.equal(result.length, length);
     if (length > 0) {
-        assert.ok(result[0].body, 'should have body attributes');
-        assert.ok(result[0].jid, 'should have jid attributes');
-        assert.ok(result[0].created_timestamp, 'should have created timestamp property'); // jshint ignore: line
-        assert.equal(result[0].num_favorites, 0, 'should have num_favorites property'); // jshint ignore: line 
-        assert.ok(result[0].has_favorited, 'should have has favorited property'); // jshint ignore: line 
-        assert.ok(result[0].confession_id, 'should have confession_id property'); // jshint ignore: line
+      assert.ok(result[0].body, 'should have body attributes');
+      assert.ok(result[0].created_timestamp, 'should have created timestamp property'); // jshint ignore: line
+      assert.equal(result[0].num_favorites, 0, 'should have num_favorites property'); // jshint ignore: line
+      assert.ok(result[0].has_favorited, 'should have has favorited property'); // jshint ignore: line
+      assert.ok(result[0].id, 'should have confession_id property'); // jshint ignore: line
     }
     done();
   };

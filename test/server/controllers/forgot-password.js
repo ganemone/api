@@ -10,7 +10,7 @@ var setUpUser = require('../../util/setup-user');
 
 // Shared variables
 var forgotURL = config.getEndpoint('/password/forgot');
-var resetURL = config.getEndpoint('/password/reset');
+var resetURL = config.getEndpoint('/password/forgot/reset');
 var triggerURL = config.getEndpoint('/password/forgot/trigger');
 
 describe('A forgot password controller', function () {
@@ -25,7 +25,7 @@ describe('A forgot password controller', function () {
     });
   });
 
-  it('should reject unauthenticated requests to /password/reset', function (done) {
+  it('should reject unauthenticated requests to /password/forgot/reset', function (done) {
     request.get(resetURL, function(err, res) {
       expect(err).to.be.null;
       expect(res.statusCode).to.equal(406);

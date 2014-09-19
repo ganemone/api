@@ -19,7 +19,7 @@ module.exports = function setRoutes(app) {
   );
 
   app.get(
-    '/password/reset',
+    '/password/forgot/reset',
     AuthPasswordKey, ValidatePassword,
     controllers.forgotPassword.reset
   );
@@ -42,6 +42,7 @@ module.exports = function setRoutes(app) {
     controllers.thoughts.index
   );
 
+  // Blacklist
   app.post(
    '/blacklist',
    AuthUser,

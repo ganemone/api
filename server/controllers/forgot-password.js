@@ -2,12 +2,12 @@ var async = require('async');
 var uuid = require('node-uuid');
 
 // Endpoint: /password/forgot
-// GET Parameters: 
-//    - username | required 
+// GET Parameters:
+//    - username | required
 //    - key      | required
-// Middlewares: 
+// Middlewares:
 //    - auth-password-key
-// Action: Renders a page with a form allowing the user to reset their password. 
+// Action: Renders a page with a form allowing the user to reset their password.
 exports.index = function(req, res, next) {
   res.locals.username = req.query.username;
   res.locals.key = req.query.key;
@@ -41,13 +41,13 @@ exports.confirmation = function(req, res, next) {
 };
 
 // Endpoint: /password/forgot/trigger/:email
-// URL Parameters: 
+// URL Parameters:
 //    - email | required
 // Middlewares:
 //    - auth-email
-// Action: Creates a password reset key and emails a link to the requesting user. 
+// Action: Creates a password reset key and emails a link to the requesting user.
 exports.trigger = function(req, res, next) {
-  var user = res.locals.user; 
+  var user = res.locals.user;
   async.series([
     setUpUserWithPasswordKey(user),
     user.sendPasswordKeyEmail.bind(user),
@@ -72,7 +72,7 @@ function asyncResultHandler(res, next, index) {
 
 // Genereates and saves a password key for a given user object.
 function setUpUserWithPasswordKey(user) {
-  return function(cb) {  
+  return function(cb) {
     user.passwordKey = uuid.v4();
     user.insertPasswordKey(cb);
   };

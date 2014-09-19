@@ -28,9 +28,8 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
     var secondDegreeFeed = results[1];
     var globalFeed = results[2];
     var all = globalFeed.concat(firstDegreeFeed, secondDegreeFeed);
-    
-    var shuffled = _.shuffle(all);
 
+    var shuffled = _.shuffle(all);
     cb(null, shuffled);
   });
 };
@@ -44,7 +43,7 @@ ThoughtsCollection.prototype.getMyFeed = function(cb) {
 ThoughtsCollection.prototype.getFirstDegreeFeed = function(cb) {
   assert.ok(this.user, 'Expected user object to be set');
   assert.ok(this.user.friends, 'Expected user.friends to be set');
-  
+
   if (this.user.friends.length === 0) {
     return this.getMyFeed(cb);
   }
@@ -80,10 +79,10 @@ ThoughtsCollection.prototype.getGlobalFeed = function(cb) {
 };
 
 ThoughtsCollection.prototype.getMyFeedQuery = function() {
-  var query = this.getSelectQuery('my') + 
+  var query = this.getSelectQuery('my') +
   ' WHERE ' +
-    'confessions.jid = ?' + 
-    this.sinceStr + 
+    'confessions.jid = ?' +
+    this.sinceStr +
   this.getEndQuery();
 
   var data = [this.user.username];
@@ -92,12 +91,12 @@ ThoughtsCollection.prototype.getMyFeedQuery = function() {
 };
 
 ThoughtsCollection.prototype.getFirstDegreeQuery = function() {
-  var query = this.getSelectQuery(1) + 
-  ' WHERE ' + 
-    'confessions.jid = ? OR (' + 
-    'confessions.jid IN (?)' + 
+  var query = this.getSelectQuery(1) +
+  ' WHERE ' +
+    'confessions.jid = ? OR (' +
+    'confessions.jid IN (?)' +
     this.sinceStr +
-    ') ' + 
+    ') ' +
   this.getEndQuery();
 
   var data = [
@@ -109,11 +108,11 @@ ThoughtsCollection.prototype.getFirstDegreeQuery = function() {
 };
 
 ThoughtsCollection.prototype.getSecondDegreeQuery = function() {
-  var query = this.getSelectQuery(2) + 
-  ' WHERE ' + 
-    'confessions.jid IN (?) AND ' +  
-    'confessions.jid NOT IN (?) AND ' +  
-    'confessions.jid != ? ' + 
+  var query = this.getSelectQuery(2) +
+  ' WHERE ' +
+    'confessions.jid IN (?) AND ' +
+    'confessions.jid NOT IN (?) AND ' +
+    'confessions.jid != ? ' +
     this.sinceStr +
     ' ' +
     this.getEndQuery();
@@ -150,25 +149,28 @@ ThoughtsCollection.prototype.getGlobalQuery = function() {
 ThoughtsCollection.prototype.getSelectQuery = function(degree) {
   assert.ok(this.user.username, 'Expected username to be set');
   return format('' +
-    'SELECT confessions.*, ' + 
-    '\''+ degree + '\' AS degree, ' + 
-    'CASE ' + 
-      'WHEN FIND_IN_SET(?, GROUP_CONCAT(confession_favorites.jid SEPARATOR \',\')) > 0 ' + 
-      'THEN \'YES\' ' + 
-      'ELSE \'NO\' ' + 
-      'END ' + 
-    'AS has_favorited, ' + 
-    'count(confession_favorites.jid) AS num_favorites, ' + 
-    'count(confession_favorites.jid) * 20000 + UNIX_TIMESTAMP(confessions.created_timestamp) AS score ' + 
-  'FROM confessions ' + 
+    'SELECT confessions.confession_id AS id, ' +
+    'confessions.body, ' +
+    'confessions.image_url, ' +
+    'UNIX_TIMESTAMP(confessions.created_timestamp) AS created_timestamp, ' +
+    '\''+ degree + '\' AS degree, ' +
+    'CASE ' +
+      'WHEN FIND_IN_SET(?, GROUP_CONCAT(confession_favorites.jid SEPARATOR \',\')) > 0 ' +
+      'THEN \'true\' ' +
+      'ELSE \'false\' ' +
+      'END ' +
+    'AS has_favorited, ' +
+    'count(confession_favorites.jid) AS num_favorites, ' +
+    'count(confession_favorites.jid) * 20000 + UNIX_TIMESTAMP(confessions.created_timestamp) AS score ' +
+  'FROM confessions ' +
   'LEFT JOIN confession_favorites ' +
-  'ON confessions.confession_id = confession_favorites.confession_id', [this.user.username]); 
+  'ON confessions.confession_id = confession_favorites.confession_id', [this.user.username]);
 };
 
 ThoughtsCollection.prototype.getEndQuery = function() {
-  return '' + 
-  'GROUP BY confessions.confession_id ' + 
-  'ORDER BY score DESC ' + 
+  return '' +
+  'GROUP BY confessions.confession_id ' +
+  'ORDER BY score DESC ' +
   'LIMIT 30';
 };
 
