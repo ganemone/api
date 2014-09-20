@@ -1,9 +1,12 @@
+// External Modules
 var assert = require('assert');
-var Chat = require('../../../server/models/chat.js');
-var setUpChat = require('../../util/setUpChat.js');
+var rewire = require('rewire');
+// Internal Modules
 var cleanUpTable = require('../../util/cleanUpTable.js');
+var Chat = rewire('../../../server/models/chat.js');
+var db = require('../../../server/util/db.js');
+var setUpChat = require('../../util/setUpChat.js');
 var Mock = require('../../util/mock.js');
-
 var sharedChatData = {
   id: 1,
   type: 'type',
@@ -98,22 +101,43 @@ describe('Chat Model', function () {
         participants: ['friend1', 'friend2'],
         degree: '1'
       };
-      var chat = Chat(chatData);
-      it('should work', function (done) {
-        chat.insert(function(err, result) {
-          chat.insertParticipants(function(err, result) {
+      describe('when there are multiple participants', function () {
+        cleanUpTable('chat');
+        cleanUpTable('participants');
+        it('should work with two participants', function (done) {
+          var chat = Chat(chatData);
+          chat.insert(function(err, result) {
             assert.ifError(err, 'Should execute without error');
-            assert.equal(result.affectedRows, chatData.participants.length);
-            done();
+            chat.insertParticipants(function(err, result) {
+              assert.ifError(err, 'Should execute without error');
+              assert.equal(result.affectedRows, chat.participants.length);
+              done();
+            });
           });
-        });
+        });  
+      });
+      describe('when there is one participant', function () {
+        cleanUpTable('chat');
+        cleanUpTable('participants');
+        it('should work with one participant', function (done) {
+          var chat = Chat(chatData);
+          chat.participants = ['friend1'];
+          chat.insert(function(err, result) {
+            assert.ifError(err, 'Should execute without error');
+            chat.insertParticipants(function(err, result) {
+              assert.ifError(err, 'Should execute without error');
+              assert.equal(result.affectedRows, chat.participants.length);
+              done();
+            });
+          });
+        });  
       });
     });
   });
   describe('delete', function () {
     describe('when not affecting a row', function () {
       it('should return false when not affecting a row', function (done) {
-        var chat = new Chat(1);
+        var chat = Chat(1);
         chat.deleteFromID(function(err, result) {
           assert.ifError(err);
           assert.equal(result, false);
@@ -123,22 +147,85 @@ describe('Chat Model', function () {
     });
     describe('when affecting a row', function () {
       setUpChat(sharedChatData);
-      it('should return true when affecting a row', function () {
-        var chat = new Chat(1);
+      it('should return true when affecting a row', function (done) {
+        var chat = Chat(1);
         chat.deleteFromID(function(err, result) {
           assert.ifError(err);
           assert.equal(result, true);
+          done();
         });
       });
     });
-    it('should handle errors correctly', function () {
-      var mockQueryWithData = new Mock(function(query, data, cb) {
-        cb(new Error('Some error'));
+    describe('when an error occurs', function () {
+      it('should callback with it', function (done) {
+        var mockQueryWithData = new Mock(function(query, data, cb) {
+          cb(new Error('Some error'));
+        });
+        var mockDB = {
+          queryWithData: mockQueryWithData.getFn()
+        };
+        Chat.__set__({
+          'db': mockDB
+        });
+        var chat = Chat(1);
+        chat.deleteFromID(function(err, result) {
+          assert.ok(err);
+          assert.ifError(result);
+          mockQueryWithData.assertCalledOnce();
+          resetChatDB();
+          done();
+        });
+      });      
+    });
+  });
+  describe('deleteFromUUID', function () {
+    describe('when not affecting a row', function () {
+      it('should return false when not affecting a row', function (done) {
+        var chat = Chat({
+          uuid: 'uuid'
+        });
+        chat.deleteFromUUID(function(err, result) {
+          assert.ifError(err);
+          assert.equal(result, false);
+          done();
+        });
+      });  
+    });
+    describe('when affecting a row', function () {
+      setUpChat(sharedChatData);
+      it('should return true when affecting a row', function (done) {
+        var chat = Chat({
+          uuid: 'uuid'
+        });
+        chat.deleteFromUUID(function(err, result) {
+          assert.ifError(err);
+          assert.equal(result, true);
+          done();
+        });
       });
-      var mockDB = {
-        queryWithData: mockQueryWithData.getFn()
-      };
-      var chat = new Chat(1);
+    });
+    describe('when an error occurs', function () {
+      it('should callback with it', function (done) {
+        var mockQueryWithData = new Mock(function(query, data, cb) {
+          cb(new Error('Some error'));
+        });
+        var mockDB = {
+          queryWithData: mockQueryWithData.getFn()
+        };
+        Chat.__set__({
+          'db': mockDB
+        });
+        var chat = Chat({
+          uuid: 'uuid'
+        });
+        chat.deleteFromUUID(function(err, result) {
+          assert.ok(err);
+          assert.ifError(result);
+          mockQueryWithData.assertCalledOnce();
+          resetChatDB();
+          done();
+        });
+      });      
     });
   });
 });
@@ -154,4 +241,10 @@ function testChat(chat, chatData, withCreated) {
     assert.equal(regExp.test(chat.created), true);
   }
   assert.equal(chat.degree, chatData.degree);
+}
+
+function resetChatDB() {
+  Chat.__set__({
+    'db': db 
+  });
 }
