@@ -9,6 +9,7 @@
     "production": "NODE_ENV='production' node index.js",
     "build": "grunt sass",
     "watch": "grunt sass && grunt watch",
+    "dtest": "npm test && npm test",
     "test": "NODE_ENV='test' mocha test/ --recursive -R nyan",
     "testd": "NODE_ENV='test' mocha debug test/ --recursive -R tap",
     "cover": "NODE_ENV=test istanbul cover --report cobertura --print detail _mocha -- -R nyan test/ --recursive --timeout=20000",
