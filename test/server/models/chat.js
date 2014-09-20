@@ -6,6 +6,7 @@ var cleanUpTable = require('../../util/cleanUpTable.js');
 var Chat = rewire('../../../server/models/chat.js');
 var db = require('../../../server/util/db.js');
 var setUpChat = require('../../util/setUpChat.js');
+var setUpParticipants = require('../../util/setUpParticipants.js');
 var Mock = require('../../util/mock.js');
 var sharedChatData = {
   id: 1,
@@ -204,7 +205,7 @@ describe('Chat Model', function () {
     var mockUser = {
       username: 'username'
     };
-    describe('when no rows are found', function () {
+    describe('when not affecting a row', function () {
       it('should return false', function (done) {
         var chat = Chat(sharedChatData);
         chat.removeUser(mockUser, function (err, result) {
@@ -214,7 +215,13 @@ describe('Chat Model', function () {
         });
       });
     });
-    describe('when a row is found', function () {
+    describe('when affecting a row', function () {
+      setUpChat(sharedChatData);
+      setUpParticipants({
+        chatID: 1,
+        username: 'username',
+        status: 'active'    
+      });
       it('should return true', function (done) {
         var chat = Chat(sharedChatData);
         chat.removeUser(mockUser, function (err, result) {
@@ -229,6 +236,44 @@ describe('Chat Model', function () {
         setMockChatDB();
         var chat = Chat(sharedChatData);
         chat.removeUser(mockUser, getFailedResultTest(done));
+      });
+    });
+  });
+  describe('joinUser', function () {
+    var mockUser = {
+      username: 'username'
+    };
+    describe('when not affecting a row', function () {
+      it('should return false', function (done) {
+        var chat = Chat(sharedChatData);
+        chat.joinUser(mockUser, function (err, result) {
+          assert.ifError(err);
+          assert.equal(result, false);
+          done();
+        });
+      });
+    });
+    describe('when affecting a row', function () {
+      setUpChat(sharedChatData);
+      setUpParticipants({
+        chatID: 1,
+        username: 'username',
+        status: 'inactive'    
+      });
+      it('should return true', function (done) {
+        var chat = Chat(sharedChatData);
+        chat.joinUser(mockUser, function (err, result) {
+          assert.ifError(err);
+          assert.equal(result, true);
+          done();
+        }); 
+      });
+    });
+    describe('when an error is thrown', function () {
+       it('should callback with it', function (done) {
+        setMockChatDB();
+        var chat = Chat(sharedChatData);
+        chat.joinUser(mockUser, getFailedResultTest(done));
       });
     });
   });

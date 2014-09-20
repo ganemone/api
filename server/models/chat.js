@@ -75,7 +75,7 @@ Chat.prototype.insert = function(cb) {
       return cb(new HttpError('Failed to insert chat', 500, err));
     }
     self.id = Number(result.insertId);
-    cb(null, self);
+    cb(null, result);
   });
 };
 
