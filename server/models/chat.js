@@ -102,7 +102,7 @@ Chat.prototype.insertParticipants = function(cb) {
   });
 };
 
-Chat.prototype.delete = function(cb) {
+Chat.prototype.deleteFromID = function(cb) {
   this._assertHasID();
   var query = 'DELETE FROM chat WHERE id = ?';
   var data = [this.id];
