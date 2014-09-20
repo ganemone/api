@@ -11,6 +11,7 @@ function Chat(data) {
     this.participants = data.participants;
     this.degree = data.degree;
     this.name = data.name;
+    this.uuid = data.uuid;
   } else {
     this.id = data;
   }
