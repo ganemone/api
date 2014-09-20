@@ -91,7 +91,7 @@ Chat.prototype.insertParticipants = function(cb) {
     tmpArr.push(this.id);
     tmpArr.push(this.participants[i]);
     tmpArr.push(this.owner);
-    tmpArr.push('inactive');
+    tmpArr.push('pending');
     data.push(tmpArr);
   }
 
@@ -125,6 +125,43 @@ Chat.prototype.deleteFromUUID = function(cb) {
     }
     cb(null, result.affectedRows > 0);
   });
+};
+
+Chat.prototype.removeUser = function(user, cb) {
+  this._assertHasUUID();
+  var query = 'UPDATE participants SET status = ? WHERE username = ? AND chat_id = (SELECT id FROM chat WHERE uuid = ?)';
+  var data = ['inactive', user.username, this.uuid];
+  db.queryWithData(query, data, function(err, result) {
+    if(err) {
+      return cb(new HttpError('Failed to remove user', 500, err));
+    }
+    cb(null, result.affectedRows === 1);
+  });
+};
+
+Chat.prototype.joinUser = function(user, cb) {
+  this._assertHasUUID();
+  var query = 'UPDATE participants SET status = ? WHERE username = ? AND chat_id = (SELECT id FROM chat WHERE uuid = ?)';
+  var data = ['active', user.username, this.uuid];
+  db.queryWithData(query, data, function(err, result) {
+    if(err) {
+      return cb(new HttpError('Failed to update participant status', 500, err));
+    }
+    cb(err, result.affectedRows === 1);
+  });
+};
+
+Chat.prototype.toJSON = function() {
+  var json = {
+    uuid: this.uuid,
+    name: this.name,
+    participants: this.participants,
+    type: this.type
+  };
+  if (this.type === 'thought') {
+    json.degree = this.degree;
+  }
+  return json;
 };
 
 Chat.prototype._assertHasID = function() {
