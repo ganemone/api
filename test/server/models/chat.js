@@ -158,23 +158,9 @@ describe('Chat Model', function () {
     });
     describe('when an error occurs', function () {
       it('should callback with it', function (done) {
-        var mockQueryWithData = new Mock(function(query, data, cb) {
-          cb(new Error('Some error'));
-        });
-        var mockDB = {
-          queryWithData: mockQueryWithData.getFn()
-        };
-        Chat.__set__({
-          'db': mockDB
-        });
+        setMockChatDB();
         var chat = Chat(1);
-        chat.deleteFromID(function(err, result) {
-          assert.ok(err);
-          assert.ifError(result);
-          mockQueryWithData.assertCalledOnce();
-          resetChatDB();
-          done();
-        });
+        chat.deleteFromID(getFailedResultTest(done));
       });      
     });
   });
@@ -206,26 +192,44 @@ describe('Chat Model', function () {
     });
     describe('when an error occurs', function () {
       it('should callback with it', function (done) {
-        var mockQueryWithData = new Mock(function(query, data, cb) {
-          cb(new Error('Some error'));
-        });
-        var mockDB = {
-          queryWithData: mockQueryWithData.getFn()
-        };
-        Chat.__set__({
-          'db': mockDB
-        });
+        setMockChatDB();
         var chat = Chat({
           uuid: 'uuid'
         });
-        chat.deleteFromUUID(function(err, result) {
-          assert.ok(err);
-          assert.ifError(result);
-          mockQueryWithData.assertCalledOnce();
-          resetChatDB();
+        chat.deleteFromUUID(getFailedResultTest(done));
+      });      
+    });
+  });
+  describe('removeUser', function () {
+    var mockUser = {
+      username: 'username'
+    };
+    describe('when no rows are found', function () {
+      it('should return false', function (done) {
+        var chat = Chat(sharedChatData);
+        chat.removeUser(mockUser, function (err, result) {
+          assert.ifError(err);
+          assert.equal(result, false);
           done();
         });
-      });      
+      });
+    });
+    describe('when a row is found', function () {
+      it('should return true', function (done) {
+        var chat = Chat(sharedChatData);
+        chat.removeUser(mockUser, function (err, result) {
+          assert.ifError(err);
+          assert.equal(result, true);
+          done();
+        }); 
+      });
+    });
+    describe('when an error is thrown', function () {
+       it('should callback with it', function (done) {
+        setMockChatDB();
+        var chat = Chat(sharedChatData);
+        chat.removeUser(mockUser, getFailedResultTest(done));
+      });
     });
   });
 });
@@ -247,4 +251,25 @@ function resetChatDB() {
   Chat.__set__({
     'db': db 
   });
+}
+
+function setMockChatDB() {
+  var mockQueryWithData = new Mock(function(query, data, cb) {
+    cb(new Error('Some error'));
+  });
+  var mockDB = {
+    queryWithData: mockQueryWithData.getFn()
+  };
+  Chat.__set__({
+    'db': mockDB
+  });
+}
+
+function getFailedResultTest(done) {
+  return function(err, result) {
+    assert.ok(err);
+    assert.ifError(result);
+    resetChatDB();
+    done();
+  }
 }
