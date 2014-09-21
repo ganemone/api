@@ -9,7 +9,8 @@ module.exports = function (req, res, next) {
   }
 
   var chat = Chat({
-    uuid: req.body.chatUUID
+    uuid: req.body.chatUUID,
+    user: res.locals.user
   });
 
   chat.loadFromUUID(function(err, result) {

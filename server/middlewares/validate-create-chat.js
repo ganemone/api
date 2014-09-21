@@ -4,7 +4,6 @@ var Chat = require('../models/chat.js');
 
 module.exports = function(req, res, next) {
   var user = res.locals.user;
-
   if (!req.body.type) {
     return next(new HttpError('Missing type parameter', 406));
   }
@@ -35,10 +34,11 @@ module.exports = function(req, res, next) {
   }
 
   var chat = Chat({
-    type: res.body.type,
-    participants: res.body.participants,
+    type: req.body.type,
+    participants: req.body.participants,
     owner: user.username,
-    name: req.body.name
+    name: req.body.name,
+    user: res.locals.user
   });
 
   res.locals.chat = chat;
