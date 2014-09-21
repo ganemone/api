@@ -5,8 +5,8 @@ var rewire = require('rewire');
 var chat = rewire('../../../server/controllers/chat.js');
 var Mock = require('../../util/mock.js');
 
-describe('A Chat Controller', function () {
-  describe('create', function () {
+describe('A Chat Controller\'s', function () {
+  describe('create method applied to', function () {
     describe('a one to one', function () {
       it('should work', function (done) {
         testCreate('121', done);
@@ -32,7 +32,7 @@ describe('A Chat Controller', function () {
       });
     });
   });
-  describe('leave', function () {
+  describe('leave method', function () {
     it('should work', function (done) {
       var mockRemoveUser = getMockWithCB(['object', 'function'], null, true);
       var mockNext = new Mock(function noop() {});
@@ -65,7 +65,7 @@ describe('A Chat Controller', function () {
       chat.leave({}, mockRes, mockNext.getFn());
     });
   });
-  describe('join', function () {
+  describe('join method', function () {
     it('should work', function (done) {
       var mockJoinUser = getMockWithCB(['object', 'function'], null, true);
       var mockNext = new Mock(function noop() {});
@@ -206,6 +206,10 @@ function testCreate(type, done, error) {
   });
 
   var mockRes = getMockRes(type, mockJSON, mockInsert, mockInsertParticipants, mockToJSON);
+
+  if (type === 'thought') {
+    mockRes.locals.thought = {};
+  }
 
   chat.create({}, mockRes, mockNext.getFn());
 }

@@ -66,7 +66,6 @@ Chat.prototype.insert = function(cb) {
   this._assertHasType();
   this._assertHasOwner();
   this._assertHasName();
-  this._assertHasDegree();
   var query = 'INSERT INTO chat (uuid, type, owner_id, name, degree) VALUES (?)';
   var data = [[this.uuid, this.type, this.owner, this.name, this.degree]];
   var self = this;

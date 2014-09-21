@@ -5,6 +5,8 @@ var AuthEmail = require('../middlewares/auth-email.js');
 var AuthUser = require('../middlewares/auth-user.js');
 var ValidatePassword = require('../middlewares/validate-password.js');
 var ValidateBlacklist = require('../middlewares/validate-blacklist.js');
+var ValidateCreateChat = require('../middlewares/validate-create-chat.js');
+var ValidateChat = require('../middlewares/validate-chat.js');
 var LoadFriends = require('../middlewares/load-friends.js');
 
 
@@ -60,11 +62,14 @@ module.exports = function setRoutes(app) {
     '/chat/create',
     AuthUser,
     bodyParser.json(),
+    ValidateCreateChat,
     controllers.chat.create
   );
   app.post(
     '/chat/leave',
     AuthUser,
+    bodyParser.json(),
+    ValidateChat,
     controllers.chat.leave
   );
 };

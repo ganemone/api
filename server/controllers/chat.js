@@ -6,6 +6,11 @@ var url = require('url');
 // Endpoint
 exports.create = function (req, res, next) {
   var chat = res.locals.chat;
+
+  if (chat.type === 'thought') {
+    chat.name = res.locals.thought.body;
+  }
+
   async.series([
     chat.insert.bind(chat),
     chat.insertParticipants.bind(chat),
