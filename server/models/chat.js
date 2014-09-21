@@ -153,16 +153,19 @@ Chat.prototype.toJSON = function() {
   var name = this.getName();
   var json = {
     uuid: this.uuid,
-    name: this.name,
-    participants: this.participants,
+    name: name,
     type: this.type
   };
   if (this.type === 'thought') {
     json.degree = this.degree;
   }
+  if (this.type === 'group') {
+    json.participants = this.participants;
+  }
   return json;
 };
 
+// TODO load the users actual name, instead of using the username
 Chat.prototype.getName = function() {
   if (this.name) {
     return this.name;
