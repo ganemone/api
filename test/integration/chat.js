@@ -8,6 +8,7 @@ var runServer = require('../util/runServer.js');
 var cleanUpTable = require('../util/cleanUpTable.js');
 var setUpUser = require('../util/setup-user.js');
 var setUpRosterUsers = require('../util/setup-rosterusers.js');
+var setUpThoughts = require('../util/setUpThoughts.js');
 // Shared variables
 var validAuth = { username: 'username', password: 'sessionID' };
 var invalidSessionAuth = { username: 'username', password: 'invalid' };
@@ -38,8 +39,8 @@ describe('Integration Tests for /chat', function () {
           assert.equal(res.statusCode, 200);
           assert.ok(res.body.uuid);
           assert.ok(res.body.name);
-          assert.ok(res.body.participants);
-          assert.ok(res.body.type);
+          assert.ifError(res.body.participants);
+          assert.equal(res.body.type, '121');
           assert.ifError(res.body.degree);
           testChatDBEntry(
             res.body.uuid, 
@@ -47,21 +48,87 @@ describe('Integration Tests for /chat', function () {
               { key: 'name', value: null }, 
               { key: 'type', value: res.body.type }
             ],
-            [
+            [[
               { key: 'username', value: 'friend1' },
               { key: 'status', value: 'pending' },
               { key: 'invited_by', value: 'username' } 
-            ], 
+            ]], 
             done
           );
-
         });
       });
-      it('group', function (done) {
-        done();        
+    });
+    describe('group', function () {
+      it('valid requests', function (done) {
+        request.post({
+          url: config.getEndpoint('/chat/create'),
+          auth: validAuth,
+          json: {
+            type: 'group',
+            name: 'a+group',
+            participants: ['friend1', 'friend2']
+          }
+        }, function(err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          assert.ok(res.body.uuid);
+          assert.equal(res.body.name, 'a+group');
+          assert.ok(res.body.participants);
+          assert.equal(res.body.type, 'group');
+          assert.ifError(res.body.degree);
+          testChatDBEntry(
+            res.body.uuid, 
+            [
+              { key: 'name', value: res.body.name }, 
+              { key: 'type', value: res.body.type }
+            ],
+            [[
+              { key: 'username', value: 'friend1' },
+              { key: 'status', value: 'pending' },
+              { key: 'invited_by', value: 'username' }
+            ], [
+              { key: 'username', value: 'friend2' },
+              { key: 'status', value: 'pending' },
+              { key: 'invited_by', value: 'username' }
+            ]], 
+            done
+          );
+        });
       });
-      it('thought', function (done) {
-        done();
+    });
+    describe('thought', function () {
+      setUpThoughts('friend1');
+      it('valid requests', function (done) {
+        var cid = this.cid;
+        request.post({
+          url: config.getEndpoint('/chat/create'),
+          auth: validAuth,
+          json: {
+            type: 'thought',
+            cid: cid
+          }
+        }, function(err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          assert.ok(res.body.uuid);
+          assert.equal(res.body.name, 'some+thought');
+          assert.ifError(res.body.participants);
+          assert.equal(res.body.type, 'thought');
+          assert.equal(res.body.degree, 1);
+          testChatDBEntry(
+            res.body.uuid, 
+            [
+              { key: 'name', value: res.body.name }, 
+              { key: 'type', value: res.body.type }
+            ],
+            [[
+              { key: 'username', value: 'friend1' },
+              { key: 'status', value: 'pending' },
+              { key: 'invited_by', value: 'username' }
+            ]], 
+            done
+          );
+        });
       });
     });
   });
@@ -114,16 +181,15 @@ function testChatDBEntry(chatID, expectedChatValues, expectedParticipantEntries,
 
     var query2 = 'SELECT * FROM participants WHERE chat_id = ?';
     var data2 = [chatRow.id];
-    db.queryWithData(query, data, function(err, rows) {
+    db.queryWithData(query2, data2, function(err, rows) {
       if(err) {
         throw err;
       }
-      var participantRows = rows[0];
       for (var i = 0; i < expectedParticipantEntries.length; i++) {
         var expectedParticipantRows = expectedParticipantEntries[i];
         for (var j = 0; j < expectedParticipantRows.length; j++) {
           var expected = expectedParticipantRows[i];
-          assert.equal(participantRows[i][expected.key], expected.value);
+          assert.equal(rows[i][expected.key], expected.value);
         }
       }
       done();
