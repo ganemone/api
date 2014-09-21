@@ -12,6 +12,7 @@ function Chat(data) {
     this.degree = data.degree;
     this.name = data.name;
     this.uuid = data.uuid;
+    this.user = data.user;
   } else {
     this.id = data;
   }
@@ -65,7 +66,6 @@ Chat.prototype.insert = function(cb) {
   this.uuid = uuid.v4();
   this._assertHasType();
   this._assertHasOwner();
-  this._assertHasName();
   var query = 'INSERT INTO chat (uuid, type, owner_id, name, degree) VALUES (?)';
   var data = [[this.uuid, this.type, this.owner, this.name, this.degree]];
   var self = this;
@@ -80,7 +80,6 @@ Chat.prototype.insert = function(cb) {
 
 Chat.prototype.insertParticipants = function(cb) {
   this._assertHasOwner();
-  this._assertHasName();
   this._assertHasID();
   this._assertHasParticipants();
   var query = 'INSERT INTO participants (chat_id, username, invited_by, status) VALUES ?';
@@ -151,6 +150,7 @@ Chat.prototype.joinUser = function(user, cb) {
 };
 
 Chat.prototype.toJSON = function() {
+  var name = this.getName();
   var json = {
     uuid: this.uuid,
     name: this.name,
@@ -161,6 +161,16 @@ Chat.prototype.toJSON = function() {
     json.degree = this.degree;
   }
   return json;
+};
+
+Chat.prototype.getName = function() {
+  if (this.name) {
+    return this.name;
+  }
+  this.name = (this.owner === this.user.username)
+    ? this.participants[0]
+    : 'Anonymous Friend';
+  return this.name;
 };
 
 Chat.prototype._assertHasID = function() {
