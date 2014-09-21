@@ -37,7 +37,8 @@ function Server(config) {
 function errorHandler(err, req, res, next) {
 var env = process.env.NODE_ENV || 'development';
   if(err) {
-    logger.error('Shared Error Handler: ', err);
+    logger.error('SHARED ERROR HANDLER');
+    logger.error('Error: ' + err);
     if(err.statusCode) {
       // Redirect if err contains redirect path
       if (err.redirect) {
@@ -53,7 +54,7 @@ var env = process.env.NODE_ENV || 'development';
       return res.end(err.message);
     } else {
       // Throw unexpected errors
-      if(env === 'development' || env === 'local') {
+      if(env === 'development' || env === 'local' || env === 'test') {
         throw err;
       }
     }
