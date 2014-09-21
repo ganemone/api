@@ -322,4 +322,4 @@ User.prototype.loadSecondDegreeFriends = function(cb) {
 
 module.exports = function(data) {
   return new User(data);
-}
+};
