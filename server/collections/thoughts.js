@@ -12,11 +12,12 @@ function ThoughtsCollection(user, since) {
 ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
   var self = this;
   async.parallel([
+    this.getMyFeed.bind(this),
     function(cb) {
       if (self.user.friends.length > 2) {
         return self.getFirstDegreeFeed(cb);
       }
-      self.getMyFeed(cb);
+      return cb(null, []);
     },
     this.getSecondDegreeFeed.bind(this),
     this.getGlobalFeed.bind(this)
@@ -29,8 +30,11 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
     var globalFeed = results[2];
     var all = globalFeed.concat(firstDegreeFeed, secondDegreeFeed);
 
-    var shuffled = _.shuffle(all);
-    cb(null, shuffled);
+    var sorted = _.sortBy(all, function(thought) {
+      return thought.created_timestamp;
+    });
+
+    cb(null, sorted);
   });
 };
 
@@ -93,14 +97,11 @@ ThoughtsCollection.prototype.getMyFeedQuery = function() {
 ThoughtsCollection.prototype.getFirstDegreeQuery = function() {
   var query = this.getSelectQuery(1) +
   ' WHERE ' +
-    'confessions.jid = ? OR (' +
     'confessions.jid IN (?)' +
     this.sinceStr +
-    ') ' +
   this.getEndQuery();
 
   var data = [
-    this.user.username,
     this.user.friends
   ];
 
