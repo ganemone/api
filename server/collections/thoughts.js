@@ -79,7 +79,7 @@ ThoughtsCollection.prototype.getGlobalFeed = function(cb) {
 };
 
 ThoughtsCollection.prototype.getMyFeedQuery = function() {
-  var query = this.getSelectQuery('my') +
+  var query = this.getSelectQuery(0) +
   ' WHERE ' +
     'confessions.jid = ?' +
     this.sinceStr +
@@ -127,7 +127,7 @@ ThoughtsCollection.prototype.getSecondDegreeQuery = function() {
 };
 
 ThoughtsCollection.prototype.getGlobalQuery = function() {
-  var query = this.getSelectQuery('global') + ' WHERE ';
+  var query = this.getSelectQuery(7) + ' WHERE ';
   var data = [];
   if (this.user.friends.length > 0) {
     query = query + 'confessions.jid NOT IN (?) AND ';

@@ -6,7 +6,7 @@ var url = require('url');
 // Endpoint /chat/create
 // Method: POST
 // Auth: Basic
-// Parameters: 
+// Parameters:
 //    - type | required
 //    - participants | required
 //    - cid | required if type === 'thought'
@@ -18,7 +18,7 @@ var url = require('url');
 // Action: creates a chat
 exports.create = function (req, res, next) {
   var chat = res.locals.chat;
-  
+
   if (chat.type === 'thought') {
     chat.name = res.locals.thought.body;
   }
@@ -36,14 +36,14 @@ exports.create = function (req, res, next) {
     if (err) {
       return next(err);
     }
-    res.json(chat.toJSON()); 
+    res.json(chat.toJSON());
   });
 };
 
 // Endpoint /chat/leave
 // Method: POST
 // Auth: Basic
-// Parameters: 
+// Parameters:
 //    - chatUUID | required
 // Middlewares:
 //    - auth-user
@@ -58,13 +58,13 @@ exports.leave = function (req, res, next) {
       return next(err);
     }
     res.json();
-  }); 
+  });
 };
 
 // Endpoint /chat/join
 // Method: POST
 // Auth: Basic
-// Parameters: 
+// Parameters:
 //    - chatUUID | required
 // Middlewares:
 //    - auth-user

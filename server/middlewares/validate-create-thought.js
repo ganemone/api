@@ -21,7 +21,7 @@ module.exports = function (req, res, next) {
       return next(err);
     }
     res.locals.thought = thought;
-    res.locals.chat.degree = degree; 
+    res.locals.chat.degree = degree;
     res.locals.chat.participants = [thought.username];
     return next();
   });
