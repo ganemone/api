@@ -42,7 +42,7 @@ var env = process.env.NODE_ENV || 'development';
     if(err.statusCode) {
       // Redirect if err contains redirect path
       if (err.redirect) {
-        req.query.message = err.message; 
+        req.query.message = err.message;
         var redirectURL = url.format({
           pathname: err.redirect,
           query: req.query

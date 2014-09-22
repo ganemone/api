@@ -111,7 +111,8 @@ exports.pending = function (req, res, next) {
 function notifyParticipants(chat, cb) {
   var notifyURL = url.format({
     protocol: 'http:',
-    host: 'localhost',
+    port: 5290,
+    hostname: 'localhost',
     pathname: '/notify/new_group',
     query: {
       id: chat.id
