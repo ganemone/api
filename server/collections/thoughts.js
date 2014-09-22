@@ -32,11 +32,6 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
     var globalFeed = results[3];
     var all = globalFeed.concat(myFeed, firstDegreeFeed, secondDegreeFeed);
 
-    console.log('myFeed: ', myFeed);
-    console.log('firstDegreeFeed: ', firstDegreeFeed);
-    console.log('secondDegreeFeed: ', secondDegreeFeed);
-    console.log('globalFeed: ', globalFeed);
-
     var sorted = _.sortBy(all, function(thought) {
       return thought.created_timestamp;
     });
