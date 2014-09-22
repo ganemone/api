@@ -72,4 +72,22 @@ module.exports = function setRoutes(app) {
     ValidateChat,
     controllers.chat.leave
   );
+  app.post(
+    '/chat/join',
+    AuthUser,
+    bodyParser.json(),
+    ValidateChat,
+    controllers.chat.join
+  );
+  app.get(
+    '/chat/joined',
+    AuthUser,
+    controllers.chat.joined
+  );
+  app.get(
+    '/chat/pending',
+    AuthUser,
+    controllers.chat.pending
+  );
+
 };

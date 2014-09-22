@@ -82,6 +82,32 @@ exports.join = function (req, res, next) {
   });
 };
 
+// Endpoint /chat/joined
+// Method: GET
+// Auth: Basic
+// Parameters: None
+// Middlewares:
+//    - auth-user
+// Action: Returns a json list of the users joined chats
+exports.joined = function (req, res, next) {
+  var user = res.locals.user;
+  var chats = res.locals.chats;
+  res.end();
+};
+
+// Endpoint /chat/pending
+// Method: GET
+// Auth: Basic
+// Parameters: None
+// Middlewares:
+//    - auth-user
+// Action: Returns a json list of the users pending chats
+exports.pending = function (req, res, next) {
+  var user = res.locals.user;
+
+  res.end();
+};
+
 function notifyParticipants(chat, cb) {
   var notifyURL = url.format({
     protocol: 'http:',

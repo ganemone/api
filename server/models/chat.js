@@ -40,6 +40,25 @@ Chat.prototype.load = function(cb) {
   });
 };
 
+Chat.prototype.getChatsWithStatus = function(status, cb) {
+
+  var data = [this.user.username, status];
+  db.queryWithData(query, data, function(err, rows) {
+    if(err) {
+      return cb(new HttpError('Failed to get chats', 500, err));
+    }
+    return cb(null, rows);
+  });
+};
+
+Chat.prototype.getJoinedChats = function(cb) {
+  return this.getChatsWithStatus('active', cb);
+};
+
+Chat.prototype.getPendingChats = function(cb) {
+  return this.getChatsWithStatus('pending', cb);
+};
+
 Chat.prototype.loadFromUUID = function(cb) {
   this._assertHasUUID();
   var query = 'SELECT chat.id, chat.type, chat.owner_id, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE chat.uuid = ?';
