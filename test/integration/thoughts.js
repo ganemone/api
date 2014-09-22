@@ -15,7 +15,7 @@ var validAuth = { username: 'username', password: 'sessionID' };
 function setUp() {
   setUpUser({ username: 'username', password: 'password', sessionID: 'sessionID' });
   // Set up friends
-  setUpRosterUsers('username', ['friend1', 'friend2']);
+  setUpRosterUsers('username', ['friend1', 'friend2', 'thirdfirstdegree']);
   setUpRosterUsers('friend1', ['friend2', 'friend3']);
   setUpRosterUsers('friend2', ['friend3', 'friend4']);
   setUpRosterUsers('friend3', ['someguy', 'anotherguy']);

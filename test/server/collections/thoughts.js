@@ -101,7 +101,7 @@ describe('A thoughts collection', function () {
 
 
     it('should get correct data for friends feeds', function (done) {
-      thoughtsCollection.getFirstDegreeFeed(testFeed(4, done));
+      thoughtsCollection.getFirstDegreeFeed(testFeed(3, done));
     });
 
     it('should get the correct data for second degree friends feeds', function (done) {

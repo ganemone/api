@@ -25,10 +25,17 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
     if (err) {
       return cb(err);
     }
-    var firstDegreeFeed = results[0];
-    var secondDegreeFeed = results[1];
-    var globalFeed = results[2];
-    var all = globalFeed.concat(firstDegreeFeed, secondDegreeFeed);
+
+    var myFeed = results[0];
+    var firstDegreeFeed = results[1];
+    var secondDegreeFeed = results[2];
+    var globalFeed = results[3];
+    var all = globalFeed.concat(myFeed, firstDegreeFeed, secondDegreeFeed);
+
+    console.log('myFeed: ', myFeed);
+    console.log('firstDegreeFeed: ', firstDegreeFeed);
+    console.log('secondDegreeFeed: ', secondDegreeFeed);
+    console.log('globalFeed: ', globalFeed);
 
     var sorted = _.sortBy(all, function(thought) {
       return thought.created_timestamp;
