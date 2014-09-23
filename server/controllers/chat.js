@@ -91,8 +91,14 @@ exports.join = function (req, res, next) {
 // Action: Returns a json list of the users joined chats
 exports.joined = function (req, res, next) {
   var user = res.locals.user;
-  var chats = res.locals.chats;
-  res.end();
+  user.getJoinedChats(function(err, joinedChats) {
+    joinedChats.loadParticipants(function(err, result) {
+      if (err) {
+        return next(err);
+      }
+      res.json(joinedChats.toJSON());
+    });
+  });
 };
 
 // Endpoint /chat/pending
@@ -104,8 +110,9 @@ exports.joined = function (req, res, next) {
 // Action: Returns a json list of the users pending chats
 exports.pending = function (req, res, next) {
   var user = res.locals.user;
-
-  res.end();
+  user.getPendingChats(function(err, pendingChats) {
+    res.end();
+  });
 };
 
 function notifyParticipants(chat, cb) {
