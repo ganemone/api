@@ -13,6 +13,7 @@ var config = {
   local: {
     port: 3000,
     db: {
+      multipleStatements: true,
       connectionLimit: 10,
       host: 'localhost',
       user: 'root',
@@ -32,6 +33,7 @@ var config = {
   development: {
     port: 8052,
     db: {
+      multipleStatements: true,
       connectionLimit: 10,
       host: 'gcloudsql.dev.versapp.co',
       user: 'root',
@@ -51,6 +53,7 @@ var config = {
   production: {
     port: 8052,
     db: {
+      multipleStatements: true,
       connectionLimit: 10,
       host: 'gcloudsql.dev.versapp.co',
       user: 'root',
@@ -70,6 +73,7 @@ var config = {
   test: {
     port: 3000,
     db: {
+      multipleStatements: true,
       connectionLimit: 10,
       host: 'localhost',
       user: 'root',
