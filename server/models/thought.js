@@ -6,7 +6,7 @@ function Thought(data) {
   if (typeof data === 'object') {
     this.id = data.id;
     this.body = data.body;
-    this.imageURL = data.imageURL;
+    this.imageUrl = data.imageUrl;
     this.timestamp = data.timestamp;
     this.username = data.username;
     this.numFavorites = data.numFavorites;
@@ -27,7 +27,7 @@ Thought.prototype.load = function(cb) {
     }
     if (rows.length > 0) {
       self.body = rows[0].body;
-      self.imageURL = rows[0]['image_url']; // jshint ignore:line
+      self.imageUrl = rows[0]['image_url']; // jshint ignore:line
       self.timestamp = rows[0]['created_timestamp']; // jshint ignore:line
       self.username = rows[0].jid;
       return cb(null, true);
