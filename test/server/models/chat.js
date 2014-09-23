@@ -35,7 +35,7 @@ describe('Chat Model', function () {
         });
       });
     });
-    describe('with data', function () {  
+    describe('with data', function () {
       setUpChat(sharedChatData);
       it('should callback with true', function (done) {
         var chat = Chat(1);
@@ -111,11 +111,11 @@ describe('Chat Model', function () {
             assert.ifError(err, 'Should execute without error');
             chat.insertParticipants(function(err, result) {
               assert.ifError(err, 'Should execute without error');
-              assert.equal(result.affectedRows, chat.participants.length);
+              assert.equal(result.affectedRows, chat.participants.length + 1);
               done();
             });
           });
-        });  
+        });
       });
       describe('when there is one participant', function () {
         cleanUpTable('chat');
@@ -127,11 +127,11 @@ describe('Chat Model', function () {
             assert.ifError(err, 'Should execute without error');
             chat.insertParticipants(function(err, result) {
               assert.ifError(err, 'Should execute without error');
-              assert.equal(result.affectedRows, chat.participants.length);
+              assert.equal(result.affectedRows, chat.participants.length + 1);
               done();
             });
           });
-        });  
+        });
       });
     });
   });
@@ -144,7 +144,7 @@ describe('Chat Model', function () {
           assert.equal(result, false);
           done();
         });
-      });  
+      });
     });
     describe('when affecting a row', function () {
       setUpChat(sharedChatData);
@@ -162,7 +162,7 @@ describe('Chat Model', function () {
         setMockChatDB();
         var chat = Chat(1);
         chat.deleteFromID(getFailedResultTest(done));
-      });      
+      });
     });
   });
   describe('deleteFromUUID', function () {
@@ -176,7 +176,7 @@ describe('Chat Model', function () {
           assert.equal(result, false);
           done();
         });
-      });  
+      });
     });
     describe('when affecting a row', function () {
       setUpChat(sharedChatData);
@@ -198,7 +198,7 @@ describe('Chat Model', function () {
           uuid: 'uuid'
         });
         chat.deleteFromUUID(getFailedResultTest(done));
-      });      
+      });
     });
   });
   describe('removeUser', function () {
@@ -220,7 +220,7 @@ describe('Chat Model', function () {
       setUpParticipants({
         chatID: 1,
         username: 'username',
-        status: 'active'    
+        status: 'active'
       });
       it('should return true', function (done) {
         var chat = Chat(sharedChatData);
@@ -228,7 +228,7 @@ describe('Chat Model', function () {
           assert.ifError(err);
           assert.equal(result, true);
           done();
-        }); 
+        });
       });
     });
     describe('when an error is thrown', function () {
@@ -258,7 +258,7 @@ describe('Chat Model', function () {
       setUpParticipants({
         chatID: 1,
         username: 'username',
-        status: 'inactive'    
+        status: 'inactive'
       });
       it('should return true', function (done) {
         var chat = Chat(sharedChatData);
@@ -266,7 +266,7 @@ describe('Chat Model', function () {
           assert.ifError(err);
           assert.equal(result, true);
           done();
-        }); 
+        });
       });
     });
     describe('when an error is thrown', function () {
@@ -294,7 +294,7 @@ function testChat(chat, chatData, withCreated) {
 
 function resetChatDB() {
   Chat.__set__({
-    'db': db 
+    'db': db
   });
 }
 

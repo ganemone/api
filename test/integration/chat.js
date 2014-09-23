@@ -9,6 +9,7 @@ var cleanUpTable = require('../util/cleanUpTable.js');
 var setUpUser = require('../util/setup-user.js');
 var setUpRosterUsers = require('../util/setup-rosterusers.js');
 var setUpThoughts = require('../util/setUpThoughts.js');
+var setUpFullChat = require('../util/setUpFullChat.js');
 // Shared variables
 var validAuth = { username: 'username', password: 'sessionID' };
 var invalidSessionAuth = { username: 'username', password: 'invalid' };
@@ -228,7 +229,72 @@ describe('/join', function () {
 
 });
 describe('/joined', function () {
+  runServer();
+  setUpUser({ username: 'username', password: 'password', sessionID: 'sessionID' });
 
+  setUpFullChat({
+    type: '121',
+    owner: 'username',
+    participants: ['friend1'],
+    name: '121+name',
+  });
+
+  setUpFullChat({
+    type: '121',
+    owner: 'username',
+    participants: ['friend1'],
+    name: '121+name',
+  });
+  setUpFullChat({
+    type: 'group',
+    owner: 'username',
+    participants: ['friend1', 'friend2', 'friend3'],
+    name: 'group+name'
+  });
+  setUpFullChat({
+    type: 'group',
+    owner: 'friend1',
+    participants: ['username', 'friend2', 'friend5'],
+    name: 'group+name+2'
+  });
+  setUpFullChat({
+    type: 'thought',
+    owner: 'username',
+    participants: ['friend1'],
+    name: 'thought+name'
+  });
+  setUpFullChat({
+    type: 'thought',
+    owner: 'friend1',
+    participants: ['username'],
+    ame: 'thought+name+2'
+  });
+
+  before(function (done) {
+    var self = this;
+    var endpoint = config.getEndpoint('/chat/joined');
+    request.get({
+      url: endpoint,
+      auth: validAuth,
+      json: {}
+    }, function(err, res, body) {
+      self.err = err;
+      self.res = res;
+      done();
+    });
+  });
+  it('should execute without error', function () {
+    assert.ifError(this.err);
+  });
+  it('should return 200 status code', function () {
+    assert.equal(this.res.statusCode, 200);
+  });
+  it('should return json content type', function () {
+    assert.equal(this.res.headers['content-type'], 'application/json; charset=utf-8');
+  });
+  it('should return the correct number of chats', function () {
+    assert.equal(this.res.body.length, 4);
+  });
 });
 
 describe('/pending', function () {
