@@ -111,7 +111,12 @@ exports.joined = function (req, res, next) {
 exports.pending = function (req, res, next) {
   var user = res.locals.user;
   user.getPendingChats(function(err, pendingChats) {
-    res.end();
+    pendingChats.loadParticipants(function(err, result) {
+      if (err) {
+        return next(err);
+      }
+      res.json(pendingChats.toJSON());
+    });
   });
 };
 

@@ -228,7 +228,7 @@ describe('/leave', function () {
 describe('/join', function () {
 
 });
-describe('/joined', function () {
+describe('Integration tests for /joined', function () {
   runServer();
   setUpUser({ username: 'username', password: 'password', sessionID: 'sessionID' });
 
@@ -238,7 +238,90 @@ describe('/joined', function () {
     participants: ['friend1'],
     name: '121+name',
   });
+  setUpFullChat({
+    type: '121',
+    owner: 'friend1',
+    participants: ['username'],
+    name: '121+name+2',
+  });
+  setUpFullChat({
+    type: 'group',
+    owner: 'username',
+    participants: ['friend1', 'friend2', 'friend3'],
+    name: 'group+name'
+  });
+  setUpFullChat({
+    type: 'group',
+    owner: 'friend1',
+    participants: ['username', 'friend2', 'friend5'],
+    name: 'group+name+2'
+  });
+  setUpFullChat({
+    type: 'thought',
+    owner: 'username',
+    participants: ['friend1'],
+    name: 'thought+name'
+  });
+  setUpFullChat({
+    type: 'thought',
+    owner: 'friend1',
+    participants: ['username'],
+    name: 'thought+name+2'
+  });
 
+  before(function (done) {
+    var self = this;
+    var endpoint = config.getEndpoint('/chat/joined');
+    request.get({
+      url: endpoint,
+      auth: validAuth,
+      json: {}
+    }, function(err, res, body) {
+      self.err = err;
+      self.res = res;
+      done();
+    });
+  });
+  it('should execute without error', function () {
+    assert.ifError(this.err);
+  });
+  it('should return 200 status code', function () {
+    assert.equal(this.res.statusCode, 200);
+  });
+  it('should return json content type', function () {
+    assert.equal(this.res.headers['content-type'], 'application/json; charset=utf-8');
+  });
+  it('should return the correct number of chats', function () {
+    assert.equal(this.res.body.length, 5);
+    this.res.body.forEach(function(chat) {
+      assert.ok(chat.uuid);
+      if (chat.type === 'group') {
+        assert.equal(chat.name, 'group+name');
+        assert.deepEqual(chat.participants, ['friend1', 'friend2', 'friend3', 'username']);
+        assert.equal(chat.owner, 'username');
+      } else if (chat.type === '121') {
+        assert.ifError(chat.participants);
+        assert.ifError(chat.owner);
+      } else if (chat.type === 'thought') {
+        assert.ifError(chat.participants);
+        assert.ifError(chat.owner);
+      } else {
+        assert.fail('Chat type to be group, 121, or thought', chat.type);
+      }
+    });
+  });
+});
+
+describe('Integration tests for /pending', function () {
+  runServer();
+  setUpUser({ username: 'username', password: 'password', sessionID: 'sessionID' });
+
+  setUpFullChat({
+    type: '121',
+    owner: 'username',
+    participants: ['friend1'],
+    name: '121+name',
+  });
   setUpFullChat({
     type: '121',
     owner: 'username',
@@ -267,12 +350,12 @@ describe('/joined', function () {
     type: 'thought',
     owner: 'friend1',
     participants: ['username'],
-    ame: 'thought+name+2'
+    name: 'thought+name+2'
   });
 
   before(function (done) {
     var self = this;
-    var endpoint = config.getEndpoint('/chat/joined');
+    var endpoint = config.getEndpoint('/chat/pending');
     request.get({
       url: endpoint,
       auth: validAuth,
@@ -293,10 +376,12 @@ describe('/joined', function () {
     assert.equal(this.res.headers['content-type'], 'application/json; charset=utf-8');
   });
   it('should return the correct number of chats', function () {
-    assert.equal(this.res.body.length, 4);
+    assert.equal(this.res.body.length, 1);
+    var chat = this.res.body[0];
+    assert.ok(chat.uuid);
+    assert.equal(chat.type, 'group');
+    assert.equal(chat.name, 'group+name+2');
+    assert.deepEqual(chat.participants, ['username', 'friend2', 'friend5', 'friend1']);
+    assert.equal(chat.owner, 'friend1');
   });
-});
-
-describe('/pending', function () {
-
 });

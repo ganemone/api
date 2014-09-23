@@ -105,8 +105,9 @@ Chat.prototype.insertParticipants = function(cb) {
   this._assertHasParticipants();
   var query = 'INSERT INTO participants (chat_id, username, invited_by, status) VALUES ?';
   var data = [];
+  var status = (this.type === 'group') ? 'pending' : 'active';
   for (var i = 0; i < this.participants.length; i++) {
-    data.push([this.id, this.participants[i], this.owner, 'pending']);
+    data.push([this.id, this.participants[i], this.owner, status]);
   }
 
   data.push([this.id, this.owner, this.owner, 'active']);
@@ -179,6 +180,7 @@ Chat.prototype.toJSON = function() {
   }
   if (this.type === 'group') {
     json.participants = this.participants;
+    json.owner = this.owner;
   }
   return json;
 };
