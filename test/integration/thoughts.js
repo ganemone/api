@@ -74,5 +74,17 @@ describe('Integrations of /thoughts', function () {
     it('should return thoughts', function () {
       assert.equal(this.res.body.length, 9);
     });
+    it('should return the correct properties', function () {
+      for (var i = 0; i < this.res.body.length; i++) {
+        var thought = this.res.body[i];
+        assert.equal(typeof thought.id, 'number');
+        assert.equal(typeof thought.timestamp, 'number');
+        assert.equal(typeof thought.degree, 'number');
+        assert.equal(typeof thought.numFavorites, 'number');
+        assert.equal(typeof thought.hasFavorited, 'boolean');
+        assert.equal(typeof thought.imageUrl, 'string');
+        assert.equal(typeof thought.body, 'string');
+      };
+    });
   });
 });
