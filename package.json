@@ -11,7 +11,7 @@
     "watch": "grunt sass && grunt watch",
     "dtest": "npm test && npm test",
     "test": "NODE_ENV='test' mocha test/ --recursive -R nyan",
-    "testd": "NODE_ENV='test' mocha debug test/ --recursive -R tap",
+    "testd": "NODE_ENV='test' node-debug node_modules/.bin/_mocha test/ --recursive -R nyan",
     "cover": "NODE_ENV=test istanbul cover --report cobertura --print detail _mocha -- -R nyan test/ --recursive --timeout=20000",
     "view-cover": "istanbul report html && open ./coverage/index.html"
   },
