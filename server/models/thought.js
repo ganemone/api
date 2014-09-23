@@ -81,13 +81,13 @@ Thought.prototype.getFavoriteInfo = function(degree) {
 
 Thought.prototype.toJSON = function() {
   return {
-    id: this.id,
-    degree: this.degree,
+    id: Number(this.id),
+    degree: Number(this.degree),
     body: this.body,
-    timestamp: this.timestamp,
+    timestamp: Number(this.timestamp),
     imageUrl: this.imageUrl,
-    numFavorites: this.numFavorites,
-    hasFavorited: this.hasFavorited
+    numFavorites: Number(this.numFavorites),
+    hasFavorited: Boolean(this.hasFavorited)
   };
 };
 
