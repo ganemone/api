@@ -1,3 +1,4 @@
+var async = require('async');
 var Thought = require('../models/thought.js');
 var ThoughtsCollection = require('../collections/thoughts.js');
 // Endpoint: /thoughts

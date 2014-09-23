@@ -205,11 +205,14 @@ function testFeed(length, done) {
     assert.ok(result, "result should be ok");
     assert.equal(result.length, length);
     if (length > 0) {
-      assert.ok(result[0].body, 'should have body attributes');
-      assert.ok(result[0].timestamp, 'should have created timestamp property'); // jshint ignore: line
-      assert.equal(result[0].numFavorites, 0, 'should have num_favorites property'); // jshint ignore: line
-      assert.ok(result[0].hasFavorited, 'should have has favorited property'); // jshint ignore: line
-      assert.ok(result[0].id, 'should have confession_id property'); // jshint ignore: line
+      var thought = result[0];
+      assert.equal(typeof thought.id, 'number');
+      assert.equal(typeof thought.timestamp, 'number');
+      assert.equal(typeof thought.degree, 'number');
+      assert.equal(typeof thought.numFavorites, 'number');
+      assert.equal(typeof thought.hasFavorited, 'boolean');
+      assert.equal(typeof thought.imageUrl, 'string');
+      assert.equal(typeof thought.body, 'string');
     }
     done();
   };

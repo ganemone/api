@@ -87,7 +87,7 @@ Thought.prototype.toJSON = function() {
     timestamp: Number(this.timestamp),
     imageUrl: this.imageUrl,
     numFavorites: Number(this.numFavorites),
-    hasFavorited: Boolean(this.hasFavorited)
+    hasFavorited: (this.hasFavorited === 'true')
   };
 };
 

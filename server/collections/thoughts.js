@@ -38,10 +38,6 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
       return thought.timestamp;
     });
 
-    sorted = _.map(sorted, function(thought) {
-      return createThoughtObj(thought).toJSON();
-    });
-
     cb(null, sorted);
   });
 };
@@ -49,7 +45,19 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
 ThoughtsCollection.prototype.getMyFeed = function(cb) {
   assert.ok(this.user.username, 'Expected user.username to be set');
   var query = this.getMyFeedQuery();
-  db.directQuery(query, cb);
+  db.directQuery(query, this.handleThoughtsFeedQuery(cb));
+};
+
+ThoughtsCollection.prototype.handleThoughtsFeedQuery = function(cb) {
+  return function(err, rows) {
+    if (err) {
+      return cb(err);
+    }
+    rows = _.map(rows, function(thought) {
+      return createThoughtObj(thought).toJSON();
+    });
+    cb(null, rows);
+  };
 };
 
 ThoughtsCollection.prototype.getFirstDegreeFeed = function(cb) {
@@ -61,7 +69,7 @@ ThoughtsCollection.prototype.getFirstDegreeFeed = function(cb) {
   }
 
   var query = this.getFirstDegreeQuery();
-  db.directQuery(query, cb);
+  db.directQuery(query, this.handleThoughtsFeedQuery(cb));
 };
 
 ThoughtsCollection.prototype.getSecondDegreeFeed = function(cb) {
@@ -78,7 +86,7 @@ ThoughtsCollection.prototype.getSecondDegreeFeed = function(cb) {
   }
 
   var query = this.getSecondDegreeQuery();
-  db.directQuery(query, cb);
+  db.directQuery(query, this.handleThoughtsFeedQuery(cb));
 };
 
 ThoughtsCollection.prototype.getGlobalFeed = function(cb) {
@@ -87,7 +95,7 @@ ThoughtsCollection.prototype.getGlobalFeed = function(cb) {
   assert.ok(this.user.secondDegreeFriends, 'Expected user.secondDegreeFriends to be set');
 
   var query = this.getGlobalQuery();
-  db.directQuery(query, cb);
+  db.directQuery(query, this.handleThoughtsFeedQuery(cb));
 };
 
 ThoughtsCollection.prototype.getMyFeedQuery = function() {
