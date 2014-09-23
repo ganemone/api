@@ -72,7 +72,6 @@ describe('Integrations of /thoughts', function () {
       assert.equal(this.res.headers['content-type'], 'application/json; charset=utf-8');
     });
     it('should return thoughts', function () {
-      console.log(this.res.body);
       assert.equal(this.res.body.length, 9);
     });
   });
