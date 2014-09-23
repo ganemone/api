@@ -5,6 +5,8 @@ var url = require('url');
 var _ = require('underscore');
 
 // Internal Modules
+var Chat = require('./chat.js');
+var ChatCollection = require('../collections/chat.js');
 var db = require('../util/db');
 var HttpError = require('../util/http-error.js');
 var Mailer = require('./mailer.js');
@@ -318,6 +320,33 @@ User.prototype.loadSecondDegreeFriends = function(cb) {
     self.secondDegreeFriends = _.pluck(rows, 'username');
     cb(null, self.secondDegreeFriends);
   });
+};
+
+User.prototype.getChatsWithStatus = function(status, cb) {
+  // Shared Variables
+  var self = this;
+  var query = 'SELECT chat.id, chat.uuid, chat.type, chat.owner_id AS owner, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE id IN (SELECT chat_id FROM participants WHERE username = ? && status = ?)';
+  var data = [this.username, status];
+  db.queryWithData(query, data, function(err, rows, sql) {
+    if(err) {
+      return cb(new HttpError('Failed to get chats', 500, err));
+    }
+    var chats = [];
+    rows.forEach(function(row) {
+      var tmpChat = Chat(row);
+      tmpChat.user = self;
+      chats.push(tmpChat);
+    });
+    cb(null, ChatCollection(chats));
+  });
+};
+
+User.prototype.getJoinedChats = function(cb) {
+  return this.getChatsWithStatus('active', cb);
+};
+
+User.prototype.getPendingChats = function(cb) {
+  return this.getChatsWithStatus('pending', cb);
 };
 
 module.exports = function(data) {

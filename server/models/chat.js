@@ -1,7 +1,9 @@
 var assert = require('assert');
 var uuid = require('node-uuid');
+var _ = require('underscore');
 var db = require('../util/db.js');
 var HttpError = require('../util/http-error.js');
+var format = require('mysql').format;
 
 function Chat(data) {
   if (typeof data === 'object') {
@@ -17,6 +19,25 @@ function Chat(data) {
     this.id = data;
   }
 }
+
+Chat.prototype.getParticipantsQuery = function() {
+  this._assertHasID();
+  var query = 'SELECT participants.username FROM participants WHERE chat_id = ?;';
+  var data = [this.id];
+  return format(query, data);
+};
+
+Chat.prototype.loadParticipants = function(cb) {
+  var query = this.getParticipantsQuery();
+  var self = this;
+  db.directQuery(query, function(err, rows) {
+    if(err) {
+      return cb(new HttpError('Failed to load participants', 500, err));
+    }
+    self.participants = _.pluck(rows, 'username');
+    cb(null, rows.length > 0);
+  });
+};
 
 Chat.prototype.load = function(cb) {
   this._assertHasID();
@@ -38,25 +59,6 @@ Chat.prototype.load = function(cb) {
     self.degree= chatRows.degree;
     cb(null, true);
   });
-};
-
-Chat.prototype.getChatsWithStatus = function(status, cb) {
-
-  var data = [this.user.username, status];
-  db.queryWithData(query, data, function(err, rows) {
-    if(err) {
-      return cb(new HttpError('Failed to get chats', 500, err));
-    }
-    return cb(null, rows);
-  });
-};
-
-Chat.prototype.getJoinedChats = function(cb) {
-  return this.getChatsWithStatus('active', cb);
-};
-
-Chat.prototype.getPendingChats = function(cb) {
-  return this.getChatsWithStatus('pending', cb);
 };
 
 Chat.prototype.loadFromUUID = function(cb) {
@@ -104,13 +106,10 @@ Chat.prototype.insertParticipants = function(cb) {
   var query = 'INSERT INTO participants (chat_id, username, invited_by, status) VALUES ?';
   var data = [];
   for (var i = 0; i < this.participants.length; i++) {
-    var tmpArr = [];
-    tmpArr.push(this.id);
-    tmpArr.push(this.participants[i]);
-    tmpArr.push(this.owner);
-    tmpArr.push('pending');
-    data.push(tmpArr);
+    data.push([this.id, this.participants[i], this.owner, 'pending']);
   }
+
+  data.push([this.id, this.owner, this.owner, 'active']);
 
   db.queryWithData(query, [data], function(err, result) {
     if(err) {
@@ -223,6 +222,6 @@ Chat.prototype._assertHasType = function() {
   assert.ok(this.type, 'Expected type to be set');
 };
 
-module.exports = function(id, type, owner, participants) {
-  return new Chat(id, type, owner, participants);
+module.exports = function(data) {
+  return new Chat(data);
 };
