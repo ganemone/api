@@ -2,8 +2,19 @@ var db = require('../util/db.js');
 var HttpError = require('../util/http-error.js');
 var usernameToJID = require('../util/usernameToJID.js');
 
-function Thought(cid) {
-  this.id = cid;
+function Thought(data) {
+  if (typeof data === 'object') {
+    this.id = data.id;
+    this.body = data.body;
+    this.imageURL = data.imageURL;
+    this.timestamp = data.timestamp;
+    this.username = data.username;
+    this.numFavorites = data.numFavorites;
+    this.hasFavorited = data.hasFavorited;
+    this.degree = data.degree;
+  } else {
+    this.id = data;
+  }
 }
 
 Thought.prototype.load = function(cb) {
@@ -43,4 +54,43 @@ Thought.prototype.getDegreeFromUser = function(username, cb) {
   });
 };
 
-module.exports = Thought;
+Thought.prototype.getFavoriteInfo = function(degree) {
+  var query = 'SELECT ' +
+    'CASE ' +
+      'WHEN FIND_IN_SET(?, GROUP_CONCAT(confession_favorites.jid SEPARATOR \',\')) > 0 ' +
+      'THEN \'true\' ' +
+      'ELSE \'false\' ' +
+      'END ' +
+    'AS hasFavorited, ' +
+    'count(confession_favorites.jid) AS numFavorites, ' +
+  'FROM confessions ' +
+  'LEFT JOIN confession_favorites ' +
+  'ON confessions.confession_id = confession_favorites.confession_id ' +
+  'WHERE confessions.confession_id = ?';
+  var data = [this.username, this.id];
+  var self = this;
+  db.queryWithData(query, data, function(err, rows) {
+    if(err) {
+      return cb(new HttpError('Failed to get thought favorite info', 500, err));
+    }
+    self.hasFavorited = rows[0].hasFavorited;
+    self.numFavorites = rows[0].numFavorites;
+    cb(null);
+  });
+};
+
+Thought.prototype.toJSON = function() {
+  return {
+    id: this.id,
+    degree: this.degree,
+    body: this.body,
+    timestamp: this.timestamp,
+    imageUrl: this.imageUrl,
+    numFavorites: this.numFavorites,
+    hasFavorited: this.hasFavorited
+  };
+};
+
+module.exports = function(data) {
+  return new Thought(data);
+};

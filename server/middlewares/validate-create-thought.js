@@ -6,7 +6,7 @@ module.exports = function (req, res, next) {
   if (!req.body.cid) {
     return next(new HttpError('Missing a cid parameter', 406));
   }
-  var thought = new Thought(req.body.cid);
+  var thought = Thought(req.body.cid);
   var username = res.locals.user.username;
   async.waterfall([
     thought.load.bind(thought),

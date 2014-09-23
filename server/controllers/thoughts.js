@@ -1,3 +1,4 @@
+var Thought = require('../models/thought.js');
 var ThoughtsCollection = require('../collections/thoughts.js');
 // Endpoint: /thoughts
 // Method: GET
@@ -18,3 +19,17 @@ exports.index = function(req, res, next) {
     res.json(result);
   });
 };
+
+exports.thought = function(req, res, next) {
+  var cid = req.params.id;
+  var thought = Thought(cid);
+  thought.load(function(err, result) {
+    if (err) {
+      return next(err);
+    }
+    if (!result) {
+      return next(new HttpError('Thought not found', 404));
+    }
+    res.json(thought.toJSON());
+  })
+}

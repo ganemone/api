@@ -45,6 +45,11 @@ module.exports = function setRoutes(app) {
     LoadFriends,
     controllers.thoughts.index
   );
+  app.get(
+    '/thoughts/:id',
+    AuthUser,
+    controllers.thoughts.thought
+  );
   // --------
   // Blacklist
   // --------

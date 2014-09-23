@@ -2,11 +2,13 @@ var async = require('async');
 var assert = require('assert');
 var _ = require('underscore');
 var format = require('mysql').format;
+
+var createThoughtObj = require('../models/thought.js');
 var db = require('../util/db.js');
 
 function ThoughtsCollection(user, since) {
   this.user = user;
-  this.sinceStr = (since > 0) ? format('AND confessions.created_timestamp < ?', [since]) : '';
+  this.sinceStr = (since > 0) ? format('AND UNIX_TIMESTAMP(confessions.created_timestamp) < ?', [since]) : '';
 }
 
 ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
@@ -33,7 +35,11 @@ ThoughtsCollection.prototype.getThoughtsFeed = function(cb) {
     var all = globalFeed.concat(myFeed, firstDegreeFeed, secondDegreeFeed);
 
     var sorted = _.sortBy(all, function(thought) {
-      return thought.created_timestamp;
+      return thought.timestamp;
+    });
+
+    sorted = _.map(sorted, function(thought) {
+      return createThoughtObj(thought).toJSON();
     });
 
     cb(null, sorted);
@@ -154,16 +160,16 @@ ThoughtsCollection.prototype.getSelectQuery = function(degree) {
   return format('' +
     'SELECT confessions.confession_id AS id, ' +
     'confessions.body, ' +
-    'confessions.image_url, ' +
-    'UNIX_TIMESTAMP(confessions.created_timestamp) AS created_timestamp, ' +
+    'confessions.image_url AS imageUrl, ' +
+    'UNIX_TIMESTAMP(confessions.created_timestamp) AS timestamp, ' +
     '\''+ degree + '\' AS degree, ' +
     'CASE ' +
       'WHEN FIND_IN_SET(?, GROUP_CONCAT(confession_favorites.jid SEPARATOR \',\')) > 0 ' +
       'THEN \'true\' ' +
       'ELSE \'false\' ' +
       'END ' +
-    'AS has_favorited, ' +
-    'count(confession_favorites.jid) AS num_favorites, ' +
+    'AS hasFavorited, ' +
+    'count(confession_favorites.jid) AS numFavorites, ' +
     'count(confession_favorites.jid) * 20000 + UNIX_TIMESTAMP(confessions.created_timestamp) AS score ' +
   'FROM confessions ' +
   'LEFT JOIN confession_favorites ' +
