@@ -14,6 +14,7 @@ function Blacklist(user, phones, emails) {
 Blacklist.prototype.hasMadeRequest = function(cb) {
   var query = 'SELECT username FROM blacklist WHERE username = ?';
   var data = [this.user.username];
+  console.log('This users username: ', this.user.username);
   db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(new HttpError('Failed to get username from blacklist table', 500, err));
@@ -83,7 +84,7 @@ Blacklist.prototype.setHasMadeRequest = function(cb) {
   });
 };
 
-Blacklist.prototype.makeRequest = function(cb) {
+Blacklist.prototype.makeRequest = function(callback) {
   var self = this;
   async.waterfall([
     self.hasMadeRequest.bind(self),
@@ -95,10 +96,10 @@ Blacklist.prototype.makeRequest = function(cb) {
     },
     self.addFriends.bind(self),
   ], function(err, results) {
-    cb(err, results);
+    callback(err, results);
     self.setHasMadeRequest(function(err) {
       if (err) {
-        logger.error(err);
+        logger.error('Error setting hasMadeRequest on blacklist: ', err);
       }
     });
   });

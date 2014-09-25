@@ -14,10 +14,10 @@ exports.index = function(req, res, next) {
     if (foundFriends) {
       request.get('http://localhost:5290/notify/blm/' + user.username, function(err, response) {
         if (err) {
-          logger.error('Failed to notify users after blacklist request', {error: err, phones: phones, emails: emails});
+          logger.error('Failed to notify users after blacklist request', { error: err });
         }
         if (response.statusCode !== 200) {
-          logger.error('Response code from notify users not 200', {response: response});
+          logger.error('Response code from notify users not 200', response.statusCode);
         }
       });
     }
