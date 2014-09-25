@@ -98,7 +98,7 @@ module.exports = function setRoutes(app) {
   // Friends
   // -------
   app.get(
-    '/friends',
+    '/friends/active',
     AuthUser,
     LoadFriends.first,
     controllers.friends.index
