@@ -47,14 +47,12 @@ Thought.prototype.getDegreeFromUser = function(username, cb) {
     if(err) {
       return cb(new HttpError('Failed to get degree from user', 500, err));
     }
-    var degree = (result[0].count > 0)
-      ? 1
-      : 2;
+    var degree = (result[0].count > 0) ? 1 : 2;
     cb(null, degree);
   });
 };
 
-Thought.prototype.getFavoriteInfo = function(degree) {
+Thought.prototype.getFavoriteInfo = function(degree, cb) {
   var query = 'SELECT ' +
     'CASE ' +
       'WHEN FIND_IN_SET(?, GROUP_CONCAT(confession_favorites.jid SEPARATOR \',\')) > 0 ' +
