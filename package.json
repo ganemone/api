@@ -40,6 +40,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "basic-auth": "~1.0.0",
+    "body-parser": "~1.8.2",
     "express": "^4.8.5",
     "jade": "^1.5.0",
     "lodash": "^2.4.1",
@@ -50,6 +51,6 @@
     "shallow-settings": "^0.1.0",
     "underscore": "^1.7.0",
     "winston": "^0.8.0",
-    "body-parser": "~1.8.2"
+    "xml2js": "^0.4.4"
   }
 }
