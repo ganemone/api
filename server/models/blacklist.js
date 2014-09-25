@@ -14,11 +14,11 @@ function Blacklist(user, phones, emails) {
 Blacklist.prototype.hasMadeRequest = function(cb) {
   var query = 'SELECT username FROM blacklist WHERE username = ?';
   var data = [this.user.username];
-  db.queryWithData(query, data, function(err, result) {
+  db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(new HttpError('Failed to get username from blacklist table', 500, err));
     }
-    cb(null, result.length > 0);
+    cb(null, rows.length > 0);
   });
 };
 
@@ -52,7 +52,7 @@ Blacklist.prototype.getFriends = function(cb) {
 
 Blacklist.prototype.addFriends = function(usernames, cb) {
   // Callback with false if no usernames were found
-  if (usernames.length === 0) {
+  if ((usernames.length > 0) === false) {
     return cb(null, false);
   }
   var query = 'INSERT INTO rosterusers (username, jid, nick, subscription, ask, server, type) VALUES ?';
@@ -86,14 +86,14 @@ Blacklist.prototype.setHasMadeRequest = function(cb) {
 Blacklist.prototype.makeRequest = function(cb) {
   var self = this;
   async.waterfall([
-    this.hasMadeRequest.bind(this),
+    self.hasMadeRequest.bind(self),
     function(hasMadeRequest, cb) {
       if (hasMadeRequest) {
         return cb(null, false);
       }
       self.getFriends(cb);
     },
-    this.addFriends.bind(this),
+    self.addFriends.bind(self),
   ], function(err, results) {
     cb(err, results);
     self.setHasMadeRequest(function(err) {
