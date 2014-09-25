@@ -19,6 +19,7 @@ exports.index = function (req, res, next) {
     if (err) {
       return next(err);
     }
+    console.log('Result: ', result);
     res.json(result);
   });
 };
@@ -40,7 +41,7 @@ function getVCardFromUsernames(usernames, cb) {
     if(err) {
       return cb(new HttpError('Failed to load vcards', 500, err));
     }
-    cb(null, parseVCards(rows));
+    parseVCards(rows, cb);
   });
 }
 
@@ -57,7 +58,6 @@ function parseVCard(row) {
       if (err) {
         return cb(err);
       }
-      console.log('Result: ', result);
       return cb(null, {
         username: row.username,
         name: result.vCard.FN[0]
