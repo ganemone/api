@@ -57,9 +57,10 @@ function parseVCard(row) {
       if (err) {
         return cb(err);
       }
+      console.log('Result: ', result);
       return cb(null, {
         username: row.username,
-        name: result.vCard.FN
+        name: result.vCard.FN[0]
       });
     });
   };
