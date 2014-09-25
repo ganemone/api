@@ -55,7 +55,7 @@ Blacklist.prototype.addFriends = function(usernames, cb) {
   if (usernames.length === 0) {
     return cb(null, false);
   }
-
+  console.log('Trying to add friends: ', usernames);
   var query = 'INSERT INTO rosterusers (username, jid) VALUES ?';
   var data = [];
   var myUsername = this.user.username;
@@ -65,6 +65,7 @@ Blacklist.prototype.addFriends = function(usernames, cb) {
     data.push([username, myJID]);
     data.push([myUsername, jid]);
   });
+  console.log('Data to add: ', [data]);
   db.queryWithData(query, [data], function(err, result) {
     if (err) {
       return cb(new HttpError('Failed to add friends though blacklist', 500, err));
