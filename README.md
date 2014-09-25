@@ -4,7 +4,7 @@
 
 ### /password/forgot ###
 ```
-#!json
+#!javascript
 {
   method    : "GET",
   parameters:
