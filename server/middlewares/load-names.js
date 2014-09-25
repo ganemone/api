@@ -27,6 +27,9 @@ exports.pending = function(req, res, next) {
 };
 
 function getVCardFromUsernames(usernames, cb) {
+  if (usernames.length === 0) {
+    return cb(null, []);
+  }
   var query = 'SELECT * FROM vcard WHERE username IN (?)';
   var data = [usernames];
   db.queryWithData(query, data, function(err, rows) {
