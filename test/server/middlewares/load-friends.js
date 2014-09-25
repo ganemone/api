@@ -44,7 +44,7 @@ describe('The load friends middleware', function () {
         assert.deepEqual(user.secondDegreeFriends, []);
         done();
       };
-      LoadFriends({}, this.mockRes, mockNext);
+      LoadFriends.second({}, this.mockRes, mockNext);
     });
   });
 
@@ -58,7 +58,7 @@ describe('The load friends middleware', function () {
         testUserFriends(user, ['friend1', 'friend2'], []);
         done();
       };
-      LoadFriends({}, this.mockRes, mockNext);
+      LoadFriends.second({}, this.mockRes, mockNext);
     });
   });
 
@@ -75,7 +75,7 @@ describe('The load friends middleware', function () {
         testUserFriends(user, ['friend1', 'friend2', 'friend3'], ['friend4', 'friend5', 'friend6', 'friend7']);
         done();
       };
-      LoadFriends({}, this.mockRes, mockNext);
+      LoadFriends.second({}, this.mockRes, mockNext);
     });
   });
 
@@ -97,7 +97,7 @@ describe('The load friends middleware', function () {
         testUserFriends(user, ['friend1', 'friend2', 'friend3'], ['friend4', 'friend5', 'friend6', 'friend7']);
         done();
       };
-      LoadFriends({}, this.mockRes, mockNext);
+      LoadFriends.second({}, this.mockRes, mockNext);
     });
   });
 });

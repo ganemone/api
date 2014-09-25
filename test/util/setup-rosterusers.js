@@ -4,29 +4,16 @@ var usernameToJID = require('../../server/util/usernameToJID.js');
 module.exports = function(username, friends) {
 
   before(function (done) {
-    var query = "INSERT INTO rosterusers (username, jid) VALUES ";
+    var query = "INSERT INTO rosterusers (username, jid, subscription) VALUES ?";
     var data = [];
     var jid = usernameToJID(username);
-    for(var i = 0; i < friends.length - 1; i++) {
+    for(var i = 0; i < friends.length; i++) {
       var friend = friends[i];
       var friendJID = usernameToJID(friend);
-      query += "(?, ?), (?, ?), ";
-      data.push(username);
-      data.push(friendJID);
-
-      data.push(friend);
-      data.push(jid);
+      data.push([username, friendJID, 'B']);
+      data.push([friend, jid, 'B']);
     }
-    var lastFriend = friends[friends.length - 1];
-    var lastFriendJID = usernameToJID(lastFriend);
-    query += "(?, ?), (?, ?)";
-    data.push(username);
-    data.push(lastFriendJID);
-
-    data.push(lastFriend);
-    data.push(jid);
-
-    db.queryWithData(query, data, function(err, rows, fields) {
+    db.queryWithData(query, [data], function(err, rows) {
       done();
     });
   });

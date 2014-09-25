@@ -280,7 +280,10 @@ User.prototype.getPasswordResetLink = function() {
 
 User.prototype.loadFriends = function(cb) {
   assert.ok(this.username, 'Expected username to be set');
-  var query = "SELECT username FROM rosterusers WHERE jid = ?";
+  if (this.friends) {
+    return cb(null, this.friends);
+  }
+  var query = "SELECT username FROM rosterusers WHERE jid = ? AND (subscription = \'B\' || subscription = \'T\')";
   var data = [usernameToJID(this.username)];
   var self = this;
   db.queryWithData(query, data, function(err, rows) {
@@ -293,6 +296,9 @@ User.prototype.loadFriends = function(cb) {
 };
 
 User.prototype.loadSecondDegreeFriends = function(cb) {
+  if (this.secondDegreeFriends) {
+    return cb(null, this.secondDegreeFriends);
+  }
   assert.ok(this.username, 'Expected username to be set');
   assert.ok(this.friends, 'Expected friends to be set');
 
@@ -309,7 +315,8 @@ User.prototype.loadSecondDegreeFriends = function(cb) {
   'FROM rosterusers ' +
   'WHERE jid IN (?) ' +
     'AND username NOT IN (?) ' +
-    'AND username != ?';
+    'AND username != ? ' +
+    'AND (subscription = \'B\' || subscription = \'T\')';
 
   var data = [friendJIDS, this.friends, this.username];
   var self = this;

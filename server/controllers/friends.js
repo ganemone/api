@@ -13,3 +13,8 @@ exports.index = function (req, res, next) {
   var user = res.locals.user;
   res.json(user.friends);
 };
+
+exports.pending = function (req, res, next) {
+  var user = res.locals.user;
+  res.json(user.pendingFriends);
+};

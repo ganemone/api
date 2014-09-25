@@ -42,7 +42,7 @@ module.exports = function setRoutes(app) {
   app.get(
     '/thoughts',
     AuthUser,
-    LoadFriends,
+    LoadFriends.second, // Loads up to second degree friends
     controllers.thoughts.index
   );
   app.get(
@@ -94,5 +94,20 @@ module.exports = function setRoutes(app) {
     AuthUser,
     controllers.chat.pending
   );
-
+  // -------
+  // Friends
+  // -------
+  app.get(
+    '/friends',
+    AuthUser,
+    LoadFriends.first,
+    controllers.friends.index
+  );
+  app.get(
+    '/friends/pending',
+    AuthUser,
+    LoadFriends.pending,
+    controllers.friends.pending
+  );
 };
+
