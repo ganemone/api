@@ -295,6 +295,23 @@ User.prototype.loadFriends = function(cb) {
   });
 };
 
+User.prototype.loadPendingFriends = function(cb) {
+  assert.ok(this.username, 'Expected username to be set');
+  if (this.pendingFriends) {
+    return cb(null, this.pendingFriends);
+  }
+  var query = "SELECT username FROM rosterusers WHERE jid = ? AND subscription != \'B\' AND subscription != \'T\')";
+  var data = [usernameToJID(this.username)];
+  var self = this;
+  db.queryWithData(query, data, function(err, rows) {
+    if (err) {
+      return cb(err);
+    }
+    self.pendingFriends = _.pluck(rows, 'username');
+    cb(null, self.pendingFriends);
+  });
+};
+
 User.prototype.loadSecondDegreeFriends = function(cb) {
   if (this.secondDegreeFriends) {
     return cb(null, this.secondDegreeFriends);
