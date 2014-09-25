@@ -85,7 +85,7 @@ Blacklist.prototype.setHasMadeRequest = function(cb) {
 };
 
 Blacklist.prototype.makeRequest = function(callback) {
-  async.waterfall([
+  async.series([
     this.getFriends.bind(this),
     this.addFriends.bind(this),
     this.setHasMadeRequest.bind(this)
