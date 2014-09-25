@@ -8,7 +8,7 @@ var ValidateBlacklist = require('../middlewares/validate-blacklist.js');
 var ValidateCreateChat = require('../middlewares/validate-create-chat.js');
 var ValidateChat = require('../middlewares/validate-chat.js');
 var LoadFriends = require('../middlewares/load-friends.js');
-
+var LoadNames = require('../middlewares/load-names.js');
 
 module.exports = function setRoutes(app) {
   app.get('/health', controllers.health.index);
@@ -101,12 +101,14 @@ module.exports = function setRoutes(app) {
     '/friends/active',
     AuthUser,
     LoadFriends.first,
-    controllers.friends.index
+    LoadNames.active,
+    controllers.friends.active
   );
   app.get(
     '/friends/pending',
     AuthUser,
     LoadFriends.pending,
+    LoadNames.pending,
     controllers.friends.pending
   );
 };
