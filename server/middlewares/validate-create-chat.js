@@ -12,7 +12,7 @@ module.exports = function(req, res, next) {
   if (['121', 'group', 'thought'].indexOf(req.body.type) === -1) {
     return next(new HttpError('Invalid type parameter', 406));
   }
-  
+
   if (req.body.type !== 'thought') {
     if (!req.body.participants) {
       return next(new HttpError('Missing participants parameter', 406));
