@@ -26,11 +26,18 @@ Blacklist.prototype.getFriends = function(cb) {
   var query = '' +
   'SELECT username ' +
   'FROM username_phone_email ' +
-  'WHERE ' +
-    'CONCAT(ccode, phone) IN (?) ' +
-    'OR phone IN (?) ' +
-    'OR email IN (?)';
-  var data = [this.phones, this.phones, this.emails];
+  'WHERE ';
+  var data = [];
+  if (this.phones.length > 0) {
+    query += 'CONCAT(ccode, phone) IN (?) OR phone IN (?) ';
+    data.push(this.phones);
+    data.push(this.phones);
+  }
+  if (this.emails.length > 0) {
+    query += 'OR email IN (?)';
+    data.push(this.emails);
+  }
+
   db.queryWithData(query, data, function(err, rows) {
     if (err) {
       console.error(err);

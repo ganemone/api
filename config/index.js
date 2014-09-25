@@ -77,7 +77,6 @@ var config = {
       connectionLimit: 10,
       host: 'localhost',
       user: 'root',
-      password: 'root',
       database: 'ejabberd_test'
     },
     ip: 'harmon.dev.versapp.co',
