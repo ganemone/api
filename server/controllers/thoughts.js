@@ -1,4 +1,4 @@
-var async = require('async');
+var HttpError = require('../util/http-error.js');
 var Thought = require('../models/thought.js');
 var ThoughtsCollection = require('../collections/thoughts.js');
 // Endpoint: /thoughts
@@ -32,5 +32,5 @@ exports.thought = function(req, res, next) {
       return next(new HttpError('Thought not found', 404));
     }
     res.json(thought.toJSON());
-  })
-}
+  });
+};
