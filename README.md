@@ -7,10 +7,9 @@
 {
   method: "GET",
   authentication: "Basic",
-  parameters:
-    [
-      since: "optional" // timestamp from which to load the thoughts since
-    ]
+  parameters: [
+    since: "optional" // timestamp from which to load the thoughts since
+  ],
   action: "Returns a JSON list of thoughts",
   contentType: "application/json"
 }
@@ -20,13 +19,13 @@
 ```
 #!javascript
 {
-  "id": 1759,
-  "body": "some+thought",
-  "image_url": "someurl"
-  "created_timestamp": 1411095307,
-  "degree": 7,
-  "has_favorited": false,
-  "num_favorites": 0
+  "id"                : 1759,
+  "body"              : "some+thought",
+  "image_url"         : "someurl"
+  "created_timestamp" : 1411095307,
+  "degree"            : 7,
+  "has_favorited"     : false,
+  "num_favorites"     : 0
 }
 ```
 
@@ -42,7 +41,7 @@
   },
   authentication: "Basic",
   parameters: [
-    phones : "required" // array of phone numbers
+    phones : "required", // array of phone numbers
     emails : "required" // array of emails
   ]
 }
@@ -69,26 +68,30 @@ Sends 200
 ```
 #!javascript
 {
-
+  uuid         : "someuuid",
+  name         : "A+chat+name",
+  type         : "121 | group | thought",
+  degree       : "0 | 1 | 2 | 7", // only present for thought conversations
+  participants : ["array", "of", "usernames"], // only present for group chats
+  owner        : "owner username" // only present for group chats
 }
+```
 ## /chat/leave ##
 ### Request ###
 ```
 #!javascript
 {
   method: "GET",
+  authorization: "Basic",
   parameters: [
-
+    uuid : "someuuid" // uuid of chat to leave
   ],
-  action: ""
+  action: "Sets a users status to inactive in the specified chat"
 }
 ```
 ### Response ###
-```
-#!javascript
-{
+Sends 200
 
-}
 ## /chat/join ##
 ### Request ###
 ```
@@ -96,54 +99,64 @@ Sends 200
 {
   method: "GET",
   parameters: [
-
+    uuid : "someuuid" // uuid of chat to join
   ],
-  action: ""
+  action: "Sets a users status to active in the specified chat"
 }
 ```
 ### Response ###
-```
-#!javascript
-{
+Sends 200
 
-}
 ## /chat/joined ##
 ### Request ###
 ```
 #!javascript
 {
   method: "GET",
-  parameters: [
-
-  ],
-  action: ""
+  parameters: [],
+  authorization: "Basic",
+  action: "Returns a list of your current joined chats"
 }
 ```
 ### Response ###
 ```
 #!javascript
-{
-
-}
+[
+  {
+    uuid         : "someuuid",
+    name         : "A+chat+name",
+    type         : "121 | group | thought",
+    degree       : "0 | 1 | 2 | 7", // only present for thought conversations
+    participants : ["array", "of", "usernames"], // only present for group chats
+    owner        : "owner username" // only present for group chats
+  }, ...
+]
+```
 ## /chat/pending ##
 ### Request ###
 ```
 #!javascript
 {
   method: "GET",
-  parameters: [
-
-  ],
-  action: ""
+  parameters: [],
+  authorization: "Basic",
+  action: "Returns a list of your current pending chats"
 }
 ```
 ### Response ###
 ```
 #!javascript
-{
-
-}
-
+[
+  {
+    uuid         : "someuuid",
+    name         : "A+chat+name",
+    type         : "121 | group | thought",
+    degree       : "0 | 1 | 2 | 7", // only present for thought conversations
+    participants : ["array", "of", "usernames"], // only present for group chats
+    owner        : "owner username" // only present for group chats
+  }, ...
+]
+```
 # Web Stuff #
 
 ## /password/forgot ##
@@ -151,11 +164,10 @@ Sends 200
 #!javascript
 {
   method    : "GET",
-  parameters:
-    [
-      username : "required", // a valid username
-      key      : "required" // a password key
-    ],
+  parameters: [
+    username : "required", // a valid username
+    key      : "required" // a password key
+  ],
   action: "Renders a page with a form allowing the user to reset their password"
 }
 ```
@@ -165,13 +177,12 @@ Sends 200
 #!javascript
 {
   method: "GET",
-  parameters:
-    [
-      username : "required", // a valid username
-      key      : "required", // a password key
-      password : "required", // the desired new password
-      confirm  : "required" // a confirmation of the desired new password
-    ],
+  parameters: [
+    username : "required", // a valid username
+    key      : "required", // a password key
+    password : "required", // the desired new password
+    confirm  : "required" // a confirmation of the desired new password
+  ],
   action: Resets the users password, then redirects to a confirmation page
 }
 ```
@@ -181,10 +192,9 @@ Sends 200
 #!javascript
 {
   method: "GET",
-  urlParameters:
-    [
-      email : "required" // the email corresponding to the account having the password reset
-    ],
+  urlParameters: [
+    email : "required" // the email corresponding to the account having the password reset
+  ],
   action: "Creates a password reset key and emails a link to the requesting user"
 }
 ```
