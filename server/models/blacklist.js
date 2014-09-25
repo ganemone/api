@@ -85,23 +85,12 @@ Blacklist.prototype.setHasMadeRequest = function(cb) {
 };
 
 Blacklist.prototype.makeRequest = function(callback) {
-  var self = this;
   async.waterfall([
-    self.hasMadeRequest.bind(self),
-    function(hasMadeRequest, cb) {
-      if (hasMadeRequest) {
-        return cb(null, false);
-      }
-      self.getFriends(cb);
-    },
-    self.addFriends.bind(self),
+    this.getFriends.bind(this),
+    this.addFriends.bind(this),
+    this.setHasMadeRequest.bind(this)
   ], function(err, results) {
     callback(err, results);
-    self.setHasMadeRequest(function(err) {
-      if (err) {
-        logger.error('Error setting hasMadeRequest on blacklist: ', err);
-      }
-    });
   });
 };
 
