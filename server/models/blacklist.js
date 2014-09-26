@@ -2,7 +2,6 @@ var _ = require('underscore');
 var async = require('async');
 var db = require('../util/db.js');
 var HttpError = require('../util/http-error.js');
-var logger = require('../util/logger.js');
 var usernameToJID = require('../util/usernameToJID.js');
 
 function Blacklist(user, phones, emails) {
@@ -56,14 +55,14 @@ Blacklist.prototype.addFriends = function(usernames, cb) {
   if ((usernames.length > 0) === false) {
     return cb(null, false);
   }
-  var query = 'INSERT INTO rosterusers (username, jid, nick, subscription, ask, server, type) VALUES ?';
+  var query = 'INSERT INTO rosterusers (username, jid, subscription, nick, ask, askmessage, server, subscribe, type) VALUES ?';
   var data = [];
   var myUsername = this.user.username;
   var myJID = usernameToJID(myUsername);
   _.each(usernames, function(username) {
     var jid = usernameToJID(username);
-    data.push([username, myJID, 'temp_name', 'B', 'N', 'N', 'item']);
-    data.push([myUsername, jid, 'temp_name', 'B', 'N', 'N', 'item']);
+    data.push([username, myJID, 'B', '', 'N', '', 'N', '', 'item']);
+    data.push([myUsername, jid, 'B', '', 'N', '', 'N', '', 'item']);
   });
   db.queryWithData(query, [data], function(err, result) {
     if (err) {
@@ -74,6 +73,7 @@ Blacklist.prototype.addFriends = function(usernames, cb) {
 };
 
 Blacklist.prototype.setHasMadeRequest = function(cb) {
+  cb = cb || function noop() {};
   var query = 'INSERT INTO blacklist (username) VALUES (?)';
   var data = [this.user.username];
   db.queryWithData(query, data, function(err, result) {
@@ -85,12 +85,13 @@ Blacklist.prototype.setHasMadeRequest = function(cb) {
 };
 
 Blacklist.prototype.makeRequest = function(callback) {
-  async.series([
+  var self = this;
+  async.waterfall([
     this.getFriends.bind(this),
     this.addFriends.bind(this),
-    this.setHasMadeRequest.bind(this)
-  ], function(err, results) {
-    callback(err, results);
+  ], function(err, result) {
+    callback(err, result);
+    self.setHasMadeRequest();
   });
 };
 

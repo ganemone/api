@@ -24,11 +24,16 @@ describe('Blacklist Controller', function () {
         done();
       });
 
+      var mockHasMadeRequest = new Mock(function(cb) {
+        cb(null, false);
+      });
+
       var mockBlist = new Mock(function(user, phones, emails) {
         assert.equal(user.username, 'username');
         assert.deepEqual(phones, mockReq.body.phones);
         assert.deepEqual(emails, mockReq.body.emails);
         return {
+          hasMadeRequest: mockHasMadeRequest.getFn(),
           makeRequest: mockMakeRequest.getFn()
         };
       });
@@ -43,6 +48,7 @@ describe('Blacklist Controller', function () {
 
       var mockEnd = new Mock(function() {
         assert.equal(arguments.length, 0);
+        mockHasMadeRequest.assertCalled();
         mockBlist.assertCalled();
         mockMakeRequest.assertCalled();
         mockNext.assertNotCalled();
@@ -95,11 +101,16 @@ describe('Blacklist Controller', function () {
         end: mockEnd.getFn()
       };
 
+      var mockHasMadeRequest = new Mock(function(cb) {
+        cb(null, false);
+      });
+
       var mockBlist = new Mock(function(user, phones, emails) {
         assert.equal(user.username, 'username');
         assert.deepEqual(phones, mockReq.body.phones);
         assert.deepEqual(emails, mockReq.body.emails);
         return {
+          hasMadeRequest: mockHasMadeRequest.getFn(),
           makeRequest: mockMakeRequest.getFn()
         };
       });

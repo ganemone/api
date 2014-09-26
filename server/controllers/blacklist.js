@@ -26,7 +26,7 @@ function makeRequest(blist, res, next) {
       return next(err);
     }
     if (foundFriends) {
-      request.get('http://localhost:5290/notify/blm/' + blist.user.username, function(err, response) {
+      request.get('http://localhost:5290/notify/blm/' + res.locals.user.username, function(err, response) {
       if (err) {
           logger.error('Failed to notify users after blacklist request', { error: err });
         }
