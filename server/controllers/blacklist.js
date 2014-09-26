@@ -26,11 +26,11 @@ function makeRequest(blist, res, next) {
       return next(err);
     }
     if (foundFriends) {
-      request.get('http://localhost:5290/notify/blm/' + res.locals.user.username, function(err, response) {
-      if (err) {
+      request.get('http://localhost:5290/notify/blm?username=' + res.locals.user.username, function(err, response) {
+        if (err) {
           logger.error('Failed to notify users after blacklist request', { error: err });
         }
-        if (response.statusCode !== 200) {
+        else if (response.statusCode !== 200) {
           logger.error('Response code from notify users not 200', response.statusCode);
         }
       });
