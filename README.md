@@ -54,7 +54,7 @@ Sends 200
 ```
 #!javascript
 {
-  method: "GET",
+  method: "POST",
   parameters: [
     type         : "required", // 121 || thought || group
     participants : "required", // array of participants
@@ -81,7 +81,7 @@ Sends 200
 ```
 #!javascript
 {
-  method: "GET",
+  method: "POST",
   authorization: "Basic",
   parameters: [
     uuid : "someuuid" // uuid of chat to leave
@@ -97,7 +97,7 @@ Sends 200
 ```
 #!javascript
 {
-  method: "GET",
+  method: "POST",
   parameters: [
     uuid : "someuuid" // uuid of chat to join
   ],
