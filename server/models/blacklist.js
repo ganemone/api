@@ -13,7 +13,6 @@ function Blacklist(user, phones, emails) {
 Blacklist.prototype.hasMadeRequest = function(cb) {
   var query = 'SELECT username FROM blacklist WHERE username = ?';
   var data = [this.user.username];
-  console.log('This users username: ', this.user.username);
   db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(new HttpError('Failed to get username from blacklist table', 500, err));

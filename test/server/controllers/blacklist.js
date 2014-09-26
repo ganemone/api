@@ -39,7 +39,7 @@ describe('Blacklist Controller', function () {
       });
 
       var mockGet = new Mock(function(url, cb) {
-        assert.equal(url, 'http://localhost:5290/notify/blm/username');
+        assert.equal(url, 'http://localhost:5290/notify/blm?username=username');
         assert.equal(typeof cb, 'function');
         cb(null, {
           statusCode: 200
