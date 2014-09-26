@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "jshint": "jshint server/",
-    "start": "NODE_ENV='development' nodemon --watch server/ index.js",
+    "start": "NODE_ENV='local' nodemon --watch server/ index.js",
+    "dev": "NODE_ENV='development' node index.js",
+    "forever-dev": "NODE_ENV='development' forever start index.js",
+    "forever-prod": "NODE_ENV='production' forever start index.js",
     "production": "NODE_ENV='production' node index.js",
     "build": "grunt sass",
     "watch": "grunt sass && grunt watch",
