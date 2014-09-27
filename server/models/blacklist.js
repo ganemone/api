@@ -33,9 +33,11 @@ Blacklist.prototype.getFriends = function(cb) {
     data.push(this.phones);
   }
   if (this.emails.length > 0) {
-    query += 'OR email IN (?)';
+    query += 'OR email IN (?) ';
     data.push(this.emails);
   }
+  query += 'AND username != ?';
+  data.push(this.user.username);
 
   db.queryWithData(query, data, function(err, rows) {
     if (err) {
