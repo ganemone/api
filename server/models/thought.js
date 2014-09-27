@@ -53,7 +53,7 @@ Thought.prototype.getDegreeFromUser = function(username, cb) {
   });
 };
 
-Thought.prototype.getFavoriteInfo = function(degree, cb) {
+Thought.prototype.getFavoriteInfo = function(cb) {
   var query = 'SELECT ' +
     'CASE ' +
       'WHEN FIND_IN_SET(?, GROUP_CONCAT(confession_favorites.jid SEPARATOR \',\')) > 0 ' +

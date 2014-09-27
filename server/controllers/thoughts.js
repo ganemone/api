@@ -30,7 +30,8 @@ exports.thought = function(req, res, next) {
     thought.load.bind(thought),
     function(cb) {
       thought.getDegreeFromUser(user.username, cb);
-    }
+    },
+    thought.getFavoriteInfo.bind(thought)
   ], function(err, results) {
     if (err) {
       return next(err);
