@@ -37,8 +37,8 @@ function Server(config) {
 function errorHandler(err, req, res, next) {
 var env = process.env.NODE_ENV || 'development';
   if(err) {
-    logger.error('SHARED ERROR HANDLER');
-    logger.error('Error: ' + err);
+    logger.error('SHARED ERROR HANDLER', err);
+    logger.error('Error: ' + err.error);
     if(err.statusCode) {
       // Redirect if err contains redirect path
       if (err.redirect) {
