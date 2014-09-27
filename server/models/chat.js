@@ -10,6 +10,7 @@ function Chat(data) {
     this.id = data.id;
     this.type = data.type;
     this.owner = data.owner;
+    this.cid = data.cid;
     this.participants = data.participants;
     this.degree = data.degree;
     this.name = data.name;
@@ -87,8 +88,8 @@ Chat.prototype.insert = function(cb) {
   this.uuid = uuid.v4();
   this._assertHasType();
   this._assertHasOwner();
-  var query = 'INSERT INTO chat (uuid, type, owner_id, name, degree) VALUES (?)';
-  var data = [[this.uuid, this.type, this.owner, this.name, this.degree]];
+  var query = 'INSERT INTO chat (uuid, type, owner_id, name, degree, cid) VALUES (?)';
+  var data = [[this.uuid, this.type, this.owner, this.name, this.degree, this.cid]];
   var self = this;
   db.queryWithData(query, data, function(err, result) {
     if(err) {

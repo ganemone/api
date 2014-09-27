@@ -21,6 +21,7 @@ exports.create = function (req, res, next) {
 
   if (chat.type === 'thought') {
     chat.name = res.locals.thought.body;
+    chat.cid = res.locals.thought.id;
   }
 
   async.series([
