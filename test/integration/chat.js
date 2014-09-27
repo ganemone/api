@@ -91,6 +91,7 @@ describe('Integration Tests for /chat', function () {
           assert.equal(res.statusCode, 200);
           assert.ok(res.body.uuid);
           assert.ok(res.body.name);
+          assert.ok(res.body.isOwner);
           assert.ifError(res.body.participants);
           assert.equal(res.body.type, '121');
           assert.ifError(res.body.degree);
@@ -302,6 +303,7 @@ describe('Integration tests for /joined', function () {
       } else if (chat.type === '121') {
         assert.ifError(chat.participants);
         assert.ifError(chat.owner);
+        assert.equal(chat.isOwner, (chat.name === '121+name'));
       } else if (chat.type === 'thought') {
         assert.ifError(chat.participants);
         assert.ifError(chat.owner);

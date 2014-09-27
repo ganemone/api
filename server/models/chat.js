@@ -181,10 +181,11 @@ Chat.prototype.toJSON = function() {
   if (this.type === 'thought') {
     json.degree = this.degree;
     json.cid = this.cid;
-  }
-  if (this.type === 'group') {
+  } else if (this.type === 'group') {
     json.participants = this.participants;
     json.owner = this.owner;
+  } else {
+    json.isOwner = (this.owner === this.user.username);
   }
   return json;
 };
