@@ -127,6 +127,7 @@ Sends 200
   degree       : "0 | 1 | 2 | 7", // only present for thought conversations
   participants : ["array", "of", "usernames"], // only present for group chats
   owner        : "owner username" // only present for group chats
+  isOwner      : true | false                  // only present for one to one chats
 }
 ```
 ## /chat/leave ##
@@ -179,9 +180,10 @@ Sends 200
     uuid         : "someuuid",
     name         : "A+chat+name",
     type         : "121 | group | thought",
-    degree       : "0 | 1 | 2 | 7", // only present for thought conversations
+    degree       : "0 | 1 | 2 | 7",              // only present for thought conversations
     participants : ["array", "of", "usernames"], // only present for group chats
-    owner        : "owner username" // only present for group chats
+    owner        : "owner username"              // only present for group chats
+    isOwner      : true | false                  // only present for one to one chats
   }, ...
 ]
 ```
@@ -207,6 +209,7 @@ Sends 200
     degree       : "0 | 1 | 2 | 7", // only present for thought conversations
     participants : ["array", "of", "usernames"], // only present for group chats
     owner        : "owner username" // only present for group chats
+    isOwner      : true | false                  // only present for one to one chats
   }, ...
 ]
 ```
