@@ -1,4 +1,3 @@
-var winston = require('winston');
 var Settings = require('shallow-settings');
 var nodemailer = require('nodemailer');
 var url = require('url');

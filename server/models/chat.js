@@ -190,9 +190,7 @@ Chat.prototype.getName = function() {
   if (this.name) {
     return this.name;
   }
-  this.name = (this.owner === this.user.username)
-    ? this.participants[0]
-    : 'Anonymous Friend';
+  this.name = (this.owner === this.user.username) ? this.participants[0] : 'Anonymous Friend';
   return this.name;
 };
 
