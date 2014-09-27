@@ -300,7 +300,7 @@ User.prototype.loadPendingFriends = function(cb) {
   if (this.pendingFriends) {
     return cb(null, this.pendingFriends);
   }
-  var query = "SELECT username FROM rosterusers WHERE jid = ? AND subscription != \'B\' AND subscription != \'T\')";
+  var query = "SELECT username FROM rosterusers WHERE jid = ? AND (subscription != \'B\' AND subscription != \'T\')";
   var data = [usernameToJID(this.username)];
   var self = this;
   db.queryWithData(query, data, function(err, rows) {
