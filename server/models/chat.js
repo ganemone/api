@@ -42,7 +42,7 @@ Chat.prototype.loadParticipants = function(cb) {
 
 Chat.prototype.load = function(cb) {
   this._assertHasID();
-  var query = 'SELECT chat.uuid, chat.type, chat.owner_id, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE chat.id = ?';
+  var query = 'SELECT chat.uuid, chat.cid, chat.type, chat.owner_id, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE chat.id = ?';
   var data = [this.id];
   var self = this;
   db.queryWithData(query, data, function(err, rows) {
@@ -58,13 +58,14 @@ Chat.prototype.load = function(cb) {
     self.owner = chatRows.owner_id; // jshint ignore: line
     self.created = chatRows.created;
     self.degree= chatRows.degree;
+    self.cid = chatRows.cid;
     cb(null, true);
   });
 };
 
 Chat.prototype.loadFromUUID = function(cb) {
   this._assertHasUUID();
-  var query = 'SELECT chat.id, chat.type, chat.owner_id, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE chat.uuid = ?';
+  var query = 'SELECT chat.id, chat.cid, chat.type, chat.owner_id, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE chat.uuid = ?';
   var data = [this.uuid];
   var self = this;
   db.queryWithData(query, data, function(err, rows) {
@@ -80,6 +81,7 @@ Chat.prototype.loadFromUUID = function(cb) {
     self.owner = chatRows.owner_id; // jshint ignore: line
     self.created = chatRows.created;
     self.degree= chatRows.degree;
+    self.cid = chatRows.cid;
     cb(null, true);
   });
 };
@@ -178,6 +180,7 @@ Chat.prototype.toJSON = function() {
   };
   if (this.type === 'thought') {
     json.degree = this.degree;
+    json.cid = this.cid;
   }
   if (this.type === 'group') {
     json.participants = this.participants;

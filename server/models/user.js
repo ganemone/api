@@ -349,7 +349,7 @@ User.prototype.loadSecondDegreeFriends = function(cb) {
 User.prototype.getChatsWithStatus = function(status, cb) {
   // Shared Variables
   var self = this;
-  var query = 'SELECT chat.id, chat.uuid, chat.type, chat.name, chat.owner_id AS owner, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE id IN (SELECT chat_id FROM participants WHERE username = ? && status = ?)';
+  var query = 'SELECT chat.id, chat.cid, chat.uuid, chat.type, chat.name, chat.owner_id AS owner, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE id IN (SELECT chat_id FROM participants WHERE username = ? && status = ?)';
   var data = [this.username, status];
   db.queryWithData(query, data, function(err, rows) {
     if(err) {
