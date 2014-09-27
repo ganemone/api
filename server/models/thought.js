@@ -43,12 +43,13 @@ Thought.prototype.getDegreeFromUser = function(username, cb) {
   if (username === this.username) {
     cb(null, 0);
   }
+  var self = this;
   db.queryWithData(query, data, function(err, result) {
     if(err) {
       return cb(new HttpError('Failed to get degree from user', 500, err));
     }
-    var degree = (result[0].count > 0) ? 1 : 2;
-    cb(null, degree);
+    self.degree = (result[0].count > 0) ? 1 : 2;
+    cb(null, self.degree);
   });
 };
 

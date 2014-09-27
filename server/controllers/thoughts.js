@@ -1,3 +1,4 @@
+var async = require('async');
 var HttpError = require('../util/http-error.js');
 var Thought = require('../models/thought.js');
 var ThoughtsCollection = require('../collections/thoughts.js');
@@ -22,13 +23,19 @@ exports.index = function(req, res, next) {
 };
 
 exports.thought = function(req, res, next) {
+  var user = res.locals.user;
   var cid = req.params.id;
   var thought = Thought(cid);
-  thought.load(function(err, result) {
+  async.series([
+    thought.load.bind(thought),
+    function(cb) {
+      thought.getDegreeFromUser(user.username, cb);
+    }
+  ], function(err, results) {
     if (err) {
       return next(err);
     }
-    if (!result) {
+    if (!results[0]) {
       return next(new HttpError('Thought not found', 404));
     }
     res.json(thought.toJSON());
