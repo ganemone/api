@@ -61,7 +61,7 @@ Thought.prototype.getFavoriteInfo = function(cb) {
       'ELSE \'false\' ' +
       'END ' +
     'AS hasFavorited, ' +
-    'count(confession_favorites.jid) AS numFavorites, ' +
+    'count(confession_favorites.jid) AS numFavorites ' +
   'FROM confessions ' +
   'LEFT JOIN confession_favorites ' +
   'ON confessions.confession_id = confession_favorites.confession_id ' +
