@@ -57,9 +57,9 @@ Sends 200
   method: "POST",
   parameters: [
     type         : "required", // 121 || thought || group
-    participants : "required", // array of participants
-    cid          : "depends",  // required if type === 'thought' - id of thought
-    name         : "depends"   // required if type === 'group' - name of group
+    participants : "depends", // required if type == 'group' || type == '121'
+    cid          : "depends",  // required if type == 'thought' - id of thought
+    name         : "depends"   // required if type == 'group' - name of group
   ],
   action: "Creates a chat, and returns the chat to the user"
 }
