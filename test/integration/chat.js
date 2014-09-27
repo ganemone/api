@@ -378,6 +378,7 @@ describe('Integration tests for /pending', function () {
   it('should return the correct number of chats', function () {
     assert.equal(this.res.body.length, 1);
     var chat = this.res.body[0];
+    assert.ifError(chat.id);
     assert.ok(chat.uuid);
     assert.equal(chat.type, 'group');
     assert.equal(chat.name, 'group+name+2');
