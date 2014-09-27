@@ -1,5 +1,58 @@
 # Versapp API #
 
+## /friends/active ##
+### Request ###
+```
+#!javascript
+{
+  method: "GET",
+  authentication: "Basic",
+  parameters: [],
+  action: "Returns a JSON list of current friends",
+  contentType: "application/json"
+}
+```
+### Response ###
+```
+#!javascript
+[
+  {
+    username: 'username',
+    name: 'First Last'
+  },
+  {
+    username: 'username',
+    name: 'First Last'
+  }...
+]
+```
+## /friends/pending ##
+### Request ###
+```
+#!javascript
+{
+  method: "GET",
+  authentication: "Basic",
+  parameters: [],
+  action: "Returns a JSON list of pending friends",
+  contentType: "application/json"
+}
+```
+### Response ###
+```
+#!javascript
+[
+  {
+    username: 'username',
+    name: 'First Last'
+  },
+  {
+    username: 'username',
+    name: 'First Last'
+  }...
+]
+```
+
 ## /thoughts ##
 ### Request ###
 ```
