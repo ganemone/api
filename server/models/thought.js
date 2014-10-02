@@ -41,6 +41,7 @@ Thought.prototype.getDegreeFromUser = function(username, cb) {
   var jid = usernameToJID(this.username);
   var data = [jid, username];
   if (username === this.username) {
+    this.degree = 0;
     return cb(null, 0);
   }
   var self = this;
