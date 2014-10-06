@@ -1,6 +1,7 @@
 var assert = require('assert');
 var expect = require('chai').expect;
 var setUpUser = require('../../util/setup-user.js');
+var setUpDeviceToken = require('../../util/setUpDeviceToken.js');
 var User = require('../../../server/models/user');
 var cleanUpTable = require('../../util/cleanUpTable.js');
 
@@ -156,6 +157,51 @@ describe('A user model', function () {
         assert.ifError(err);
         expect(result).to.equal(false);
         done();
+      });
+    });
+  });
+  describe('loadDeviceInfo', function () {
+    setUpDeviceToken('somedude', 'sometoken', 'android');
+    setUpDeviceToken('thisguy', 'anothertoken', 'ios');
+    describe('when there is no info', function () {
+      it('should not load any data', function (done) {
+        var user = User({username: 'username'});
+        user.getDeviceInfo(function(err) {
+          assert.ifError(err);
+          assert.equal(user.hasAndroid(), false);
+          assert.equal(user.hasIOS(), false);
+          assert.ifError(user.deviceType);
+          assert.ifError(user.token);
+          done();
+        });
+      });
+    });
+    describe('when it is an android phone', function () {
+      setUpDeviceToken('username', 'token', 'android');
+      it('should load the token correctly', function (done) {
+        var user = User({username: 'username'});
+        user.getDeviceInfo(function(err) {
+          assert.ifError(err);
+          assert.equal(user.hasAndroid(), true);
+          assert.equal(user.hasIOS(), false);
+          assert.equal(user.deviceType, 'android');
+          assert.equal(user.token, 'token');
+          done();
+        });
+      });
+    });
+    describe('when it is an iOS phone', function () {
+      setUpDeviceToken('username', 'token', 'ios');
+      it('should load the token correctly', function (done) {
+        var user = User({username: 'username'});
+        user.getDeviceInfo(function(err) {
+          assert.ifError(err);
+          assert.equal(user.hasAndroid(), false);
+          assert.equal(user.hasIOS(), true);
+          assert.equal(user.deviceType, 'ios');
+          assert.equal(user.token, 'token');
+          done();
+        });
       });
     });
   });

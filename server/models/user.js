@@ -373,6 +373,30 @@ User.prototype.getPendingChats = function(cb) {
   return this.getChatsWithStatus('pending', cb);
 };
 
+User.prototype.getDeviceInfo = function(cb) {
+  var query = 'SELECT token, type FROM device_tokens WHERE username = ?';
+  var data = [this.username];
+  var self = this;
+  db.queryWithData(query, data, function(err, rows) {
+    if(err) {
+      return cb(new HttpError('Failed to load user device info', 500, err));
+    }
+    if (rows.length > 0) {
+      self.token = rows[0].token;
+      self.deviceType = rows[0].type;
+    }
+    cb();
+  });
+};
+
+User.prototype.hasAndroid = function() {
+  return (this.deviceType === 'android');
+};
+
+User.prototype.hasIOS = function() {
+  return (this.deviceType === 'ios');
+};
+
 module.exports = function(data) {
   return new User(data);
 };
