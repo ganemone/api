@@ -5,7 +5,7 @@ var HttpError = require('../util/http-error.js');
 // Side Effects: res.locals.chat
 module.exports = function (req, res, next) {
   if (!req.body.uuid) {
-    return next(new HttpError('Missing Chat UUID Parameter'));
+    return next(new HttpError('Missing Chat UUID Parameter', 406));
   }
 
   var chat = Chat({
