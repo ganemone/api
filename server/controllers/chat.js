@@ -45,7 +45,7 @@ exports.create = function (req, res, next) {
 // Method: POST
 // Auth: Basic
 // Parameters:
-//    - chatUUID | required
+//    - uuid | required
 // Middlewares:
 //    - auth-user
 //    - json body parser
@@ -66,7 +66,7 @@ exports.leave = function (req, res, next) {
 // Method: POST
 // Auth: Basic
 // Parameters:
-//    - chatUUID | required
+//    - uuid | required
 // Middlewares:
 //    - auth-user
 //    - json body parser

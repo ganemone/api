@@ -4,12 +4,12 @@ var HttpError = require('../util/http-error.js');
 // Preconditions: body parser.json middleware
 // Side Effects: res.locals.chat
 module.exports = function (req, res, next) {
-  if (!req.body.chatUUID) {
-    return next(new HttpError('Missing Chat UUIID Parameter'));
+  if (!req.body.uuid) {
+    return next(new HttpError('Missing Chat UUID Parameter'));
   }
 
   var chat = Chat({
-    uuid: req.body.chatUUID,
+    uuid: req.body.uuid,
     user: res.locals.user
   });
 
