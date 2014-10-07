@@ -27,13 +27,10 @@ exports.create = function (req, res, next) {
   async.series([
     chat.insert.bind(chat),
     chat.insertParticipants.bind(chat),
-    function (cb) {
-      if (chat.type === 'group') {
-        return notifyParticipants(chat, cb);
-      }
-      cb();
-    }
-  ], function (err, result) {
+    chat.loadParticipantsNames.bind(chat),
+    notifyIfGroup(chat)
+  ],
+  function (err, result) {
     if (err) {
       return next(err);
     }
@@ -130,6 +127,15 @@ function handleChatsResponse(chats, res, next) {
     }
     res.json(chats.toJSON());
   });
+}
+
+function notifyIfGroup(chat) {
+  return function (cb) {
+    if (chat.isGroup()) {
+      return notifyParticipants(chat, cb);
+    }
+    cb();
+  };
 }
 
 function notifyParticipants(chat, cb) {

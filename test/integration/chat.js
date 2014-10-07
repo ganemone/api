@@ -1,5 +1,7 @@
 // External Modules
-var assert = require('chai').assert;
+var chai = require('chai');
+chai.config.includeStack = true;
+var assert = chai.assert;
 var request = require('request');
 // Internal Modules
 var config = require('../../config/index.js');
@@ -74,6 +76,14 @@ function setUp() {
   setUpRosterUsers('friend1', ['friend2', 'friend3']);
   setUpRosterUsers('friend2', ['friend3', 'friend4']);
   setUpRosterUsers('friend3', ['someguy', 'anotherguy']);
+
+  setUpVCard('username', 'my name');
+  setUpVCard('friend1', 'friend1 name');
+  setUpVCard('friend2', 'friend2 name');
+  setUpVCard('friend3', 'friend3 name');
+  setUpVCard('friend4', 'friend4 name');
+  setUpVCard('someguy', 'some guy');
+  setUpVCard('anotherguy', 'another guy');
 }
 
 function testChatDBEntry(chatID, expectedChatValues, expectedParticipantEntries, done) {
@@ -325,13 +335,11 @@ describe('Integration tests for /joined', function () {
     type: '121',
     owner: 'username',
     participants: ['friend1'],
-    name: '121+name',
   });
   setUpFullChat({
     type: '121',
     owner: 'friend1',
     participants: ['username'],
-    name: '121+name+2',
   });
   setUpFullChat({
     type: 'group',
@@ -406,7 +414,6 @@ describe('Integration tests for /joined', function () {
       } else if (chat.type === '121') {
         assert.ifError(chat.participants);
         assert.ifError(chat.owner);
-        assert.equal(chat.isOwner, (chat.name === '121+name'));
         if (chat.isOwner) {
           assert.equal(chat.name, 'friend1 name');
         } else {

@@ -5,7 +5,7 @@ var rewire = require('rewire');
 var chat = rewire('../../../server/controllers/chat.js');
 var Mock = require('../../util/mock.js');
 
-describe('A Chat Controller\'s', function () {
+describe('ChatController', function () {
   describe('create method applied to', function () {
     describe('a one to one', function () {
       it('should work', function (done) {
@@ -103,7 +103,7 @@ describe('A Chat Controller\'s', function () {
 function getMockWithCB(args, error, result) {
   return new Mock(function () {
     assert.equal(arguments.length, args.length);
-    for(var i = 0; i < arguments.length; i++) {
+    for (var i = 0; i < arguments.length; i++) {
       assert.equal(typeof arguments[i], args[i]);
     }
     var cb = arguments[arguments.length - 1];
@@ -114,15 +114,15 @@ function getMockWithCB(args, error, result) {
 function getMockWithDone(args, called, notCalled, done) {
   return new Mock(function () {
     assert.equal(arguments.length, args.length);
-    for(var i = 0; i < arguments.length; i++) {
+    for (var i = 0; i < arguments.length; i++) {
       assert.equal(typeof arguments[i], args[i]);
     }
-    for (var i = 0; i < called.length; i++) {
+    for (i = 0; i < called.length; i++) {
       called[i].assertCalledOnce();
     }
-    for (var i = 0; i < notCalled.length; i++) {
+    for (i = 0; i < notCalled.length; i++) {
       notCalled[i].assertNotCalled();
-    };
+    }
     done();
   });
 }
@@ -134,10 +134,10 @@ function getMockToJSON() {
 }
 
 function getMockInsert(err) {
-  return  new Mock(function mockInsert(cb) {
+  return new Mock(function mockInsert(cb) {
     assert.equal(typeof cb, 'function');
-    cb(err, {}); 
-  }); 
+    cb(err, {});
+  });
 }
 
 function getMockInsertParticipants(err) {
@@ -155,16 +155,10 @@ function getMockNotifyParticipants(err) {
   });
 }
 
-function getMockRes(type, mockJSON, mockInsert, mockInsertParticipants, mockToJSON) {
+function getMockRes(mockJSON, mockChat) {
   return {
     locals: {
-      chat: {
-        id: 1,
-        type: type,
-        insert: mockInsert.getFn(),
-        insertParticipants: mockInsertParticipants.getFn(),
-        toJSON: mockToJSON.getFn()
-      }
+      chat: mockChat
     },
     json: mockJSON.getFn()
   };
@@ -181,9 +175,17 @@ function getMockNext(error, done) {
   });
 }
 
+function getMockLoadParticipantsNames(error) {
+  return new Mock(function mockLoadParticipantsNames(cb) {
+    assert.equal(typeof cb, 'function');
+    cb(error, {});
+  });
+}
+
 function testCreate(type, done, error) {
   var mockInsert = getMockInsert(error);
   var mockInsertParticipants = getMockInsertParticipants(error);
+  var mockLoadParticipantsNames = getMockLoadParticipantsNames(error);
   var mockNotifyParticipants = getMockNotifyParticipants(error);
   var mockNext = getMockNext(error, done);
   var mockToJSON = getMockToJSON();
@@ -195,17 +197,28 @@ function testCreate(type, done, error) {
   var mockJSON = new Mock(function mockJSON(data) {
     mockInsert.assertCalledOnce();
     mockInsertParticipants.assertCalledOnce();
+    mockLoadParticipantsNames.assertCalledOnce();
     if (type === 'group') {
       mockNotifyParticipants.assertCalledOnce();
     } else {
       mockNotifyParticipants.assertNotCalled();
     }
-    
+
     assert.ok(data);
     done();
   });
-
-  var mockRes = getMockRes(type, mockJSON, mockInsert, mockInsertParticipants, mockToJSON);
+  var mockChat = {
+    id: 1,
+    type: type,
+    insert: mockInsert.getFn(),
+    insertParticipants: mockInsertParticipants.getFn(),
+    loadParticipantsNames: mockLoadParticipantsNames.getFn(),
+    toJSON: mockToJSON.getFn(),
+    isGroup: function() {
+      return type === 'group'
+    }
+  };
+  var mockRes = getMockRes(mockJSON, mockChat);
 
   if (type === 'thought') {
     mockRes.locals.thought = {};
