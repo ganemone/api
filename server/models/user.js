@@ -374,6 +374,9 @@ User.prototype.getPendingChats = function(cb) {
 };
 
 User.prototype.getDeviceInfo = function(cb) {
+  if (this.token && this.deviceType) {
+    return cb();
+  }
   var query = 'SELECT token, type FROM device_tokens WHERE username = ?';
   var data = [this.username];
   var self = this;

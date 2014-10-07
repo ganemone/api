@@ -27,7 +27,7 @@ exports.create = function (req, res, next) {
   async.series([
     chat.insert.bind(chat),
     chat.insertParticipants.bind(chat),
-    function(cb) {
+    function (cb) {
       if (chat.type === 'group') {
         return notifyParticipants(chat, cb);
       }
@@ -92,13 +92,11 @@ exports.join = function (req, res, next) {
 // Action: Returns a json list of the users joined chats
 exports.joined = function (req, res, next) {
   var user = res.locals.user;
-  user.getJoinedChats(function(err, joinedChats) {
-    joinedChats.loadParticipants(function(err, result) {
-      if (err) {
-        return next(err);
-      }
-      res.json(joinedChats.toJSON());
-    });
+  user.getJoinedChats(function (err, joinedChats) {
+    if (err) {
+      return next(err);
+    }
+    handleChatsResponse(joinedChats, res, next);
   });
 };
 
@@ -111,15 +109,27 @@ exports.joined = function (req, res, next) {
 // Action: Returns a json list of the users pending chats
 exports.pending = function (req, res, next) {
   var user = res.locals.user;
-  user.getPendingChats(function(err, pendingChats) {
-    pendingChats.loadParticipants(function(err, result) {
+  user.getPendingChats(function (err, pendingChats) {
+    pendingChats.loadParticipants(function (err, result) {
       if (err) {
         return next(err);
       }
-      res.json(pendingChats.toJSON());
+      handleChatsResponse(pendingChats, res, next);
     });
   });
 };
+
+function handleChatsResponse(chats, res, next) {
+  async.series([
+    chats.loadParticipants.bind(chats),
+    chats.loadParticipantsNames.bind(chats)
+  ], function (err, result) {
+    if (err) {
+      return next(err);
+    }
+    res.json(chats.toJSON());
+  });
+}
 
 function notifyParticipants(chat, cb) {
   var notifyURL = url.format({
@@ -133,4 +143,3 @@ function notifyParticipants(chat, cb) {
   });
   request.get(notifyURL, cb);
 }
-

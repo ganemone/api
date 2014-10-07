@@ -1,5 +1,5 @@
 // External Modules
-var assert = require('assert');
+var assert = require('chai').assert;
 var request = require('request');
 // Internal Modules
 var config = require('../../config/index.js');
@@ -10,23 +10,64 @@ var setUpUser = require('../util/setup-user.js');
 var setUpRosterUsers = require('../util/setup-rosterusers.js');
 var setUpThoughts = require('../util/setUpThoughts.js');
 var setUpFullChat = require('../util/setUpFullChat.js');
+var setUpVCard = require('../util/setUpVCard.js');
 // Shared variables
-var validAuth = { username: 'username', password: 'sessionID' };
-var invalidSessionAuth = { username: 'username', password: 'invalid' };
-var invalidUsernameAuth = { username: 'invalid', password: 'sessionID' };
-var invalidBoth = { username: 'invalid', password: 'invalid' };
-var emptyAuth = {};
+var validAuth = {
+  username: 'username',
+  password: 'sessionID'
+};
+// var invalidSessionAuth = {
+//   username: 'username',
+//   password: 'invalid'
+// };
+// var invalidUsernameAuth = {
+//   username: 'invalid',
+//   password: 'sessionID'
+// };
+// var invalidBoth = {
+//   username: 'invalid',
+//   password: 'invalid'
+// };
+// var emptyAuth = {};
 
 function setUp() {
   // Set up main user
-  setUpUser({ username: 'username', password: 'password', sessionID: 'sessionID' });
+  setUpUser({
+    username: 'username',
+    password: 'password',
+    sessionID: 'sessionID'
+  });
   // Set up supporting users
-  setUpUser({ username: 'friend1', password: 'password', sessionID: 'sessionID' });
-  setUpUser({ username: 'friend2', password: 'password', sessionID: 'sessionID' });
-  setUpUser({ username: 'friend3', password: 'password', sessionID: 'sessionID' });
-  setUpUser({ username: 'friend4', password: 'password', sessionID: 'sessionID' });
-  setUpUser({ username: 'someguy', password: 'password', sessionID: 'sessionID' });
-  setUpUser({ username: 'anotherguy', password: 'password', sessionID: 'sessionID' });
+  setUpUser({
+    username: 'friend1',
+    password: 'password',
+    sessionID: 'sessionID'
+  });
+  setUpUser({
+    username: 'friend2',
+    password: 'password',
+    sessionID: 'sessionID'
+  });
+  setUpUser({
+    username: 'friend3',
+    password: 'password',
+    sessionID: 'sessionID'
+  });
+  setUpUser({
+    username: 'friend4',
+    password: 'password',
+    sessionID: 'sessionID'
+  });
+  setUpUser({
+    username: 'someguy',
+    password: 'password',
+    sessionID: 'sessionID'
+  });
+  setUpUser({
+    username: 'anotherguy',
+    password: 'password',
+    sessionID: 'sessionID'
+  });
 
   // Set up friends
   setUpRosterUsers('username', ['friend1', 'friend2']);
@@ -39,7 +80,7 @@ function testChatDBEntry(chatID, expectedChatValues, expectedParticipantEntries,
   var query = 'SELECT * FROM chat WHERE uuid = ?';
   var data = [chatID];
 
-  db.queryWithData(query, data, function(err, result) {
+  db.queryWithData(query, data, function (err, result) {
     if (err) {
       throw err;
     }
@@ -52,8 +93,8 @@ function testChatDBEntry(chatID, expectedChatValues, expectedParticipantEntries,
 
     var query2 = 'SELECT * FROM participants WHERE chat_id = ?';
     var data2 = [chatRow.id];
-    db.queryWithData(query2, data2, function(err, rows) {
-      if(err) {
+    db.queryWithData(query2, data2, function (err, rows) {
+      if (err) {
         throw err;
       }
       for (var i = 0; i < expectedParticipantEntries.length; i++) {
@@ -86,7 +127,7 @@ describe('Integration Tests for /chat', function () {
             type: '121',
             participants: ['friend1'],
           }
-        }, function(err, res) {
+        }, function (err, res) {
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
           assert.ok(res.body.uuid);
@@ -96,16 +137,24 @@ describe('Integration Tests for /chat', function () {
           assert.equal(res.body.type, '121');
           assert.ifError(res.body.degree);
           testChatDBEntry(
-            res.body.uuid,
-            [
-              { key: 'name', value: null },
-              { key: 'type', value: res.body.type }
+            res.body.uuid, [{
+              key: 'name',
+              value: null
+            }, {
+              key: 'type',
+              value: res.body.type
+            }], [
+              [{
+                key: 'username',
+                value: 'friend1'
+              }, {
+                key: 'status',
+                value: 'pending'
+              }, {
+                key: 'invited_by',
+                value: 'username'
+              }]
             ],
-            [[
-              { key: 'username', value: 'friend1' },
-              { key: 'status', value: 'pending' },
-              { key: 'invited_by', value: 'username' }
-            ]],
             done
           );
         });
@@ -121,7 +170,7 @@ describe('Integration Tests for /chat', function () {
             name: 'a+group',
             participants: ['friend1', 'friend2']
           }
-        }, function(err, res) {
+        }, function (err, res) {
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
           assert.ok(res.body.uuid);
@@ -130,20 +179,34 @@ describe('Integration Tests for /chat', function () {
           assert.equal(res.body.type, 'group');
           assert.ifError(res.body.degree);
           testChatDBEntry(
-            res.body.uuid,
-            [
-              { key: 'name', value: res.body.name },
-              { key: 'type', value: res.body.type }
+            res.body.uuid, [{
+              key: 'name',
+              value: res.body.name
+            }, {
+              key: 'type',
+              value: res.body.type
+            }], [
+              [{
+                key: 'username',
+                value: 'friend1'
+              }, {
+                key: 'status',
+                value: 'pending'
+              }, {
+                key: 'invited_by',
+                value: 'username'
+              }],
+              [{
+                key: 'username',
+                value: 'friend2'
+              }, {
+                key: 'status',
+                value: 'pending'
+              }, {
+                key: 'invited_by',
+                value: 'username'
+              }]
             ],
-            [[
-              { key: 'username', value: 'friend1' },
-              { key: 'status', value: 'pending' },
-              { key: 'invited_by', value: 'username' }
-            ], [
-              { key: 'username', value: 'friend2' },
-              { key: 'status', value: 'pending' },
-              { key: 'invited_by', value: 'username' }
-            ]],
             done
           );
         });
@@ -161,7 +224,7 @@ describe('Integration Tests for /chat', function () {
               type: 'thought',
               cid: cid
             }
-          }, function(err, res) {
+          }, function (err, res) {
             assert.ifError(err);
             assert.equal(res.statusCode, 200);
             assert.ok(res.body.uuid);
@@ -170,16 +233,24 @@ describe('Integration Tests for /chat', function () {
             assert.equal(res.body.type, 'thought');
             assert.equal(res.body.degree, 1);
             testChatDBEntry(
-              res.body.uuid,
-              [
-                { key: 'name', value: res.body.name },
-                { key: 'type', value: res.body.type }
+              res.body.uuid, [{
+                key: 'name',
+                value: res.body.name
+              }, {
+                key: 'type',
+                value: res.body.type
+              }], [
+                [{
+                  key: 'username',
+                  value: 'friend1'
+                }, {
+                  key: 'status',
+                  value: 'pending'
+                }, {
+                  key: 'invited_by',
+                  value: 'username'
+                }]
               ],
-              [[
-                { key: 'username', value: 'friend1' },
-                { key: 'status', value: 'pending' },
-                { key: 'invited_by', value: 'username' }
-              ]],
               done
             );
           });
@@ -196,7 +267,7 @@ describe('Integration Tests for /chat', function () {
               type: 'thought',
               cid: cid
             }
-          }, function(err, res) {
+          }, function (err, res) {
             assert.ifError(err);
             assert.equal(res.statusCode, 200);
             assert.ok(res.body.uuid);
@@ -205,16 +276,24 @@ describe('Integration Tests for /chat', function () {
             assert.equal(res.body.type, 'thought');
             assert.equal(res.body.degree, 2);
             testChatDBEntry(
-              res.body.uuid,
-              [
-                { key: 'name', value: res.body.name },
-                { key: 'type', value: res.body.type }
+              res.body.uuid, [{
+                key: 'name',
+                value: res.body.name
+              }, {
+                key: 'type',
+                value: res.body.type
+              }], [
+                [{
+                  key: 'username',
+                  value: 'friend3'
+                }, {
+                  key: 'status',
+                  value: 'pending'
+                }, {
+                  key: 'invited_by',
+                  value: 'username'
+                }]
               ],
-              [[
-                { key: 'username', value: 'friend3' },
-                { key: 'status', value: 'pending' },
-                { key: 'invited_by', value: 'username' }
-              ]],
               done
             );
           });
@@ -231,8 +310,17 @@ describe('/join', function () {
 });
 describe('Integration tests for /joined', function () {
   runServer();
-  setUpUser({ username: 'username', password: 'password', sessionID: 'sessionID' });
-
+  setUpUser({
+    username: 'username',
+    password: 'password',
+    sessionID: 'sessionID'
+  });
+  setUpVCard('username', 'my name');
+  setUpVCard('friend1', 'friend1 name');
+  setUpVCard('friend2', 'friend2 name');
+  setUpVCard('friend3', 'friend3 name');
+  setUpVCard('friend4', 'friend4 name');
+  setUpVCard('friend5', 'friend5 name');
   setUpFullChat({
     type: '121',
     owner: 'username',
@@ -277,7 +365,7 @@ describe('Integration tests for /joined', function () {
       url: endpoint,
       auth: validAuth,
       json: {}
-    }, function(err, res, body) {
+    }, function (err, res, body) {
       self.err = err;
       self.res = res;
       done();
@@ -294,11 +382,26 @@ describe('Integration tests for /joined', function () {
   });
   it('should return the correct number of chats', function () {
     assert.equal(this.res.body.length, 5);
-    this.res.body.forEach(function(chat) {
+    this.res.body.forEach(function (chat) {
       assert.ok(chat.uuid);
       if (chat.type === 'group') {
         assert.equal(chat.name, 'group+name');
-        assert.deepEqual(chat.participants, ['friend1', 'friend2', 'friend3', 'username']);
+        assert.include(chat.participants, {
+          username: 'friend1',
+          name: 'friend1 name'
+        });
+        assert.include(chat.participants, {
+          username: 'friend2',
+          name: 'friend2 name'
+        });
+        assert.include(chat.participants, {
+          username: 'friend3',
+          name: 'friend3 name'
+        });
+        assert.include(chat.participants, {
+          username: 'username',
+          name: 'my name'
+        });
         assert.equal(chat.owner, 'username');
       } else if (chat.type === '121') {
         assert.ifError(chat.participants);
@@ -316,8 +419,17 @@ describe('Integration tests for /joined', function () {
 
 describe('Integration tests for /pending', function () {
   runServer();
-  setUpUser({ username: 'username', password: 'password', sessionID: 'sessionID' });
-
+  setUpUser({
+    username: 'username',
+    password: 'password',
+    sessionID: 'sessionID'
+  });
+  setUpVCard('username', 'my name');
+  setUpVCard('friend1', 'friend1 name');
+  setUpVCard('friend2', 'friend2 name');
+  setUpVCard('friend3', 'friend3 name');
+  setUpVCard('friend4', 'friend4 name');
+  setUpVCard('friend5', 'friend5 name');
   setUpFullChat({
     type: '121',
     owner: 'username',
@@ -362,7 +474,7 @@ describe('Integration tests for /pending', function () {
       url: endpoint,
       auth: validAuth,
       json: {}
-    }, function(err, res, body) {
+    }, function (err, res, body) {
       self.err = err;
       self.res = res;
       done();
@@ -384,7 +496,22 @@ describe('Integration tests for /pending', function () {
     assert.ok(chat.uuid);
     assert.equal(chat.type, 'group');
     assert.equal(chat.name, 'group+name+2');
-    assert.deepEqual(chat.participants, ['username', 'friend2', 'friend5', 'friend1']);
+    assert.include(chat.participants, {
+      username: 'username',
+      name: 'my name'
+    });
+    assert.include(chat.participants, {
+      username: 'friend2',
+      name: 'friend2 name'
+    });
+    assert.include(chat.participants, {
+      username: 'friend5',
+      name: 'friend5 name'
+    });
+    assert.include(chat.participants, {
+      username: 'friend1',
+      name: 'friend1 name'
+    });
     assert.equal(chat.owner, 'friend1');
   });
 });

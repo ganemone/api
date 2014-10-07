@@ -60,3 +60,5 @@ function parseVCard(row) {
     });
   };
 }
+
+exports.fromUsernames = getVCardFromUsernames;
