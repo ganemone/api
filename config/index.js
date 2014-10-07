@@ -4,6 +4,11 @@ var url = require('url');
 
 var config = {
   common: {
+    apn: {
+      key: 'certs/dev/key.pem',
+      cert: 'certs/dev/cert.pem'
+    },
+    gcm: 'AIzaSyDjbQFHkCMsUJkECIjiEitJE6AKl3RozAU',
     url: {
       protocol: 'http',
       hostname: 'localhost'
@@ -50,6 +55,10 @@ var config = {
     })
   },
   production: {
+    apn: {
+      key: 'certs/prod/key.pem',
+      cert: 'certs/prod/cert.pem'
+    },
     port: 8052,
     db: {
       multipleStatements: true,
