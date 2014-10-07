@@ -407,9 +407,15 @@ describe('Integration tests for /joined', function () {
         assert.ifError(chat.participants);
         assert.ifError(chat.owner);
         assert.equal(chat.isOwner, (chat.name === '121+name'));
+        if (chat.isOwner) {
+          assert.equal(chat.name, 'friend1 name');
+        } else {
+          assert.equal(chat.name, 'Anonymous Friend');
+        }
       } else if (chat.type === 'thought') {
         assert.ifError(chat.participants);
         assert.ifError(chat.owner);
+        assert.include(chat.name, 'thought+name');
       } else {
         assert.fail('Chat type to be group, 121, or thought', chat.type);
       }

@@ -122,7 +122,8 @@ exports.pending = function (req, res, next) {
 function handleChatsResponse(chats, res, next) {
   async.series([
     chats.loadParticipants.bind(chats),
-    chats.loadParticipantsNames.bind(chats)
+    chats.loadParticipantsNamesIfGroup.bind(chats),
+    chats.loadParticipantsNamesIf121.bind(chats)
   ], function (err, result) {
     if (err) {
       return next(err);

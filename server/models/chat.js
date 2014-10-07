@@ -199,7 +199,7 @@ Chat.prototype.toJSON = function () {
     json.participants = this.participants;
     json.owner = this.owner;
   } else {
-    json.isOwner = (this.owner === this.user.username);
+    json.isOwner = this.isOwner();
   }
   return json;
 };
@@ -209,8 +209,24 @@ Chat.prototype.getName = function () {
   if (this.name) {
     return this.name;
   }
-  this.name = (this.owner === this.user.username) ? this.participants[0] : 'Anonymous Friend';
+  this.name = (this.isOwner()) ? this.participants[0].name : 'Anonymous Friend';
   return this.name;
+};
+
+Chat.prototype.isOwner = function() {
+  return (this.owner === this.user.username);
+};
+
+Chat.prototype.isGroup = function() {
+  return (this.type === 'group');
+};
+
+Chat.prototype.is121 = function() {
+  return (this.type === '121');
+};
+
+Chat.prototype.isThought = function() {
+  return (this.type === 'thought');
 };
 
 Chat.prototype._assertHasID = function () {
