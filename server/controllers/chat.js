@@ -1,8 +1,12 @@
 // External Modules
+var _ = require('underscore');
 var async = require('async');
 var request = require('request');
 var url = require('url');
-
+var sendPush = require('../util/sendPush.js');
+var AsyncHelper = require('../util/async-helper.js');
+var User = require('../models/user.js');
+var UserCollection = require('../collections/user.js');
 // Endpoint /chat/create
 // Method: POST
 // Auth: Basic
@@ -139,14 +143,13 @@ function notifyIfGroup(chat) {
 }
 
 function notifyParticipants(chat, cb) {
-  var notifyURL = url.format({
-    protocol: 'http:',
-    port: 5290,
-    hostname: 'localhost',
-    pathname: '/notify/new_group',
-    query: {
-      id: chat.id
-    }
-  });
-  request.get(notifyURL, cb);
+  var push = {
+    message: 'You have been invited to the group: ' + chat.name,
+    type: 'invitation'
+  }
+  var usernames = _.pluck(chat.participants, 'username');
+  var users = UserCollection(usernames);
+  users.notify(push, cb);
 }
+
+

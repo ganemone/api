@@ -13,46 +13,40 @@ var mockReq = {
 describe('Blacklist Controller', function () {
   describe('when friends are found', function () {
     it('should work', function (done) {
-      var mockMakeRequest = new Mock(function(cb) {
+      var mockMakeRequest = new Mock(function (cb) {
         assert.equal(typeof cb, 'function');
         cb(null, true);
       });
 
-      var mockNext = new Mock(function(err) {
+      var mockNext = new Mock(function (err) {
         assert.ifError(err);
         assert.fail('Mock next called', 'Mock next not to be called');
         done();
       });
 
-      var mockHasMadeRequest = new Mock(function(cb) {
+      var mockHasMadeRequest = new Mock(function (cb) {
         cb(null, false);
       });
 
-      var mockBlist = new Mock(function(user, phones, emails) {
+      var mockBlist = new Mock(function (user, phones, emails) {
         assert.equal(user.username, 'username');
         assert.deepEqual(phones, mockReq.body.phones);
         assert.deepEqual(emails, mockReq.body.emails);
         return {
           hasMadeRequest: mockHasMadeRequest.getFn(),
-          makeRequest: mockMakeRequest.getFn()
+          makeRequest: mockMakeRequest.getFn(),
+          user: {
+            friends: ['friend1', 'friend2']
+          }
         };
       });
 
-      var mockGet = new Mock(function(url, cb) {
-        assert.equal(url, 'http://localhost:5290/notify/blm?username=username');
-        assert.equal(typeof cb, 'function');
-        cb(null, {
-          statusCode: 200
-        });
-      });
-
-      var mockEnd = new Mock(function() {
+      var mockEnd = new Mock(function () {
         assert.equal(arguments.length, 0);
         mockHasMadeRequest.assertCalled();
         mockBlist.assertCalled();
         mockMakeRequest.assertCalled();
         mockNext.assertNotCalled();
-        mockGet.assertCalled();
         done();
       });
 
@@ -67,27 +61,24 @@ describe('Blacklist Controller', function () {
 
       blacklist.__set__({
         'Blacklist': mockBlist.getFn(),
-        'request': {
-          get: mockGet.getFn()
-        }
       });
       blacklist.index(mockReq, mockRes, mockNext.getFn());
     });
   });
-  describe('when friends are not found', function() {
+  describe('when friends are not found', function () {
     it('should work', function (done) {
-      var mockMakeRequest = new Mock(function(cb) {
+      var mockMakeRequest = new Mock(function (cb) {
         assert.equal(typeof cb, 'function');
         cb(null, false);
       });
 
-      var mockNext = new Mock(function(err) {
+      var mockNext = new Mock(function (err) {
         assert.ifError(err);
         assert.fail('Mock next called', 'Mock next not to be called');
         done();
       });
 
-      var mockEnd = new Mock(function() {
+      var mockEnd = new Mock(function () {
         assert.equal(arguments.length, 0);
         done();
       });
@@ -101,24 +92,27 @@ describe('Blacklist Controller', function () {
         end: mockEnd.getFn()
       };
 
-      var mockHasMadeRequest = new Mock(function(cb) {
+      var mockHasMadeRequest = new Mock(function (cb) {
         cb(null, false);
       });
 
-      var mockBlist = new Mock(function(user, phones, emails) {
+      var mockBlist = new Mock(function (user, phones, emails) {
         assert.equal(user.username, 'username');
         assert.deepEqual(phones, mockReq.body.phones);
         assert.deepEqual(emails, mockReq.body.emails);
         return {
           hasMadeRequest: mockHasMadeRequest.getFn(),
-          makeRequest: mockMakeRequest.getFn()
+          makeRequest: mockMakeRequest.getFn(),
+          user: {
+            friends: []
+          }
         };
       });
 
       blacklist.__set__({
         'Blacklist': mockBlist.getFn(),
         'request': {
-          get: function() {
+          get: function () {
             assert.fail('Request.get Called', 'Expected request.get not to be called');
           }
         }

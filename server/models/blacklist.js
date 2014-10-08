@@ -38,7 +38,7 @@ Blacklist.prototype.getFriends = function(cb) {
   }
   query += 'AND username != ?';
   data.push(this.user.username);
-
+  var self = this;
   db.queryWithData(query, data, function(err, rows) {
     if (err) {
       console.error(err);
@@ -47,7 +47,9 @@ Blacklist.prototype.getFriends = function(cb) {
     if (rows.length === 0) {
       return cb(null, []);
     }
-    cb(null, _.pluck(rows, 'username'));
+    var friends = _.pluck(rows, 'username');
+    self.user.friends = friends;
+    cb(null, friends);
   });
 };
 
