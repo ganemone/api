@@ -1,11 +1,6 @@
 // External Modules
 var _ = require('underscore');
 var async = require('async');
-var request = require('request');
-var url = require('url');
-var sendPush = require('../util/sendPush.js');
-var AsyncHelper = require('../util/async-helper.js');
-var User = require('../models/user.js');
 var UserCollection = require('../collections/user.js');
 // Endpoint /chat/create
 // Method: POST
@@ -146,7 +141,7 @@ function notifyParticipants(chat, cb) {
   var push = {
     message: 'You have been invited to the group: ' + chat.name,
     type: 'invitation'
-  }
+  };
   var usernames = _.pluck(chat.participants, 'username');
   var users = UserCollection(usernames);
   users.notify(push, cb);

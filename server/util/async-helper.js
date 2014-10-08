@@ -1,9 +1,8 @@
-
 function withContext(func, context, args) {
-  return function(cb) {
+  return function (cb) {
     args.push(cb);
     func.apply(context, args);
-  }
+  };
 }
 
 function noContext(func, args) {

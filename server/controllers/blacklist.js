@@ -1,9 +1,5 @@
-var request = require('request');
-
 var Blacklist = require('../models/blacklist');
 var HttpError = require('../util/http-error.js');
-var logger = require('../util/logger');
-var sendPush = require('../util/sendPush.js');
 var UserCollection = require('../collections/user.js');
 
 exports.index = function (req, res, next) {
