@@ -111,11 +111,6 @@ describe('Blacklist Controller', function () {
 
       blacklist.__set__({
         'Blacklist': mockBlist.getFn(),
-        'request': {
-          get: function () {
-            assert.fail('Request.get Called', 'Expected request.get not to be called');
-          }
-        }
       });
       blacklist.index(mockReq, mockRes, mockNext.getFn());
     });

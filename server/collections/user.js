@@ -36,7 +36,11 @@ UserCollection.prototype.notify = function (data, cb) {
 };
 
 function loadUsers(usernames) {
-  return _.map(usernames, User);
+  return _.map(usernames, function (username) {
+    return User({
+      username: username
+    });
+  });
 }
 
 module.exports = function (usernames) {
