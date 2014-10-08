@@ -3,7 +3,7 @@ var User = require('../models/user.js');
 
 module.exports = function(req, res, next) {
 	if (!req.params.email) {
-		return next(new HttpError(null, 'Missing email parameter', 406));
+		return next(new HttpError('Missing email parameter', 406));
 	}
 	var user = User({
 		email: req.params.email
