@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var gcm = require('node-gcm');
 var apn = require('apn');
 
@@ -34,7 +35,7 @@ function sendIOSPush(user, data, cb) {
 
   note.sound = "chime";
   note.alert = data.message;
-  delete(data.message);
+  data = _.omit(data, 'message');
   note.payload = data;
 
   apnConnection.pushNotification(note, myDevice);
