@@ -284,7 +284,7 @@ User.prototype.loadFriends = function (cb) {
   if (this.friends) {
     return cb(null, this.friends);
   }
-  var query = "SELECT username FROM rosterusers WHERE jid = ? AND (subscription = \'B\' || subscription = \'T\')";
+  var query = "SELECT username FROM rosterusers WHERE jid = ? AND subscription != \'N\'";
   var data = [usernameToJID(this.username)];
   var self = this;
   db.queryWithData(query, data, function (err, rows) {
