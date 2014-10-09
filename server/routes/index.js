@@ -115,14 +115,7 @@ module.exports = function setRoutes(app) {
     controllers.friends.pending
   );
   app.get('/test/push', function (req, res, next) {
-    var user = User({
-      'username': 'g'
-    });
-    sendPush.withData(user, {
-      message: 'Test message',
-      type: 'Test Type'
-    }, function (error) {
-      res.json(error);
-    });
+    sendPush.test();
+    res.end();
   });
 };

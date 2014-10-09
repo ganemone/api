@@ -5,8 +5,13 @@ var url = require('url');
 var config = {
   common: {
     apn: {
-      key: 'certs/dev/key.pem',
-      cert: 'certs/dev/cert.pem'
+      key: 'certs/prod/key.pem',
+      cert: 'certs/prod/cert.pem',
+      debug: false,
+      passphrase: 'meniscotherium',
+      errorCallback: function apnsError (err) {
+        console.log('APNS Error: ', err);
+      }
     },
     gcm: 'AIzaSyDjbQFHkCMsUJkECIjiEitJE6AKl3RozAU',
     url: {
@@ -55,10 +60,6 @@ var config = {
     })
   },
   production: {
-    apn: {
-      key: 'certs/prod/key.pem',
-      cert: 'certs/prod/cert.pem'
-    },
     port: 8052,
     db: {
       multipleStatements: true,
