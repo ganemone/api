@@ -10,6 +10,9 @@ var ValidateChat = require('../middlewares/validate-chat.js');
 var LoadFriends = require('../middlewares/load-friends.js');
 var LoadNames = require('../middlewares/load-names.js');
 
+var User = require('../models/user.js');
+var sendPush = require('../util/sendPush.js');
+
 module.exports = function setRoutes(app) {
   app.get('/health', controllers.health.index);
 
@@ -54,11 +57,11 @@ module.exports = function setRoutes(app) {
   // Blacklist
   // --------
   app.post(
-   '/blacklist',
-   AuthUser,
-   bodyParser.json(),
-   ValidateBlacklist,
-   controllers.blacklist.index
+    '/blacklist',
+    AuthUser,
+    bodyParser.json(),
+    ValidateBlacklist,
+    controllers.blacklist.index
   );
   // ------
   // Chat
@@ -111,5 +114,15 @@ module.exports = function setRoutes(app) {
     LoadNames.pending,
     controllers.friends.pending
   );
+  app.get('/test/push', function (req, res, next) {
+    var user = User({
+      'username': 'g'
+    });
+    sendPush.withData(user, {
+      message: 'Test message',
+      type: 'Test Type'
+    }, function (error) {
+      res.json(error);
+    });
+  });
 };
-
