@@ -42,6 +42,7 @@
     "rewire": "^2.1.0"
   },
   "dependencies": {
+    "apn": "~1.6.2",
     "async": "^0.9.0",
     "basic-auth": "~1.0.0",
     "body-parser": "~1.9.0",
@@ -49,14 +50,13 @@
     "jade": "^1.5.0",
     "lodash": "^2.4.1",
     "mysql": "^2.4.3",
+    "node-gcm": "~0.9.12",
     "node-uuid": "~1.4.1",
     "nodemailer": "~1.2.1",
     "request": "^2.40.0",
     "shallow-settings": "^0.1.0",
     "underscore": "^1.7.0",
     "winston": "^0.8.0",
-    "xml2js": "^0.4.4",
-    "node-gcm": "~0.9.12",
-    "apn": "~1.6.2"
+    "xml2js": "^0.4.4"
   }
 }
