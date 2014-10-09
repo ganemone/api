@@ -41,6 +41,20 @@ function sendIOSPush(user, data, cb) {
   apnConnection.pushNotification(note, myDevice);
 }
 
+exports.testThoughtPush = function() {
+  var apnConnection = new apn.Connection(config.apn);
+  var myDevice = new apn.Device('10241f98315e87516232cc6acc32963539a6df1969e52fd5a9a1c4e9b4c64e17');
+  var note = new apn.Notification();
+
+  note.sound = 'chime';
+  note.alert = 'Your thought was favorited';
+  note.payload = {
+    cid: '1'
+  };
+
+  apnConnection.pushNotification(note, myDevice);
+}
+
 exports.withData = sendPush;
 exports.toAndroid = sendAndroidPush;
 exports.toIOS = sendIOSPush;
