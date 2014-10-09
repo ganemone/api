@@ -406,10 +406,6 @@ describe('Integration tests for /joined', function () {
           username: 'friend3',
           name: 'friend3 name'
         });
-        assert.include(chat.participants, {
-          username: 'username',
-          name: 'my name'
-        });
         assert.equal(chat.owner, 'username');
       } else if (chat.type === '121') {
         assert.ifError(chat.participants);
@@ -509,10 +505,6 @@ describe('Integration tests for /pending', function () {
     assert.ok(chat.uuid);
     assert.equal(chat.type, 'group');
     assert.equal(chat.name, 'group+name+2');
-    assert.include(chat.participants, {
-      username: 'username',
-      name: 'my name'
-    });
     assert.include(chat.participants, {
       username: 'friend2',
       name: 'friend2 name'

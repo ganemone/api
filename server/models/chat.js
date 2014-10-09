@@ -24,8 +24,8 @@ function Chat(data) {
 
 Chat.prototype.getParticipantsQuery = function () {
   this._assertHasID();
-  var query = 'SELECT participants.username FROM participants WHERE chat_id = ?;';
-  var data = [this.id];
+  var query = 'SELECT participants.username FROM participants WHERE chat_id = ? AND participants.username != ?;';
+  var data = [this.id, this.user.username];
   return format(query, data);
 };
 
