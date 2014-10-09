@@ -5,10 +5,9 @@ var url = require('url');
 var config = {
   common: {
     apn: {
-      key: 'certs/prod/key.pem',
-      cert: 'certs/prod/cert.pem',
-      debug: false,
-      passphrase: 'meniscotherium',
+      key: 'certs/dev/key.pem',
+      cert: 'certs/dev/cert.pem',
+      passphrase: 'gtcgGTCG123menisco',
       errorCallback: function apnsError (err) {
         console.log('APNS Error: ', err);
       }
