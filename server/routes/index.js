@@ -10,9 +10,6 @@ var ValidateChat = require('../middlewares/validate-chat.js');
 var LoadFriends = require('../middlewares/load-friends.js');
 var LoadNames = require('../middlewares/load-names.js');
 
-var User = require('../models/user.js');
-var sendPush = require('../util/sendPush.js');
-
 module.exports = function setRoutes(app) {
   app.get('/health', controllers.health.index);
 
@@ -114,8 +111,4 @@ module.exports = function setRoutes(app) {
     LoadNames.pending,
     controllers.friends.pending
   );
-  app.get('/test/push', function (req, res, next) {
-    sendPush.test();
-    res.end();
-  });
 };

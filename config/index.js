@@ -59,6 +59,14 @@ var config = {
     })
   },
   production: {
+    apn: {
+      key: 'certs/prod/key.pem',
+      cert: 'certs/prod/cert.pem',
+      passphrase: 'gtcgGTCG123menisco',
+      errorCallback: function apnsError (err) {
+        console.log('APNS Error: ', err);
+      }
+    },
     port: 8052,
     db: {
       multipleStatements: true,
