@@ -26,14 +26,14 @@ exports.create = function (req, res, next) {
   async.series([
     chat.insert.bind(chat),
     chat.insertParticipants.bind(chat),
-    chat.loadParticipantsNames.bind(chat),
-    notifyIfGroup(chat)
+    chat.loadParticipantsNames.bind(chat)
   ],
   function (err, result) {
     if (err) {
       return next(err);
     }
     res.json(chat.toJSON());
+    notifyIfGroup(chat)
   });
 };
 

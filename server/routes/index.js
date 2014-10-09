@@ -46,7 +46,7 @@ module.exports = function setRoutes(app) {
     controllers.thoughts.index
   );
   app.get(
-    '/thoughts/:id',
+    '/thought/:id',
     AuthUser,
     controllers.thoughts.thought
   );

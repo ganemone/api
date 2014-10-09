@@ -198,15 +198,12 @@ function testCreate(type, done, error) {
     mockInsert.assertCalledOnce();
     mockInsertParticipants.assertCalledOnce();
     mockLoadParticipantsNames.assertCalledOnce();
-    if (type === 'group') {
-      mockNotifyParticipants.assertCalledOnce();
-    } else {
-      mockNotifyParticipants.assertNotCalled();
-    }
+    mockNotifyParticipants.assertNotCalled();
 
     assert.ok(data);
     done();
   });
+
   var mockChat = {
     id: 1,
     type: type,

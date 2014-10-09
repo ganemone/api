@@ -8,6 +8,7 @@ var config = {
       key: 'certs/dev/key.pem',
       cert: 'certs/dev/cert.pem',
       passphrase: 'gtcgGTCG123menisco',
+      connectionTimeout: 1000,
       errorCallback: function apnsError (err) {
         console.log('APNS Error: ', err);
       }
@@ -63,6 +64,7 @@ var config = {
       key: 'certs/prod/key.pem',
       cert: 'certs/prod/cert.pem',
       passphrase: 'gtcgGTCG123menisco',
+      connectionTimeout: 1000,
       errorCallback: function apnsError (err) {
         console.log('APNS Error: ', err);
       }
