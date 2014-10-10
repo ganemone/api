@@ -140,10 +140,7 @@ function notifyParticipants(chat, cb) {
     message: 'You have been invited to the group: ' + chat.name,
     type: 'invitation'
   };
-  var participants = _.omit(chat.participants, function(participant) {
-    return (participant === chat.user.username);
-  });
-  var usernames = _.pluck(participants, 'username');
+  var usernames = _.pluck(chat.participants, 'username');
   var users = UserCollection(usernames);
   users.notify(push, cb);
 }
