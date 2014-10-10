@@ -40,13 +40,13 @@ function getConnection() {
     });
   });
 
-  connection.on('connected', function (openSockets) {
-    logger.info('APN Connected with open sockets: ', openSockets);
-  });
+  // connection.on('connected', function (openSockets) {
+  //   logger.info('APN Connected with open sockets: ', openSockets);
+  // });
 
-  connection.on('disconnected', function (openSockets) {
-    logger.info('APN Disconnected: ', openSockets);
-  });
+  // connection.on('disconnected', function (openSockets) {
+  //   logger.info('APN Disconnected: ', openSockets);
+  // });
   return connection;
 }
 
