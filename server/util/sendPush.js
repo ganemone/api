@@ -11,38 +11,44 @@ var options = {
 };
 
 var feedback = new apn.Feedback(options);
+
 feedback.on("feedback", function (devices) {
   devices.forEach(function (item) {
     logger.info('Feedback Item: ', item);
   });
 });
 
-connection.on('error', function (error) {
-  logger.error('Apn Connection Error: ', error);
-});
 
-connection.on('transmitted', function (notification, device) {
-  logger.info('Finished sending notification', {
-    notification: notification,
-    device: device
+function getConnection() {
+  var connection = new apn.Connection(config.apn);
+  connection.on('error', function (error) {
+    logger.error('Apn Connection Error: ', error);
   });
-});
 
-connection.on('transmissionError', function (errorCode, notification, device) {
-  logger.error('APN Transmission Error: ', {
-    code: errorCode,
-    notification: notification,
-    device: device
+  connection.on('transmitted', function (notification, device) {
+    logger.info('Finished sending notification', {
+      notification: notification,
+      device: device
+    });
   });
-});
 
-connection.on('connected', function (openSockets) {
-  logger.info('APN Connected with open sockets: ', openSockets);
-});
+  connection.on('transmissionError', function (errorCode, notification, device) {
+    logger.error('APN Transmission Error: ', {
+      code: errorCode,
+      notification: notification,
+      device: device
+    });
+  });
 
-connection.on('disconnected', function (openSockets) {
-  logger.info('APN Disconnected: ', openSockets);
-});
+  connection.on('connected', function (openSockets) {
+    logger.info('APN Connected with open sockets: ', openSockets);
+  });
+
+  connection.on('disconnected', function (openSockets) {
+    logger.info('APN Disconnected: ', openSockets);
+  });
+  return connection;
+}
 
 function sendPush(user, data, cb) {
   cb = cb || function noop() {};
@@ -76,8 +82,9 @@ function sendIOSPush(user, data, cb) {
   note.alert = data.message;
   data = _.omit(data, 'message');
   note.payload = data;
-
+  var connection = getConnection();
   connection.pushNotification(note, myDevice);
+  connection.shutdown();
 }
 
 exports.testThoughtPush = function () {
@@ -89,8 +96,9 @@ exports.testThoughtPush = function () {
   note.payload = {
     cid: '1'
   };
-
+  var connection = getConnection();
   connection.pushNotification(note, myDevice);
+  connection.shutdown();
 };
 
 exports.withData = sendPush;
