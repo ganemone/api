@@ -144,8 +144,6 @@ function notifyParticipants(chat, cb) {
     return (participant === chat.user.username);
   });
   var usernames = _.pluck(participants, 'username');
-  console.log('Usernames to notify: ', usernames);
-  console.log('For chat: ', chat);
   var users = UserCollection(usernames);
   users.notify(push, cb);
 }
