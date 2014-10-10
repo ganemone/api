@@ -1,8 +1,48 @@
 var _ = require('underscore');
 var gcm = require('node-gcm');
 var apn = require('apn');
-
+var logger = require('./logger.js');
 var config = require('../../config/index.js');
+var connection = new apn.Connection(config.apn);
+
+var options = {
+  "batchFeedback": true,
+  "interval": 300
+};
+
+var feedback = new apn.Feedback(options);
+feedback.on("feedback", function (devices) {
+  devices.forEach(function (item) {
+    logger.info('Feedback Item: ', item);
+  });
+});
+
+connection.on('error', function (error) {
+  logger.error('Apn Connection Error: ', error);
+});
+
+connection.on('transmitted', function (notification, device) {
+  logger.info('Finished sending notification', {
+    notification: notification,
+    device: device
+  });
+});
+
+connection.on('transmissionError', function (errorCode, notification, device) {
+  logger.error('APN Transmission Error: ', {
+    code: errorCode,
+    notification: notification,
+    device: device
+  });
+});
+
+connection.on('connected', function (openSockets) {
+  logger.info('APN Connected with open sockets: ', openSockets);
+});
+
+connection.on('disconnected', function (openSockets) {
+  logger.info('APN Disconnected: ', openSockets);
+});
 
 function sendPush(user, data, cb) {
   cb = cb || function noop() {};
@@ -29,7 +69,6 @@ function sendAndroidPush(user, data, cb) {
 }
 
 function sendIOSPush(user, data, cb) {
-  var apnConnection = new apn.Connection(config.apn);
   var myDevice = new apn.Device(user.token);
   var note = new apn.Notification();
 
@@ -38,11 +77,10 @@ function sendIOSPush(user, data, cb) {
   data = _.omit(data, 'message');
   note.payload = data;
 
-  apnConnection.pushNotification(note, myDevice);
+  connection.pushNotification(note, myDevice);
 }
 
-exports.testThoughtPush = function() {
-  var apnConnection = new apn.Connection(config.apn);
+exports.testThoughtPush = function () {
   var myDevice = new apn.Device('10241f98315e87516232cc6acc32963539a6df1969e52fd5a9a1c4e9b4c64e17');
   var note = new apn.Notification();
 
@@ -52,8 +90,8 @@ exports.testThoughtPush = function() {
     cid: '1'
   };
 
-  apnConnection.pushNotification(note, myDevice);
-}
+  connection.pushNotification(note, myDevice);
+};
 
 exports.withData = sendPush;
 exports.toAndroid = sendAndroidPush;
