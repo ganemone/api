@@ -129,7 +129,6 @@ function handleChatsResponse(chats, res, next) {
 }
 
 function notifyIfGroup(chat) {
-  console.log('NOTIFY IF GROUP');
   if (chat.isGroup()) {
     return notifyParticipants(chat, function noop() {});
   }
