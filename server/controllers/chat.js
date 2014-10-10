@@ -24,17 +24,17 @@ exports.create = function (req, res, next) {
   }
 
   async.series([
-    chat.insert.bind(chat),
-    chat.insertParticipants.bind(chat),
-    chat.loadParticipantsNames.bind(chat)
-  ],
-  function (err, result) {
-    if (err) {
-      return next(err);
-    }
-    res.json(chat.toJSON());
-    notifyIfGroup(chat)
-  });
+      chat.insert.bind(chat),
+      chat.insertParticipants.bind(chat),
+      chat.loadParticipantsNames.bind(chat)
+    ],
+    function (err, result) {
+      if (err) {
+        return next(err);
+      }
+      res.json(chat.toJSON());
+      notifyIfGroup(chat);
+    });
 };
 
 // Endpoint /chat/leave
@@ -130,12 +130,9 @@ function handleChatsResponse(chats, res, next) {
 
 function notifyIfGroup(chat) {
   console.log('NOTIFY IF GROUP');
-  return function (cb) {
-    if (chat.isGroup()) {
-      return notifyParticipants(chat, cb);
-    }
-    cb();
-  };
+  if (chat.isGroup()) {
+    return notifyParticipants(chat, function noop() {});
+  }
 }
 
 function notifyParticipants(chat, cb) {
@@ -147,5 +144,3 @@ function notifyParticipants(chat, cb) {
   var users = UserCollection(usernames);
   users.notify(push, cb);
 }
-
-
