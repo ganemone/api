@@ -7,12 +7,6 @@ describe('ValidateBlacklist middleware', function () {
   it('should accept valid requests', function (done) {
     testValidateBlacklist(['12345'], ['12345'], true, false, done);
   });
-  it('should reject requests without a phones parameter', function (done) {
-    testValidateBlacklist(null, ['12345'], false, false, done);
-  });
-  it('should reject requests without a emails parameter', function (done) {
-    testValidateBlacklist(['12345'], null, false, false, done);
-  });
   it('should reject empty requests', function (done) {
     testValidateBlacklist(null, null, false, false, done);
   });
