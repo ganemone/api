@@ -25,12 +25,12 @@ function getConnection() {
     logger.error('Apn Connection Error: ', error);
   });
 
-  connection.on('transmitted', function (notification, device) {
-    logger.info('Finished sending notification', {
-      notification: notification,
-      device: device
-    });
-  });
+  // connection.on('transmitted', function (notification, device) {
+  //   logger.info('Finished sending notification', {
+  //     notification: notification,
+  //     device: device
+  //   });
+  // });
 
   connection.on('transmissionError', function (errorCode, notification, device) {
     logger.error('APN Transmission Error: ', {
