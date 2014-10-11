@@ -14,8 +14,9 @@ var setMiddlewares = require('./middlewares');
 function Server(config) {
   // Generate and save the app
   this.options = {
-    key: fs.readFileSync('../ssl/key.pem'),
-    cert: fs.readFileSync('../ssl/cert.pem')
+    key: fs.readFileSync('/home/node/ssl/key.pem'),
+    cert: fs.readFileSync('/home/node/ssl/cert.pem'),
+    ca: [ fs.readFileSync('/home/node/ssl/intermediate.pem') ]
   };
   var app = express();
   this.app = app;
