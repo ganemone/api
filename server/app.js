@@ -1,5 +1,8 @@
 // External Modules
+var fs = require('fs');
 var express = require('express');
+var http = require('http');
+var https = require('https');
 var jade = require('jade');
 var url = require('url');
 var logger = require('./util/logger.js');
@@ -10,9 +13,13 @@ var setMiddlewares = require('./middlewares');
 // Constructor for Server
 function Server(config) {
   // Generate and save the app
+  this.options = {
+    key: fs.readFileSync('../ssl/key.pem'),
+    cert: fs.readFileSync('../ssl/cert.pem')
+  };
   var app = express();
   this.app = app;
-
+  
   // Save the config
   this.config = config;
 
@@ -63,7 +70,7 @@ var env = process.env.NODE_ENV || 'development';
 // Sets up the server to listen on the port
 // given in the config.
 Server.prototype.listen = function() {
-  this._app = this.app.listen(this.config.port);
+  this._app = https.createServer(this.options, this.app).listen(this.config.port);
   logger.info('Server listening on port: ' + this.config.port);
 };
 
