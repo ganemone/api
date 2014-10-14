@@ -13,7 +13,7 @@ var config = {
         console.log('APNS Error: ', err);
       }
     },
-    gcm: 'AIzaSyDjbQFHkCMsUJkECIjiEitJE6AKl3RozAU',
+    gcm: 'AIzaSyC7n5hHVj2GSZfhSJ0fQokK5oeCgD9Ggdc',
     url: {
       protocol: 'http',
       hostname: 'localhost'
@@ -47,7 +47,7 @@ var config = {
       host: 'gcloudsql.dev.versapp.co',
       user: 'root',
       password: 'gtcgGTCG123',
-      database: 'ejabberd_dev'
+      database: 'production'
     },
     ip: 'harmon.dev.versapp.co',
     logRequests: true,
@@ -76,10 +76,10 @@ var config = {
       host: 'gcloudsql.dev.versapp.co',
       user: 'root',
       password: 'gtcgGTCG123',
-      database: 'ejabberd_dev'
+      database: 'production'
     },
     ip: 'versapp.co',
-    logRequests: false,
+    logRequests: true,
     transporter: nodemailer.createTransport({
       service: 'gmail',
       auth: {
