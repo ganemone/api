@@ -52,6 +52,11 @@ function getConnection() {
 
 function sendPush(user, data, cb) {
   cb = cb || function noop() {};
+  console.log('Trying to send a push notification to user: ', user);
+  if(!user.token) {
+    console.log('Didnt load users token: ', user);
+    return cb();
+  };
   user.getDeviceInfo(function (err) {
     if (user.hasAndroid()) {
       return sendAndroidPush(user, data, cb);
@@ -69,12 +74,14 @@ function sendAndroidPush(user, data, cb) {
   });
 
   var sender = new gcm.Sender(config.gcm);
+  console.log('Config gcm: ', config.gcm);
   var registrationIds = [user.token];
 
   sender.send(message, registrationIds, 3, cb);
 }
 
 function sendIOSPush(user, data, cb) {
+  console.log('Sending push to user: ', user);
   var myDevice = new apn.Device(user.token);
   var note = new apn.Notification();
 
@@ -101,6 +108,12 @@ exports.testThoughtPush = function () {
   connection.shutdown();
 };
 
+exports.test = function() {
+  sendAndroidPush({ username: 'g', token: 'APA91bG7ezLLl1td_T7SOU1SU4QWZFdfrkV9ySj3q5XCc7rbsVbfhEpdNrNaPTNqajwIoqovtieK6GlGFt6JPpp-0D5_Tecg9DGLXipVYFnzAnfxLXVwUAqNA923RmXVw6T5zbU2AS2blikdeuFuua7S_jd-poNIGw'}, { message: 'Test message', type: 'invitation'}, function(err, result) {
+    console.log('Send GCM Error: ', err);
+    console.log('Result: ', result);
+});
+}
 exports.withData = sendPush;
 exports.toAndroid = sendAndroidPush;
 exports.toIOS = sendIOSPush;
