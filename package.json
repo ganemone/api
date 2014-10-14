@@ -7,6 +7,7 @@
     "jshint": "jshint server/",
     "start": "NODE_ENV='local' nodemon --watch server/ index.js",
     "dev": "NODE_ENV='development' node index.js",
+    "prod": "NODE_ENV='production' node index.js",
     "forever-dev": "NODE_ENV='development' forever start index.js",
     "forever-prod": "NODE_ENV='production' forever start index.js",
     "production": "NODE_ENV='production' node index.js",
