@@ -209,6 +209,10 @@ Chat.prototype.getName = function () {
   if (this.name) {
     return this.name;
   }
+  if (this.isThought()) {
+    this.name = '';
+    return this.name;
+  }
   this.name = (this.isOwner()) ? this.participants[0].name : 'Anonymous Friend';
   return this.name;
 };

@@ -20,7 +20,7 @@ function Server(config) {
   };
   var app = express();
   this.app = app;
-  
+
   // Save the config
   this.config = config;
 
