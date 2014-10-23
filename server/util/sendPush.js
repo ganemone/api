@@ -51,10 +51,10 @@ function getConnection() {
 }
 
 function sendPush(user, data, cb) {
+  cb = cb || function noop() {};
   if (!config.shouldSendPush) {
     return cb();
   }
-  cb = cb || function noop() {};
   if(!user.token) {
     return cb();
   };

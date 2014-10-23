@@ -84,6 +84,13 @@ module.exports = function setRoutes(app) {
     ValidateChat,
     controllers.chat.join
   );
+  app.post(
+    '/chat/invite',
+    AuthUser,
+    bodyParser.json(),
+    ValidateChat,
+    controllers.chat.invite
+  );
   app.get(
     '/chat/joined',
     AuthUser,

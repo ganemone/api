@@ -5,35 +5,35 @@ var rewire = require('rewire');
 var chat = rewire('../../../server/controllers/chat.js');
 var Mock = require('../../util/mock.js');
 
-describe('ChatController', function () {
-  describe('create method applied to', function () {
-    describe('a one to one', function () {
-      it('should work', function (done) {
+describe('ChatController', function() {
+  describe('create method applied to', function() {
+    describe('a one to one', function() {
+      it('should work', function(done) {
         testCreate('121', done);
       });
-      it('should handle errors', function (done) {
+      it('should handle errors', function(done) {
         testCreate('121', done);
       });
     });
-    describe('a thought', function () {
-      it('should work', function (done) {
+    describe('a thought', function() {
+      it('should work', function(done) {
         testCreate('thought', done);
       });
-      it('should handle errors', function (done) {
+      it('should handle errors', function(done) {
         testCreate('thought', done);
       });
     });
-    describe('a group', function () {
-      it('should work', function (done) {
+    describe('a group', function() {
+      it('should work', function(done) {
         testCreate('group', done);
       });
-      it('should handle errors', function (done) {
+      it('should handle errors', function(done) {
         testCreate('group', done);
       });
     });
   });
-  describe('leave method', function () {
-    it('should work', function (done) {
+  describe('leave method', function() {
+    it('should work', function(done) {
       var mockRemoveUser = getMockWithCB(['object', 'function'], null, true);
       var mockNext = new Mock(function noop() {});
       var mockJSON = getMockWithDone([], [mockRemoveUser], [mockNext], done);
@@ -48,7 +48,7 @@ describe('ChatController', function () {
       };
       chat.leave({}, mockRes, mockNext.getFn());
     });
-    it('should handle errors', function (done) {
+    it('should handle errors', function(done) {
       var mockRemoveUser = getMockWithCB(['object', 'function'], new Error('Some error'));
       var mockJSON = new Mock(function noop() {});
       var mockNext = getMockWithDone(['object'], [mockRemoveUser], [mockJSON], done);
@@ -65,8 +65,8 @@ describe('ChatController', function () {
       chat.leave({}, mockRes, mockNext.getFn());
     });
   });
-  describe('join method', function () {
-    it('should work', function (done) {
+  describe('join method', function() {
+    it('should work', function(done) {
       var mockJoinUser = getMockWithCB(['object', 'function'], null, true);
       var mockNext = new Mock(function noop() {});
       var mockJSON = getMockWithDone([], [mockJoinUser], [mockNext], done);
@@ -81,7 +81,7 @@ describe('ChatController', function () {
       };
       chat.join({}, mockRes, mockNext.getFn());
     });
-    it('should handle errors', function (done) {
+    it('should handle errors', function(done) {
       var mockJoinUser = getMockWithCB(['object', 'function'], new Error('Some error'));
       var mockJSON = new Mock(function noop() {});
       var mockNext = getMockWithDone(['object'], [mockJoinUser], [mockJSON], done);
@@ -98,10 +98,37 @@ describe('ChatController', function () {
       chat.join({}, mockRes, mockNext.getFn());
     });
   });
+  describe('invite', function() {
+    it('should work', function(done) {
+      var chatModel = {
+        inviteParticipant: function(username, cb) {
+          assert.equal(username, 'username');
+          cb(null);
+        }
+      };
+      var res = {
+        locals: {
+          chat: chatModel
+        },
+        end: function() {
+          done();
+        }
+      };
+      var req = {
+        body: {
+          username: 'username'
+        }
+      };
+      var next = function() {
+        assert.fail('Next called', 'Expected next not to be called');
+      };
+      chat.invite(req, res, next);
+    });
+  });
 });
 
 function getMockWithCB(args, error, result) {
-  return new Mock(function () {
+  return new Mock(function() {
     assert.equal(arguments.length, args.length);
     for (var i = 0; i < arguments.length; i++) {
       assert.equal(typeof arguments[i], args[i]);
@@ -112,7 +139,7 @@ function getMockWithCB(args, error, result) {
 }
 
 function getMockWithDone(args, called, notCalled, done) {
-  return new Mock(function () {
+  return new Mock(function() {
     assert.equal(arguments.length, args.length);
     for (var i = 0; i < arguments.length; i++) {
       assert.equal(typeof arguments[i], args[i]);
@@ -212,7 +239,7 @@ function testCreate(type, done, error) {
     loadParticipantsNames: mockLoadParticipantsNames.getFn(),
     toJSON: mockToJSON.getFn(),
     isGroup: function() {
-      return type === 'group'
+      return type === 'group';
     }
   };
   var mockRes = getMockRes(mockJSON, mockChat);
