@@ -10,6 +10,7 @@ var config = {
     createServer: function (app, port) {
       return http.createServer(app).listen(port);
     },
+    shouldSendPush: false,
     apn: {
       key: 'certs/dev/key.pem',
       cert: 'certs/dev/cert.pem',
@@ -66,6 +67,7 @@ var config = {
     })
   },
   production: {
+    shouldSendPush: true,
     createServer: function (app, port) {
       var options = {
         key: fs.readFileSync('/home/node/ssl/key.pem'),

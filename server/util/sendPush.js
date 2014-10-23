@@ -51,10 +51,11 @@ function getConnection() {
 }
 
 function sendPush(user, data, cb) {
+  if (!config.shouldSendPush) {
+    return cb();
+  }
   cb = cb || function noop() {};
-  console.log('Trying to send a push notification to user: ', user);
   if(!user.token) {
-    console.log('Didnt load users token: ', user);
     return cb();
   };
   user.getDeviceInfo(function (err) {
@@ -68,20 +69,24 @@ function sendPush(user, data, cb) {
 }
 
 function sendAndroidPush(user, data, cb) {
+  if (!config.shouldSendPush) {
+    return cb();
+  }
   var message = new gcm.Message({
     delayWhileIdle: true,
     data: data
   });
 
   var sender = new gcm.Sender(config.gcm);
-  console.log('Config gcm: ', config.gcm);
   var registrationIds = [user.token];
 
   sender.send(message, registrationIds, 3, cb);
 }
 
 function sendIOSPush(user, data, cb) {
-  console.log('Sending push to user: ', user);
+  if (!config.shouldSendPush) {
+    return cb();
+  }
   var myDevice = new apn.Device(user.token);
   var note = new apn.Notification();
 
