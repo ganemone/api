@@ -101,14 +101,18 @@ describe('ChatController', function() {
   describe('invite', function() {
     it('should work', function(done) {
       var chatModel = {
-        inviteParticipant: function(username, cb) {
-          assert.equal(username, 'username');
+        inviteParticipant: function(username, invitingUsername, cb) {
+          assert.equal(invitingUsername, 'username');
+          assert.equal(username, 'friend');
           cb(null);
         }
       };
       var res = {
         locals: {
-          chat: chatModel
+          chat: chatModel,
+          user: {
+            username: 'username'
+          }
         },
         end: function() {
           done();
@@ -116,7 +120,7 @@ describe('ChatController', function() {
       };
       var req = {
         body: {
-          username: 'username'
+          username: 'friend'
         }
       };
       var next = function() {

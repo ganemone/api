@@ -50,6 +50,11 @@ module.exports = function setRoutes(app) {
     AuthUser,
     controllers.thoughts.thought
   );
+  app.get(
+    '/thought/report/:id',
+    AuthUser,
+    controllers.thoughts.report
+  );
   // --------
   // Blacklist
   // --------
@@ -101,6 +106,7 @@ module.exports = function setRoutes(app) {
     AuthUser,
     controllers.chat.pending
   );
+
   // -------
   // Friends
   // -------

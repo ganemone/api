@@ -42,3 +42,10 @@ exports.thought = function(req, res, next) {
     res.json(thought.toJSON());
   });
 };
+
+exports.report = function(req, res, next) {
+  // var user = res.locals.user;
+  // var cid = req.params.id;
+  // var thought = Thought(cid);
+  res.end();
+}

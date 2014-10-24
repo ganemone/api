@@ -95,13 +95,14 @@ exports.join = function(req, res, next) {
 // Action: Sets the invited users status to pending
 // and sends a push notification to said user
 exports.invite = function(req, res, next) {
+  var invitingUsername = res.locals.user.username;
   var chat = res.locals.chat;
   var invitedUsername = req.body.username;
   var invitedUser = new User({
     username: invitedUsername
   });
   // Add pending participant
-  chat.inviteParticipant(invitedUsername, function(err, result) {
+  chat.inviteParticipant(invitedUsername, invitingUsername, function(err, result) {
     if (err) {
       return next(err);
     }

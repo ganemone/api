@@ -22,10 +22,12 @@ function Chat(data) {
   }
 }
 
-Chat.prototype.inviteParticipant = function(username, cb) {
-  var query = 'UPDATE participants SET status = ? WHERE username = ? AND chat.uuid = ?';
-  var data = ['pending', username, this.uuid];
-  db.queryWithData(query, data, cb);
+Chat.prototype.inviteParticipant = function(username, invitingUsername, cb) {
+  var query = 'INSERT INTO participants (chat_id, username, invited_by, status) VALUES (?)';
+  var data = [[this.id, username, invitingUsername, 'pending']];
+  db.queryWithData(query, data, function (err, rows) {
+    return cb(err, rows);
+  });
 };
 
 Chat.prototype.getParticipantsQuery = function() {
