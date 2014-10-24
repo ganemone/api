@@ -22,17 +22,25 @@ function Chat(data) {
   }
 }
 
-Chat.prototype.getParticipantsQuery = function () {
+Chat.prototype.inviteParticipant = function(username, invitingUsername, cb) {
+  var query = 'INSERT INTO participants (chat_id, username, invited_by, status) VALUES (?)';
+  var data = [[this.id, username, invitingUsername, 'pending']];
+  db.queryWithData(query, data, function (err, rows) {
+    return cb(err, rows);
+  });
+};
+
+Chat.prototype.getParticipantsQuery = function() {
   this._assertHasID();
   var query = 'SELECT participants.username FROM participants WHERE chat_id = ? AND participants.username != ?;';
   var data = [this.id, this.user.username];
   return format(query, data);
 };
 
-Chat.prototype.loadParticipants = function (cb) {
+Chat.prototype.loadParticipants = function(cb) {
   var query = this.getParticipantsQuery();
   var self = this;
-  db.directQuery(query, function (err, rows) {
+  db.directQuery(query, function(err, rows) {
     if (err) {
       return cb(new HttpError('Failed to load participants', 500, err));
     }
@@ -41,9 +49,9 @@ Chat.prototype.loadParticipants = function (cb) {
   });
 };
 
-Chat.prototype.loadParticipantsNames = function (cb) {
+Chat.prototype.loadParticipantsNames = function(cb) {
   var self = this;
-  LoadNames.fromUsernames(this.participants, function (err, result) {
+  LoadNames.fromUsernames(this.participants, function(err, result) {
     if (err) {
       return cb(err);
     }
@@ -52,12 +60,12 @@ Chat.prototype.loadParticipantsNames = function (cb) {
   });
 };
 
-Chat.prototype.load = function (cb) {
+Chat.prototype.load = function(cb) {
   this._assertHasID();
   var query = 'SELECT chat.uuid, chat.cid, chat.type, chat.owner_id, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE chat.id = ?';
   var data = [this.id];
   var self = this;
-  db.queryWithData(query, data, function (err, rows) {
+  db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(new HttpError('Failed to load chat', 500, err));
     }
@@ -75,12 +83,12 @@ Chat.prototype.load = function (cb) {
   });
 };
 
-Chat.prototype.loadFromUUID = function (cb) {
+Chat.prototype.loadFromUUID = function(cb) {
   this._assertHasUUID();
   var query = 'SELECT chat.id, chat.cid, chat.type, chat.owner_id, UNIX_TIMESTAMP(chat.created) AS created, degree FROM chat WHERE chat.uuid = ?';
   var data = [this.uuid];
   var self = this;
-  db.queryWithData(query, data, function (err, rows) {
+  db.queryWithData(query, data, function(err, rows) {
     if (err) {
       return cb(new HttpError('Failed to load chat', 500, err));
     }
@@ -98,7 +106,7 @@ Chat.prototype.loadFromUUID = function (cb) {
   });
 };
 
-Chat.prototype.insert = function (cb) {
+Chat.prototype.insert = function(cb) {
   this.uuid = uuid.v4();
   this._assertHasType();
   this._assertHasOwner();
@@ -107,7 +115,7 @@ Chat.prototype.insert = function (cb) {
     [this.uuid, this.type, this.owner, this.name, this.degree, this.cid]
   ];
   var self = this;
-  db.queryWithData(query, data, function (err, result) {
+  db.queryWithData(query, data, function(err, result) {
     if (err) {
       return cb(new HttpError('Failed to insert chat', 500, err));
     }
@@ -116,7 +124,7 @@ Chat.prototype.insert = function (cb) {
   });
 };
 
-Chat.prototype.insertParticipants = function (cb) {
+Chat.prototype.insertParticipants = function(cb) {
   this._assertHasOwner();
   this._assertHasID();
   this._assertHasParticipants();
@@ -129,7 +137,7 @@ Chat.prototype.insertParticipants = function (cb) {
 
   data.push([this.id, this.owner, this.owner, 'active']);
 
-  db.queryWithData(query, [data], function (err, result) {
+  db.queryWithData(query, [data], function(err, result) {
     if (err) {
       return cb(new HttpError('Failed to insert participants', 500, err));
     }
@@ -137,11 +145,11 @@ Chat.prototype.insertParticipants = function (cb) {
   });
 };
 
-Chat.prototype.deleteFromID = function (cb) {
+Chat.prototype.deleteFromID = function(cb) {
   this._assertHasID();
   var query = 'DELETE FROM chat WHERE id = ?';
   var data = [this.id];
-  db.queryWithData(query, data, function (err, result) {
+  db.queryWithData(query, data, function(err, result) {
     if (err) {
       return cb(new HttpError('Failed to delete chat', 500, err));
     }
@@ -149,11 +157,11 @@ Chat.prototype.deleteFromID = function (cb) {
   });
 };
 
-Chat.prototype.deleteFromUUID = function (cb) {
+Chat.prototype.deleteFromUUID = function(cb) {
   this._assertHasUUID();
   var query = 'DELETE FROM chat WHERE uuid = ?';
   var data = [this.uuid];
-  db.queryWithData(query, data, function (err, result) {
+  db.queryWithData(query, data, function(err, result) {
     if (err) {
       return cb(new HttpError('Failed to delete chat', 500, err));
     }
@@ -161,11 +169,11 @@ Chat.prototype.deleteFromUUID = function (cb) {
   });
 };
 
-Chat.prototype.removeUser = function (user, cb) {
+Chat.prototype.removeUser = function(user, cb) {
   this._assertHasUUID();
   var query = 'UPDATE participants SET status = ? WHERE username = ? AND chat_id = (SELECT id FROM chat WHERE uuid = ?)';
   var data = ['inactive', user.username, this.uuid];
-  db.queryWithData(query, data, function (err, result) {
+  db.queryWithData(query, data, function(err, result) {
     if (err) {
       return cb(new HttpError('Failed to remove user', 500, err));
     }
@@ -173,11 +181,11 @@ Chat.prototype.removeUser = function (user, cb) {
   });
 };
 
-Chat.prototype.joinUser = function (user, cb) {
+Chat.prototype.joinUser = function(user, cb) {
   this._assertHasUUID();
   var query = 'UPDATE participants SET status = ? WHERE username = ? AND chat_id = (SELECT id FROM chat WHERE uuid = ?)';
   var data = ['active', user.username, this.uuid];
-  db.queryWithData(query, data, function (err, result) {
+  db.queryWithData(query, data, function(err, result) {
     if (err) {
       return cb(new HttpError('Failed to update participant status', 500, err));
     }
@@ -185,7 +193,7 @@ Chat.prototype.joinUser = function (user, cb) {
   });
 };
 
-Chat.prototype.toJSON = function () {
+Chat.prototype.toJSON = function() {
   var name = this.getName();
   var json = {
     uuid: this.uuid,
@@ -205,7 +213,7 @@ Chat.prototype.toJSON = function () {
 };
 
 // TODO load the users actual name, instead of using the username
-Chat.prototype.getName = function () {
+Chat.prototype.getName = function() {
   if (this.name) {
     return this.name;
   }
@@ -233,34 +241,34 @@ Chat.prototype.isThought = function() {
   return (this.type === 'thought');
 };
 
-Chat.prototype._assertHasID = function () {
+Chat.prototype._assertHasID = function() {
   assert.equal(typeof this.id, 'number', 'Expected id to be set');
 };
 
-Chat.prototype._assertHasUUID = function () {
+Chat.prototype._assertHasUUID = function() {
   assert.ok(this.uuid, 'Expected uuid to be set');
 };
 
-Chat.prototype._assertHasDegree = function () {
+Chat.prototype._assertHasDegree = function() {
   assert.ok(this.degree, 'Expected degree to be set');
 };
 
-Chat.prototype._assertHasOwner = function () {
+Chat.prototype._assertHasOwner = function() {
   assert.ok(this.owner, 'Expected owner to be set');
 };
 
-Chat.prototype._assertHasName = function () {
+Chat.prototype._assertHasName = function() {
   assert.ok(this.name, 'Expected name to be set');
 };
 
-Chat.prototype._assertHasParticipants = function () {
+Chat.prototype._assertHasParticipants = function() {
   assert.ok(this.participants, 'Expected participants to be set');
 };
 
-Chat.prototype._assertHasType = function () {
+Chat.prototype._assertHasType = function() {
   assert.ok(this.type, 'Expected type to be set');
 };
 
-module.exports = function (data) {
+module.exports = function(data) {
   return new Chat(data);
 };

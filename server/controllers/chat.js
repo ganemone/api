@@ -1,7 +1,9 @@
 // External Modules
 var _ = require('underscore');
 var async = require('async');
+var User = require('../models/user.js');
 var UserCollection = require('../collections/user.js');
+var sendPush = require('../util/sendPush.js');
 // Endpoint /chat/create
 // Method: POST
 // Auth: Basic
@@ -15,7 +17,7 @@ var UserCollection = require('../collections/user.js');
 //    - json body parser
 //    - validate-create-chat
 // Action: creates a chat
-exports.create = function (req, res, next) {
+exports.create = function(req, res, next) {
   var chat = res.locals.chat;
 
   if (chat.type === 'thought') {
@@ -28,7 +30,7 @@ exports.create = function (req, res, next) {
       chat.insertParticipants.bind(chat),
       chat.loadParticipantsNames.bind(chat)
     ],
-    function (err, result) {
+    function(err, result) {
       if (err) {
         return next(err);
       }
@@ -47,10 +49,10 @@ exports.create = function (req, res, next) {
 //    - json body parser
 //    - validate-chat
 // Action: Sets a users status to inactive in a chat
-exports.leave = function (req, res, next) {
+exports.leave = function(req, res, next) {
   var user = res.locals.user;
   var chat = res.locals.chat;
-  chat.removeUser(user, function (err, result) {
+  chat.removeUser(user, function(err, result) {
     if (err) {
       return next(err);
     }
@@ -68,15 +70,50 @@ exports.leave = function (req, res, next) {
 //    - json body parser
 //    - validate-chat
 // Action: Sets a users status to active in a chat
-exports.join = function (req, res, next) {
+exports.join = function(req, res, next) {
   var user = res.locals.user;
   var chat = res.locals.chat;
-  chat.joinUser(user, function (err, result) {
+  chat.joinUser(user, function(err, result) {
     if (err) {
       return next(err);
     }
     res.json();
   });
+};
+
+// Endpoint /chat/join
+// Method: POST
+// Auth: Basic
+// Parameters:
+//    - uuid     | required | uuid of chat
+//    - username | required | username of invited username
+// Middlewares:
+//    - auth-user
+//    - json body parser
+//    - validate-chat
+//    - validate-invite
+// Action: Sets the invited users status to pending
+// and sends a push notification to said user
+exports.invite = function(req, res, next) {
+  var invitingUsername = res.locals.user.username;
+  var chat = res.locals.chat;
+  var invitedUsername = req.body.username;
+  var invitedUser = new User({
+    username: invitedUsername
+  });
+  // Add pending participant
+  chat.inviteParticipant(invitedUsername, invitingUsername, function(err, result) {
+    if (err) {
+      return next(err);
+    }
+    res.end();
+  });
+  // Send push notification
+  var data = {
+    message: 'You were invited to a group',
+    type: 'invitation'
+  };
+  sendPush.withData(invitedUser, data);
 };
 
 // Endpoint /chat/joined
@@ -86,9 +123,9 @@ exports.join = function (req, res, next) {
 // Middlewares:
 //    - auth-user
 // Action: Returns a json list of the users joined chats
-exports.joined = function (req, res, next) {
+exports.joined = function(req, res, next) {
   var user = res.locals.user;
-  user.getJoinedChats(function (err, joinedChats) {
+  user.getJoinedChats(function(err, joinedChats) {
     if (err) {
       return next(err);
     }
@@ -103,10 +140,10 @@ exports.joined = function (req, res, next) {
 // Middlewares:
 //    - auth-user
 // Action: Returns a json list of the users pending chats
-exports.pending = function (req, res, next) {
+exports.pending = function(req, res, next) {
   var user = res.locals.user;
-  user.getPendingChats(function (err, pendingChats) {
-    pendingChats.loadParticipants(function (err, result) {
+  user.getPendingChats(function(err, pendingChats) {
+    pendingChats.loadParticipants(function(err, result) {
       if (err) {
         return next(err);
       }
@@ -120,7 +157,7 @@ function handleChatsResponse(chats, res, next) {
     chats.loadParticipants.bind(chats),
     chats.loadParticipantsNamesIfGroup.bind(chats),
     chats.loadParticipantsNamesIf121.bind(chats)
-  ], function (err, result) {
+  ], function(err, result) {
     if (err) {
       return next(err);
     }
