@@ -106,7 +106,7 @@ exports.testThoughtPush = function () {
   note.sound = 'chime';
   note.alert = 'Your thought was favorited';
   note.payload = {
-    cid: '40'
+    cid: '1233'
   };
   var connection = getConnection();
   connection.pushNotification(note, myDevice);
