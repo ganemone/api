@@ -34,7 +34,15 @@ var config = {
       host: 'localhost',
       user: 'root',
       password: 'root',
-      database: 'ejabberd_dev'
+      database: 'ejabberd_local',
+      options: {
+        dialect: 'mysql',
+        define: {
+          timestamps: false,
+          underscored: true,
+          charset: 'utf8'
+        }
+      }
     },
     ip: 'harmon.dev.versapp.co',
     logRequests: true,
@@ -54,7 +62,15 @@ var config = {
       host: 'gcloudsql.dev.versapp.co',
       user: 'root',
       password: 'gtcgGTCG123',
-      database: 'production'
+      database: 'production',
+      options: {
+        dialect: 'mysql',
+        define: {
+          timestamps: false,
+          underscored: true,
+          charset: 'utf8'
+        }
+      }
     },
     ip: 'harmon.dev.versapp.co',
     logRequests: true,
@@ -92,7 +108,15 @@ var config = {
       host: 'gcloudsql.dev.versapp.co',
       user: 'root',
       password: 'gtcgGTCG123',
-      database: 'production'
+      database: 'production',
+      options: {
+        dialect: 'mysql',
+        define: {
+          timestamps: false,
+          underscored: true,
+          charset: 'utf8'
+        }
+      }
     },
     ip: 'versapp.co',
     logRequests: true,
@@ -112,7 +136,15 @@ var config = {
       host: 'localhost',
       user: 'root',
       password: 'root',
-      database: 'ejabberd_test'
+      database: 'ejabberd_test',
+      options: {
+        dialect: 'mysql',
+        define: {
+          timestamps: false,
+          underscored: true,
+          charset: 'utf8'
+        }
+      }
     },
     ip: 'harmon.dev.versapp.co',
     logRequests: false,

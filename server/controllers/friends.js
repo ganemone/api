@@ -12,7 +12,7 @@
 //    username: <username>
 //    name: name
 // }, ...]
-exports.active = function (req, res, next) {
+exports.active = function(req, res, next) {
   res.json(res.locals.activeFriends);
 };
 
@@ -30,6 +30,16 @@ exports.active = function (req, res, next) {
 //    username: <username>
 //    name: name
 // }, ...]
-exports.pending = function (req, res, next) {
+exports.pending = function(req, res, next) {
   res.json(res.locals.pendingFriends);
+};
+
+exports.getFriends = function(req, res, next) {
+  var user = res.locals.user;
+  user.getFriends().done(function(err, friends) {
+    if (err) {
+      return next(err);
+    }
+    res.json(friends);
+  });
 };
