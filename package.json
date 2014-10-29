@@ -4,6 +4,7 @@
   "description": "Backend API for Versapp",
   "main": "index.js",
   "scripts": {
+    "testdb": "NODE_ENV='test' node server/db/index.js",
     "jshint": "jshint server/",
     "start": "NODE_ENV='local' nodemon --watch server/ index.js",
     "dev": "NODE_ENV='development' node index.js",
