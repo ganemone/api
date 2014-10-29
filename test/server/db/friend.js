@@ -18,15 +18,11 @@ describe('A friend db model', function() {
         });
       });
       after(function(done) {
-        db.User.destroy({
-          truncate: true
-        }).then(function() {
-          return db.Friend.destroy({
-            truncate: true
+        db.User
+          .destroy()
+          .then(function() {
+            done();
           });
-        }).then(function() {
-          done();
-        });
       });
       it('should work', function(done) {
         db.Friend.makeFriends('testuser', 'anotheruser').then(function() {
