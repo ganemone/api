@@ -5,11 +5,12 @@ var sequelize = new S(
   config.db.user,
   config.db.password,
   config.db.options
-)
+);
 
 var User = require('./user')(sequelize);
 var Thought = require('./thought')(sequelize);
 var Friend = require('./friend')(sequelize);
+var Session = require('./session')(sequelize);
 
 User.hasMany(Friend, {
   as: 'Friends',
@@ -23,7 +24,15 @@ User.hasMany(Thought, {
   }
 });
 
-//sequelize.sync().then(function() {});
+User.hasOne(Session, {
+  onDelete: 'cascade',
+  foreignKey: {
+    name: 'username'
+  }
+});
+
+//sequelize.sync().then(function() {
+//});
 
 exports.User = User;
 exports.Thought = Thought;
