@@ -9,8 +9,40 @@ module.exports = function(sequelize) {
     password: S.STRING
   }, {
     instanceMethods: {
-      test: function() {
-        console.log(this);
+      getActiveFriends: function() {
+        return this.getFriends({
+          where: {
+            status: 'friends'
+          }
+        });
+      },
+      getPendingFriends: function() {
+        return this.getFriends({
+          where: {
+            status: 'pending'
+          }
+        });
+      },
+      getRequestedFriends: function() {
+        return this.getFriends({
+          where: {
+            status: 'requested'
+          }
+        });
+      },
+      getWasRejectedFriends: function() {
+        return this.getFriends({
+          where: {
+            status: 'was_rejected'
+          }
+        });
+      },
+      getDidRejectFriends: function() {
+        return this.getFriends({
+          where: {
+            status: 'did_reject'
+          }
+        });
       }
     },
     classMethods: {
@@ -28,10 +60,10 @@ module.exports = function(sequelize) {
             if (!user) {
               return false;
             }
-            if(!user.session) {
+            if (!user.session) {
               return false;
             }
-            if(user.session.session_key !== sessionID) {
+            if (user.session.session_key !== sessionID) {
               return false;
             }
             return true;

@@ -36,12 +36,38 @@ exports.pending = function(req, res, next) {
 
 exports.getFriends = function(req, res, next) {
   var user = res.locals.user;
-  user
-    .getFriends()
-    .done(function(err, friends) {
-      if (err) {
-        return next(err);
-      }
-      res.json(friends);
-    });
+  return makePromiseCall(user.getActiveFriends(), res, next);
 };
+
+exports.getPendingFriends = function(req, res, next) {
+  var user = res.locals.user;
+  return makePromiseCall(user.getPendingFriends(), res, next);
+};
+
+exports.getRequestedFriends = function(req, res, next) {
+  var user = res.locals.user;
+  return makePromiseCall(user.getRequestedFriends(), res, next);
+}
+
+exports.getWasRejectedFriends = function(req, res, next) {
+  var user = res.locals.user;
+  return makePromiseCall(user.getWasRejectedFriends(), res, next);
+}
+
+exports.getDidRejectFriends = function(req, res, next) {
+  var user = res.locals.user;
+  return makePromiseCall(user.getDidRejectFriends(), res, next);
+}
+
+function makePromiseCall(promise, res, next) {
+  return promise
+    .then(function(result) {
+      console.log("Result: ", result);
+      res.json(result);
+      return result;
+    })
+    .catch(function(error) {
+      next(error);
+      return false;
+    });
+}
