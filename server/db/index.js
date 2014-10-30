@@ -37,3 +37,4 @@ User.hasOne(Session, {
 exports.User = User;
 exports.Thought = Thought;
 exports.Friend = Friend;
+exports.Session = Session;

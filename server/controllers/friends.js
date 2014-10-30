@@ -36,10 +36,12 @@ exports.pending = function(req, res, next) {
 
 exports.getFriends = function(req, res, next) {
   var user = res.locals.user;
-  user.getFriends().done(function(err, friends) {
-    if (err) {
-      return next(err);
-    }
-    res.json(friends);
-  });
+  user
+    .getFriends()
+    .done(function(err, friends) {
+      if (err) {
+        return next(err);
+      }
+      res.json(friends);
+    });
 };
