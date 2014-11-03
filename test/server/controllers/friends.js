@@ -114,7 +114,6 @@ describe('A friends controller', function() {
             done();
           });
       });
-
       it('should return correct friends', function(done) {
         FriendsController
           .getFriends({}, this.mockRes, this.next)

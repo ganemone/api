@@ -1,3 +1,4 @@
+var db = require('../db/index');
 // Endpoint: /friends/active
 // Method: GET
 // Authorization: Basic
@@ -47,16 +48,39 @@ exports.getPendingFriends = function(req, res, next) {
 exports.getRequestedFriends = function(req, res, next) {
   var user = res.locals.user;
   return makePromiseCall(user.getRequestedFriends(), res, next);
-}
+};
 
 exports.getWasRejectedFriends = function(req, res, next) {
   var user = res.locals.user;
   return makePromiseCall(user.getWasRejectedFriends(), res, next);
-}
+};
 
 exports.getDidRejectFriends = function(req, res, next) {
   var user = res.locals.user;
   return makePromiseCall(user.getDidRejectFriends(), res, next);
+};
+
+exports.request = function(req, res, next) {
+  return setFriendStatus(req, res, next, db.Friend.makePendingFriends);
+};
+
+exports.accept = function(req, res, next) {
+  return setFriendStatus(req, res, next, db.Friend.makeFriends);
+};
+
+exports.deny = function(req, res, next) {
+  return setFriendStatus(req, res, next, db.Friend.makeDidRejectFriends);
+};
+
+function setFriendStatus(req, res, next, action) {
+  var user = res.locals.user;
+  var userUsername = user.getDataValue('username');
+  var friendUsername = req.params.username;
+  return makePromiseCall(
+    action(userUsername, friendUsername),
+    res,
+    next
+  );
 }
 
 function makePromiseCall(promise, res, next) {
