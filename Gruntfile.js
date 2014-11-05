@@ -2,14 +2,20 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
   // Load up all the grunt config files in /grunt
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+    watch: {
+      react: {
+        files: 'react/**/*.jsx',
+        tasks: ['browserify']
+      }
+    },
     browserify: {
-      app: {
-        files: [{
-          expand: true,
-          cwd: 'public/javascripts/',
-          src: ['main.js'],
-          dest: 'build/javascripts/'
-        }],
+      options: {
+        transform: [ require('grunt-react').browserify ]
+      },
+      client: {
+        src: ['react/**/*.jsx'],
+        dest: 'public/scripts/react/bundle.js'
       }
     },
     sass: {
@@ -40,4 +46,7 @@ module.exports = function (grunt) {
       }
     }
   });
+  grunt.registerTask('default', [
+    'browserify'
+  ]);
 };
