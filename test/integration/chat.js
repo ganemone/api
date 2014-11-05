@@ -90,7 +90,7 @@ function testChatDBEntry(chatID, expectedChatValues, expectedParticipantEntries,
   var query = 'SELECT * FROM chat WHERE uuid = ?';
   var data = [chatID];
 
-  db.queryWithData(query, data, function (err, result) {
+  db.queryWithData(query, data, function(err, result) {
     if (err) {
       throw err;
     }
@@ -103,7 +103,7 @@ function testChatDBEntry(chatID, expectedChatValues, expectedParticipantEntries,
 
     var query2 = 'SELECT * FROM participants WHERE chat_id = ?';
     var data2 = [chatRow.id];
-    db.queryWithData(query2, data2, function (err, rows) {
+    db.queryWithData(query2, data2, function(err, rows) {
       if (err) {
         throw err;
       }
@@ -119,7 +119,7 @@ function testChatDBEntry(chatID, expectedChatValues, expectedParticipantEntries,
   });
 }
 
-describe('Integration Tests for /chat', function () {
+describe('Integration Tests for /chat', function() {
   setUp();
 
   cleanUpTable('chat');
@@ -127,9 +127,9 @@ describe('Integration Tests for /chat', function () {
 
   runServer();
 
-  describe('/create', function () {
-    describe('121', function () {
-      it('valid requests', function (done) {
+  describe('/create', function() {
+    describe('121', function() {
+      it('valid requests', function(done) {
         request.post({
           url: config.getEndpoint('/chat/create'),
           auth: validAuth,
@@ -137,7 +137,7 @@ describe('Integration Tests for /chat', function () {
             type: '121',
             participants: ['friend1'],
           }
-        }, function (err, res) {
+        }, function(err, res) {
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
           assert.ok(res.body.uuid);
@@ -170,8 +170,8 @@ describe('Integration Tests for /chat', function () {
         });
       });
     });
-    describe('group', function () {
-      it('valid requests', function (done) {
+    describe('group', function() {
+      it('valid requests', function(done) {
         request.post({
           url: config.getEndpoint('/chat/create'),
           auth: validAuth,
@@ -180,7 +180,7 @@ describe('Integration Tests for /chat', function () {
             name: 'a+group',
             participants: ['friend1', 'friend2']
           }
-        }, function (err, res) {
+        }, function(err, res) {
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
           assert.ok(res.body.uuid);
@@ -222,10 +222,10 @@ describe('Integration Tests for /chat', function () {
         });
       });
     });
-    describe('thought', function () {
-      describe('1st degree', function () {
+    describe('thought', function() {
+      describe('1st degree', function() {
         setUpThoughts('friend1');
-        it('should work', function (done) {
+        it('should work', function(done) {
           var cid = this.cid;
           request.post({
             url: config.getEndpoint('/chat/create'),
@@ -234,7 +234,7 @@ describe('Integration Tests for /chat', function () {
               type: 'thought',
               cid: cid
             }
-          }, function (err, res) {
+          }, function(err, res) {
             assert.ifError(err);
             assert.equal(res.statusCode, 200);
             assert.ok(res.body.uuid);
@@ -266,9 +266,9 @@ describe('Integration Tests for /chat', function () {
           });
         });
       });
-      describe('2nd degree', function () {
+      describe('2nd degree', function() {
         setUpThoughts('friend3');
-        it('should work', function (done) {
+        it('should work', function(done) {
           var cid = this.cid;
           request.post({
             url: config.getEndpoint('/chat/create'),
@@ -277,7 +277,7 @@ describe('Integration Tests for /chat', function () {
               type: 'thought',
               cid: cid
             }
-          }, function (err, res) {
+          }, function(err, res) {
             assert.ifError(err);
             assert.equal(res.statusCode, 200);
             assert.ok(res.body.uuid);
@@ -312,13 +312,13 @@ describe('Integration Tests for /chat', function () {
     });
   });
 });
-describe('/leave', function () {
+describe('/leave', function() {
 
 });
-describe('/join', function () {
+describe('/join', function() {
 
 });
-describe('Integration tests for /joined', function () {
+describe('Integration tests for /joined', function() {
   runServer();
   setUpUser({
     username: 'username',
@@ -366,31 +366,31 @@ describe('Integration tests for /joined', function () {
     name: 'thought+name+2'
   });
 
-  before(function (done) {
+  before(function(done) {
     var self = this;
     var endpoint = config.getEndpoint('/chat/joined');
     request.get({
       url: endpoint,
       auth: validAuth,
       json: {}
-    }, function (err, res, body) {
+    }, function(err, res, body) {
       self.err = err;
       self.res = res;
       done();
     });
   });
-  it('should execute without error', function () {
+  it('should execute without error', function() {
     assert.ifError(this.err);
   });
-  it('should return 200 status code', function () {
+  it('should return 200 status code', function() {
     assert.equal(this.res.statusCode, 200);
   });
-  it('should return json content type', function () {
+  it('should return json content type', function() {
     assert.equal(this.res.headers['content-type'], 'application/json; charset=utf-8');
   });
-  it('should return the correct number of chats', function () {
+  it('should return the correct number of chats', function() {
     assert.equal(this.res.body.length, 5);
-    this.res.body.forEach(function (chat) {
+    this.res.body.forEach(function(chat) {
       assert.ok(chat.uuid);
       if (chat.type === 'group') {
         assert.equal(chat.name, 'group+name');
@@ -426,7 +426,7 @@ describe('Integration tests for /joined', function () {
   });
 });
 
-describe('Integration tests for /pending', function () {
+describe('Integration tests for /pending', function() {
   runServer();
   setUpUser({
     username: 'username',
@@ -476,29 +476,29 @@ describe('Integration tests for /pending', function () {
     name: 'thought+name+2'
   });
 
-  before(function (done) {
+  before(function(done) {
     var self = this;
     var endpoint = config.getEndpoint('/chat/pending');
     request.get({
       url: endpoint,
       auth: validAuth,
       json: {}
-    }, function (err, res, body) {
+    }, function(err, res, body) {
       self.err = err;
       self.res = res;
       done();
     });
   });
-  it('should execute without error', function () {
+  it('should execute without error', function() {
     assert.ifError(this.err);
   });
-  it('should return 200 status code', function () {
+  it('should return 200 status code', function() {
     assert.equal(this.res.statusCode, 200);
   });
-  it('should return json content type', function () {
+  it('should return json content type', function() {
     assert.equal(this.res.headers['content-type'], 'application/json; charset=utf-8');
   });
-  it('should return the correct number of chats', function () {
+  it('should return the correct number of chats', function() {
     assert.equal(this.res.body.length, 1);
     var chat = this.res.body[0];
     assert.ifError(chat.id);
