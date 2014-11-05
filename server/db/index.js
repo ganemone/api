@@ -11,6 +11,7 @@ var User = require('./user')(sequelize);
 var Thought = require('./thought')(sequelize);
 var Friend = require('./friend')(sequelize);
 var Session = require('./session')(sequelize);
+var ThoughtFavorite = require('./thought-favorite')(sequelize);
 
 User.hasMany(Friend, {
   as: 'Friends',
@@ -31,8 +32,21 @@ User.hasOne(Session, {
   }
 });
 
-//sequelize.sync().then(function() {
-//});
+User.hasMany(ThoughtFavorite, {
+  as: 'Favorites',
+  foreignKey: {
+    name: 'jid'
+  }
+});
+
+Thought.hasMany(ThoughtFavorite, {
+  foreignKey: {
+    name: 'confession_id'
+  }
+});
+
+sequelize.sync().then(function() {
+});
 
 exports.User = User;
 exports.Thought = Thought;
