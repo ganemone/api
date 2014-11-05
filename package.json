@@ -13,7 +13,7 @@
     "forever-prod": "NODE_ENV='production' forever start index.js",
     "production": "NODE_ENV='production' node index.js",
     "build": "grunt sass",
-    "watch": "grunt sass && grunt watch",
+    "watch": "grunt watch",
     "dtest": "npm test && npm test",
     "test": "NODE_ENV='test' mocha test/ --recursive -R nyan",
     "tap-test": "NODE_ENV='test' mocha test/ --recursive -R tap",
