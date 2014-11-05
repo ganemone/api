@@ -64,6 +64,7 @@
     "bookshelf": "~0.7.7",
     "sequelize": "~2.0.0-rc2",
     "node-xmpp-client": "~1.0.0-alpha17",
-    "node-stringprep": "~0.6.2"
+    "node-stringprep": "~0.6.2",
+    "ltx": "~0.7.0"
   }
 }
