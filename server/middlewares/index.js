@@ -1,3 +1,4 @@
+var express = require('express');
 var config = require('../../config');
 // Middlewares
 var logger = require('./logger');
@@ -8,4 +9,5 @@ module.exports = function(server) {
     server.use(logger);
   }
   server.use(message);
+  server.use(express.static(__dirname + '/../../build'));
 };

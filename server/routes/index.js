@@ -11,6 +11,9 @@ var LoadFriends = require('../middlewares/load-friends.js');
 var LoadNames = require('../middlewares/load-names.js');
 
 module.exports = function setRoutes(app) {
+  app.get('/web', function(req, res, next) {
+    res.render('test');
+  });
   app.get('/health', controllers.health.index);
 
   // ---------------
