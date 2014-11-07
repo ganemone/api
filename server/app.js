@@ -1,4 +1,5 @@
 // External Modules
+var cors = require('cors'); 
 var fs = require('fs');
 var express = require('express');
 var jade = require('jade');
@@ -16,6 +17,9 @@ function Server(config) {
 
   // Save the config
   this.config = config;
+
+  // Enable cors
+  this.app.use(cors());
 
   // Set up middlewares
   setMiddlewares(this.app);
