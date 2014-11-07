@@ -127,4 +127,13 @@ module.exports = function setRoutes(app) {
     LoadNames.pending,
     controllers.friends.pending
   );
+
+  // -------
+  // Friends
+  // -------
+  app.get(
+    '/messages/:id',
+    controllers.messages.all
+  );
+
 };

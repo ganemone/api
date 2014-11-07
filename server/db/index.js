@@ -12,6 +12,7 @@ var Thought = require('./thought')(sequelize);
 var Friend = require('./friend')(sequelize);
 var Session = require('./session')(sequelize);
 var ThoughtFavorite = require('./thought-favorite')(sequelize);
+var Message = require('./message')(sequelize);
 
 User.hasMany(Friend, {
   as: 'Friends',
@@ -52,3 +53,4 @@ exports.User = User;
 exports.Thought = Thought;
 exports.Friend = Friend;
 exports.Session = Session;
+exports.Message = Message;
