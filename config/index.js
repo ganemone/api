@@ -110,6 +110,7 @@ var config = {
       password: 'gtcgGTCG123',
       database: 'production',
       options: {
+	host: 'gcloudsql.dev.versapp.co',
         dialect: 'mysql',
         define: {
           timestamps: false,
