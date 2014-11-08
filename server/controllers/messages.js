@@ -20,9 +20,9 @@ function getConvertMessageFunction(username) {
     message = message.dataValues;
     return {
       body: message.body,
-      chat_uuid: message.chat_uuid,
+      chatID: message.chat_uuid,
       id: message.id,
-      image_url: message.image_url,
+      imageURL: message.image_url,
       isMine: (username === message.sender_username)
     };
   };
