@@ -17,6 +17,7 @@ exports.all = function(req, res, next) {
 
 function getConvertMessageFunction(username) {
   return function convertMessageFunc(message) {
+    message = message.dataValues;
     return {
       body: message.body,
       chat_uuid: message.chat_uuid,
