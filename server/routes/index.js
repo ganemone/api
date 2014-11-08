@@ -133,6 +133,7 @@ module.exports = function setRoutes(app) {
   // -------
   app.get(
     '/messages/:id',
+    AuthUser,
     controllers.messages.all
   );
 
