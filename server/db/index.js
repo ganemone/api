@@ -12,6 +12,7 @@ var Thought = require('./thought')(sequelize);
 var Friend = require('./friend')(sequelize);
 var Session = require('./session')(sequelize);
 var ThoughtFavorite = require('./thought-favorite')(sequelize);
+var Chat = require('./chat')(sequelize);
 var Message = require('./message')(sequelize);
 
 User.hasMany(Friend, {

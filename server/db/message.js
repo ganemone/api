@@ -7,7 +7,7 @@ module.exports = function(sequelize){
 			primaryKey: true
 		},
 		chat_uuid: {
-			type: S.STRING,
+			type: S.STRING(500),
 			allowNull: false
 		},
 		timestamp: {
